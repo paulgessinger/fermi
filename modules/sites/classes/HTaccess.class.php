@@ -8,6 +8,10 @@ class HTaccess
 		Core::addListener('onHTMLReady', array($this, '_launch')) ;
 	}
 	
+	/**
+	 *	Checks if htaccess and mod_rewrite is enabled and overrides Request's default path parser and
+	 *	path renderers. 
+	 */
 	function _launch()
 	{
 		if(Registry::get('htaccess') == true)
