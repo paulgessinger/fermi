@@ -15,7 +15,7 @@ class Event
 	
 	/**
 	 * Takes the event name and stores it for later use.
-	 * @param $event_name
+	 * @param $event_name The name for the Event to be created.
 	 */
 	function __construct($event_name)
 	{
@@ -23,7 +23,8 @@ class Event
 	}
 	
 	/**
-	 * Returns if this Event has already been fired.
+	 * Returns true if this Event has already been fired.
+	 * @return boolean True if Event has already been fired.
 	 */
 	function isFired()
 	{
@@ -51,7 +52,7 @@ class Event
 		}
 		else
 		{
-			return false ;
+			throw new EventException('The function given is not callable.')
 		}
 	}
 	

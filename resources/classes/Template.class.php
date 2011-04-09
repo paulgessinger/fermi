@@ -37,6 +37,11 @@ class Template
 		$this->bind_array[$key] = $value ;
 	}
 	
+	/**
+	 * Appends a string value to a currently set key. Scope is this Template.
+	 * @param string $key The key the value is to be appended to.
+	 * @param string $value The value that is to be appended. 
+	 */
 	function append($key, $value)
 	{
 		if(is_string($this->bind_array[$key]) OR !array_key_exists($key, $this->bind_array))
@@ -49,6 +54,11 @@ class Template
 		}
 	}
 	
+	/**
+	 * Prepends a string value to a currently set key. Scope is this Template.
+	 * @param string $key The key the value is to be prepended to.
+	 * @param string $value The value that is to be pepended. 
+	 */
 	function prepend($key, $value)
 	{
 		if(is_string($this->bind_array[$key]) OR !array_key_exists($key, $this->bind_array))
@@ -62,7 +72,7 @@ class Template
 	}
 	
 	/**
-	 * Instructs Twig to render this template and return the HTML output.
+	 * Instructs the Template to render and return the HTML output.
 	 */
 	function render()
 	{
@@ -79,10 +89,6 @@ class Template
 		echo $previous ; 
 		
 		return $output ;
-		
-		
-		
-		//return $this->template_resource->render($this->bind_array) ;
 	}
 	
 	/**
@@ -94,11 +100,19 @@ class Template
 		Core::get('Response')->bind($target_var, $this->render()) ;
 	}
 	
+	/**
+	 * Acts the same as render(), it only appends the output to a GLOBAL template variable.
+	 * @param string $target_var
+	 */
 	function embedAppend($target_var)
 	{
 		Core::get('Response')->append($target_var, $this->render()) ;
 	}
 
+	/**
+	 * Acts the same as render(), it only prepends the output to a GLOBAL template variable.
+	 * @param string $target_var
+	 */
 	function embedPrepend($target_var)
 	{
 		Core::get('Response')->prepend($target_var, $this->render()) ;

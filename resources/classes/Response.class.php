@@ -26,7 +26,7 @@ class Response
 	/**
 	 * Makes Response ready to deliver content to the client.
 	 */
-	function _prepareResponse()
+	private function _prepareResponse()
 	{	
 		
 		Core::fireEvent('onResponseGoingHot') ;
@@ -39,18 +39,15 @@ class Response
 		
 		if(!$this->skin)
 		{
-			// get default skin
-			// TODO implement fetching from DB, as soon as we have DB
+			/**
+			 * get default skin
+			 * @todo implement fetching from DB, as soon as we have DB
+			 */
 			$this->skin = 'dynamic' ;
-		}
-
-			
-			
-			
+		}		
 		
 		$this->template_dir = SYSPATH.'skins/'.$this->skin.'/' ;
-		//$this->compile_dir = SYSPATH.'core/cache/tpl/' ;
-		
+				
 		$this->bind_array = array(
 			'syspath' => SYSPATH,
 			'sysuri' => SYSURI,
@@ -83,6 +80,7 @@ class Response
 	
 	/**
 	 * Returns the currently set Skin.
+	 * @return string The name of the currently set Skin.
 	 */
 	function getSkin()
 	{
@@ -114,6 +112,11 @@ class Response
 		}
 	}
 	
+	/**
+	 * Appends a string value to a currently set key.
+	 * @param string $key The key the value is to be appended to.
+	 * @param string $value The value that is to be appended. 
+	 */
 	function append($key, $value)
 	{
 		if($this instanceof Response)
@@ -133,6 +136,11 @@ class Response
 		}
 	}
 	
+	/**
+	 * Prepends a string value to a currently set key.
+	 * @param string $key The key the value is to be prepended to.
+	 * @param string $value The value that is to be prepended. 
+	 */
 	function prepend($key, $value)
 	{
 		if($this instanceof Response)
@@ -153,10 +161,10 @@ class Response
 	}
 	
 	/**
-	 * Returns a Wrapper for a Twig_Template
+	 * Returns a Wrapper for a Template
 	 * @param string $template
 	 * @param array $bulk_vars Assigns a bulk of vars to the template.
-	 * @return Template instance
+	 * @return object Template instance
 	 */
 	function getTemplate($template, $bulk_vars = array())
 	{
@@ -246,11 +254,19 @@ class Response
 	}
 	
 	
-
+	/**
+	 * Registers a function for calling from templates.
+	 * @param string $name The name that the function will be exposed to the template under.
+	 * @param mixed $closure A callable resource to act upon function calling.
+	 */
 	function bindTemplateFunction($name, $closure)
 	{
 		if($this instanceof Response)
 		{
+			if(!is_callable($closure))
+			{
+				throw new ResponseException('The resource provided is not callable. Yet it must to answer as a template function.') ;
+			}
 			$this->functions[$name] = $closure ;
 		}
 		else
