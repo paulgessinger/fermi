@@ -1,0 +1,36 @@
+div#top {
+	position:relative;
+	z-index:100;
+}
+div#top ul,
+div#top ul li.sfHover {
+	display:inline-block;
+}
+div#top ul.sf-menu {
+	display:inline-table;
+}
+div#top ul.sf-menu  {	
+	display:block;
+}
+div#top ul li.sfHover ul {
+	display:block;
+}
+ul.sf-menu li.sfHover ul {
+	left:0px;
+}
+div#top ul.sf-menu li.sfHover ul ul {
+	left:170px;
+}
+div#top ul li.sfHover ul li.sfHover,
+div#top ul li.sfHover ul li,
+div#top ul li.sfHover ul li.sfHover ul li.sfHover,
+div#top ul li.sfHover ul li.sfHover ul li.sfHover ul li.sfHover {	
+	display:inline;
+	float:left;
+	clear:left;
+}
+form input.formbutton {
+	width:auto;
+	overflow:visible;
+}
+

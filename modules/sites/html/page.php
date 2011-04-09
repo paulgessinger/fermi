@@ -1,0 +1,1 @@
+<div style="color:blue"><?=$tpl->text?></div>
