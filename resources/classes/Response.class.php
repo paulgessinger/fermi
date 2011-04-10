@@ -26,7 +26,7 @@ class Response
 	/**
 	 * Makes Response ready to deliver content to the client.
 	 */
-	function _prepareResponse()
+	private function _prepareResponse()
 	{	
 		
 		Core::fireEvent('onResponseGoingHot') ;
