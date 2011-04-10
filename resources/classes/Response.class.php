@@ -16,7 +16,7 @@ class Response
 	protected $functions = array() ;
 	
 	/**
-	 * Include basic requirements for Twig and Charon specific extensions of the same.
+	 * Registers a listener to onAgentDispatch.
 	 */
 	function __construct()
 	{
