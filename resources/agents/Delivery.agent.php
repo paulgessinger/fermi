@@ -1,5 +1,5 @@
 <?php
-class Delivery extends CAgent
+class Delivery extends FermiAgent
 {	
 	
 	function dispatch($controller, $task, $params)

@@ -5,7 +5,7 @@
  * @author Paul Gessinger
  *
  */
-abstract class CController implements Controller
+abstract class FermiController implements Controller
 {
 	var $tasks = array() ;
 	

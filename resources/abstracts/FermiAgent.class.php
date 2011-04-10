@@ -5,7 +5,7 @@
  * @author Paul Gessinger
  *
  */
-abstract class CAgent implements Agent
+abstract class FermiAgent implements Agent
 {
 	var $controllers = array() ;
 	
