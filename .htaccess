@@ -1,0 +1,7 @@
+RewriteEngine On 
+#RewriteRule ^([^/]*)/([^/]*)/([^/]*)/([^/]*).html$ index.php?agent=$1&controller$2&task=$3&site=$4 [L]
+
+#RewriteRule ([^/]*).html$ index.php?site=$1 [L]
+#RewriteRule ^admin([^/]*)$ index.php?agent=admin [L]
+
+RewriteRule !\.(js|ico|gif|jpg|png|css)$ index.php
