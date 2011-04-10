@@ -1,5 +1,5 @@
 <?php
-class DebugAgent extends CAgent
+class DebugAgent extends FermiAgent
 {
 	/*function __construct($agent, $controller, $task)
 	{

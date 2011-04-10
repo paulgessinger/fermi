@@ -1,5 +1,5 @@
 <?php
-class DebugController extends CController
+class DebugController extends FermiController
 {
 	function __construct()
 	{

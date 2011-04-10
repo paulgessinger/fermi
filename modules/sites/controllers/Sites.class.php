@@ -4,7 +4,7 @@
  * @author Paul Gessinger
  *
  */
-class Sites extends CController
+class Sites extends FermiController
 {
 	/**
 	 * register the task show

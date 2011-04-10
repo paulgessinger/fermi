@@ -4,7 +4,7 @@
  * @author Paul Gessinger
  *
  */
-class ErrorController extends CController
+class ErrorController extends FermiController
 {
 	/**
 	 * registers the task display
