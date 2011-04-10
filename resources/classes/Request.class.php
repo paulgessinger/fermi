@@ -117,6 +117,7 @@ class Request
 
 	/**
 	 * Uses the current pathParser to extract routing data from the Request values.
+	 * @return array The Information on the query, that has been extracted by pathParser. 
 	 */
 	function getPath()
 	{
@@ -131,7 +132,7 @@ class Request
 	}
 	
 	/**
-	 * Uses the current pathRenderer to create a linkable path out of
+	 * Uses the current pathRenderer to create a callable path out of
 	 * @param string $agent
 	 * @param string $controller
 	 * @param string $task
@@ -154,6 +155,10 @@ class Request
 	 */
 	function setPathParser($closure)
 	{
+		if(!is_callable($closure))
+		{
+			throw new SystemException('The resource given is not callable. Yet it must be to be able to act as pathParser.') ;
+		}
 		$this->pathParser = $closure ;
 	}
 	
@@ -163,6 +168,10 @@ class Request
 	 */
 	function setPathRenderer($closure)
 	{
+		if(!is_callable($closure))
+		{
+			throw new SystemException('The resource given is not callable. Yet it must be to be able to act as pathRenderer.') ;
+		}
 		$this->pathRenderer = $closure ;
 	}
 	

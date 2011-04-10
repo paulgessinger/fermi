@@ -13,7 +13,10 @@ abstract class CController implements Controller
 	{
 	}
 	
-	
+	/**
+	 * Registers this Controller with the Agent specified. It can now be called through said Agent.
+	 * @param string $agent The name of the Agent the Controller is to be registered with.
+	 */
 	final function registerWith($agent) 
 	{
 		if(isset(Core::$_agent_instances[$agent]))

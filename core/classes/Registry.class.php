@@ -92,7 +92,10 @@ class Registry
 				try
 				{
 					$instance = $this->getInstance($this->classnames[$class]) ;
-					Core::addListener('onClassesReady', array($instance, 'launch')) ;
+					if(method_exists($instance, 'launch'))
+					{
+						Core::addListener('onClassesReady', array($instance, 'launch')) ;
+					}
 				}
 				catch(Exception $e)
 				{

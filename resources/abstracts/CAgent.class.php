@@ -20,6 +20,11 @@ abstract class CAgent implements Agent
 		//$this->registerTask('index') ;
 	}
 	
+	/**
+	 * Registers the Controller given to the Agent. Once the Agent is aware of the attached Controllers, it can dispatch
+	 * calls to them
+	 * @param Controller $controller The Controller that is to be registered.
+	 */
 	function registerController(Controller $controller)
 	{
 		$this->controllers[get_class($controller)] = $controller ;
@@ -56,6 +61,9 @@ abstract class CAgent implements Agent
 		$this->controllers[$this->controller]->render() ;
 	}
 	
+	/**
+	 * Is called when Core has decided that this Agent is to get the call. The Agent gets a chance to prepare for dispatch.
+	 */
 	function notify()
 	{
 	}
