@@ -5,8 +5,8 @@ database = false
 host = localhost
 user = root
 pwd = 
-name = charon
-prefix = charon
+name = fermi
+prefix = fermi
 persistent = true
 
 [misc]
@@ -14,6 +14,8 @@ debug = true
 render_stat = true
 path = projects/prometheus/
 
+[libs]
+redbean = redbean/setup.php
 
 [cache]
 cache = true

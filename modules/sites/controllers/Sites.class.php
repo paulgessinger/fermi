@@ -44,7 +44,21 @@ class Sites extends FermiController
 		
 		Request::set('site', $site) ;
 
-		$contents = array(
+			
+		if($site_db = R::findOne('site', 'name=?', array($site)))
+		{
+			$this->site_content = Response::getTemplate('sites:page.php', array('text' => $site_db->content)) ;
+		}
+		else
+		{
+			$this->site_content = Response::getTemplate('sites:page.php', array('text' => 'Whoops, looks like this site doesn\'t exist.')) ;
+		}
+		
+		
+		
+		
+		
+		/*$contents = array(
 		'index' => 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
 		',
 		'hans' => 'Deine mutter'
@@ -57,7 +71,7 @@ class Sites extends FermiController
 		else
 		{
 			$this->site_content = Response::getTemplate('sites:page.php', array('text' => 'Whoops, looks like this site doesn\'t exist.')) ;
-		}
+		}*/
 		
 	}
 	

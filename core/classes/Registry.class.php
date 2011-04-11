@@ -43,9 +43,11 @@ class Registry
 		$this->buildConfig() ;
 		$this->buildRegistry() ;
 		
+		$this->includeLibs();
 		//Registry::set('modules:error', '1') ;
 		//Registry::set('modules:sites', '0') ;
 		//Registry::set('modules:', '1') ;
+		
 		
 		require_once SYSPATH.'resources/loader.inc.php' ;
 		
@@ -125,6 +127,26 @@ class Registry
 	}
 	
 	/**
+	 * Includes all files mentioned in config section "libs"
+	 */
+	private function includeLibs()
+	{
+		foreach($this->conf('libs') as $lib)
+		{
+			$lib = '/'.$lib ;
+			if(!file_exists(SYSPATH.'core/libs/'.$lib))
+			{
+				throw new Exception('<strong>'.SYSPATH.'core/libs'.$lib.'</strong> not found. It was configured in config.inc.php as a lib.') ;
+			}
+			else
+			{
+				include SYSPATH.'core/libs'.$lib ;
+			}
+			
+		}
+	}
+	
+	/**
 	 * retrieves a value from the configuration.
 	 * @param string $key The key to get, in form SECTION:KEY
 	 */
@@ -132,9 +154,13 @@ class Registry
 	{
 		if($this instanceof Registry)
 		{
-		
 			$key_arr = explode(':', $key) ;
-			if(count($key_arr) == 1)
+			
+			if(array_key_exists($key, $this->conf))
+			{
+				return $this->conf[$key] ;
+			}
+			elseif(count($key_arr) == 1)
 			{
 				$sec = 'default' ;
 				$item = $key_arr[0] ;

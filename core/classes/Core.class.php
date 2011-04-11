@@ -55,7 +55,7 @@ class Core
 		}
 		catch(Exception $e)
 		{
-			throw new Exception('Registry was unable to launch.') ;
+			throw new Exception('Registry was unable to launch. <br/><br/><pre>'.$e.'</pre>') ;
 		}
 		
 		Core::$_registry = $reg ;
