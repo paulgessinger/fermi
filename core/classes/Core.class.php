@@ -118,15 +118,7 @@ class Core
 						$this->task = $req['task'] ;
 					}
 					
-					/*if(empty($req['agent']) OR empty($req['controller']) OR empty($req['task']))
-					{
-						Request::set('agent', $this->agent) ;
-						Request::set('controller', $this->controller) ;
-						Request::set('task', $this->task) ;
-					}*/
-					
-					
-					
+				
 					if(is_object($this->launch_exception))
 					{
 						throw $this->launch_exception ;
@@ -139,7 +131,7 @@ class Core
 
 				Core::fireEvent('onRoute') ;
 				
-				Core::$_agent_instances['DebugAgent']->registerController(Core::$_controller_instances['ErrorController']) ;
+				
 				
 				
 				if(!Core::$_agent_instances[$this->agent])
@@ -169,7 +161,7 @@ class Core
 				if(!$this->error_triggered)
 				{
 					$this->error_triggered = true ;
-					$this->agent = 'DebugAgent' ;
+					//$this->agent = 'DebugAgent' ;
 					$this->controller = 'ErrorController' ;
 					$this->task = 'display' ;
 					Request::set('Exception', $e) ;

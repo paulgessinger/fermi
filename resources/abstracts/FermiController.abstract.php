@@ -11,6 +11,8 @@ abstract class FermiController implements Controller
 	
 	function __construct()
 	{
+		$this->registerWith('Delivery') ;
+		$this->registerTask('index') ;
 	}
 	
 	/**

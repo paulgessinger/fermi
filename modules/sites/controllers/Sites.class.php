@@ -7,24 +7,13 @@
 class Sites extends FermiController
 {
 	/**
-	 * register the task show
+	 * register the task index
 	 */
 	function __construct()
 	{
-		$this->registerWith('Delivery') ;
-		$this->registerTask('index') ;
+		parent::__construct();
 		
 		Response::bindTemplateFunction('site', function($site) { 
-			
-			/*if(Registry::get('htaccess') == false)
-			{
-				return Request::renderPath('Delivery', 'Sites', 'index', array('site' => $site)) ;
-			}
-			else
-			{
-				return $site.'.html' ;
-			}*/
-			
 			return HTML::sitelink('Delivery', 'Sites', 'index', $site) ;
 		}) ;
 		
@@ -38,18 +27,22 @@ class Sites extends FermiController
 	 */
 	function index($params)
 	{
+		$site = 'index' ;
 		
 		if(empty($params['site']))
 		{
-			$site = $params[0] ;
-			Request::set('site', $site) ;
+			if(!empty($params[0]))
+			{
+				$site = $params[0] ;
+				
+			}
 		}
 		else
 		{
 			$site = $params['site'] ;
 		}
 		
-		
+		Request::set('site', $site) ;
 
 		$contents = array(
 		'index' => 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.

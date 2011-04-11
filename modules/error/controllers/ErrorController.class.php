@@ -11,6 +11,7 @@ class ErrorController extends FermiController
 	 */
 	function __construct()
 	{
+		$this->registerWith('Delivery') ;
 		$this->registerTask('display') ;
 	}
 	

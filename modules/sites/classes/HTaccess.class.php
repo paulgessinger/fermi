@@ -33,6 +33,13 @@ class HTaccess
 					$path['params']		= array(substr($query_array[0], 0, strrpos($query_array[0], '.'))) ;
 					
 				}
+				elseif(count($query_array) == 3)
+				{
+						$path['agent'] 		= false ;
+						$path['controller'] = $query_array[0] ;
+						$path['task']		= $query_array[1] ;
+						$path['params']		= array(substr($query_array[2], 0, strrpos($query_array[2], '.'))) ;
+				}
 				else
 				{
 				
@@ -57,7 +64,7 @@ class HTaccess
 			HTML::registerHelper('sitelink', function($agent, $controller, $task, $site)
 			{
 				// bla bla bla get url format
-				return SYSURI.$site.'.html' ;
+				return SYSURI.''.$site.'.html' ;
 			}) ;
 			
 		}
