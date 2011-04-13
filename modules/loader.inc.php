@@ -1,5 +1,5 @@
 <?php
-$elements = array('interfaces', 'abstracts', 'agents', 'controllers', 'classes') ;
+$elements = array('interfaces', 'abstracts', 'agents', 'controllers', 'classes', 'models') ;
 
 //$modules = new DirectoryIterator(SYSPATH.'modules/') ;
 
@@ -13,8 +13,7 @@ array_multisort($modules) ;
 foreach($modules as $module => $active)
 {
 	if(file_exists(SYSPATH.'modules/'.$module) AND $active)
-	{
-		
+	{	
 		foreach($elements as $element)
 		{
 			if(file_exists(SYSPATH.'modules/'.$module.'/'.$element))
@@ -42,6 +41,8 @@ foreach($modules as $module => $active)
 								case 'agents':
 										Core::$_agents[] = $c_name ;
 									break;
+								case 'models':
+										Core::$_models[] = $c_name ;
 							}
 						}
 					}

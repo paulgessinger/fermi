@@ -37,6 +37,19 @@ class Template
 		$this->bind_array[$key] = $value ;
 	}
 	
+	function __set($key, $value)
+	{
+		$this->bind($key, $value) ;
+	}
+	
+	function __get($key)
+	{
+		if(array_key_exists($key, $this->bind_array))
+		{
+			return $this->bind_array[$key] ;
+		}
+	}
+	
 	/**
 	 * Appends a string value to a currently set key. Scope is this Template.
 	 * @param string $key The key the value is to be appended to.

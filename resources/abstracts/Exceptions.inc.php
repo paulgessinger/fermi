@@ -92,3 +92,4 @@ class ResponseException extends CustomException {}
 class RoutingException extends CustomException {}
 class SystemException extends CustomException {}
 class DatabaseException extends CustomException {}
+class ValidationException extends CustomException {}

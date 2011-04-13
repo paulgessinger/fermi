@@ -1,8 +1,9 @@
 <?php
 
-$elements = array('interfaces', 'abstracts', 'agents', 'controllers', 'classes') ;
+$elements = array('interfaces', 'abstracts', 'agents', 'controllers', 'classes', 'models') ;
 foreach($elements as $element)
 {
+
 $subdir = new DirectoryIterator(SYSPATH.'resources/'.$element) ;
 	foreach($subdir as $subelement)
 	{
@@ -22,6 +23,9 @@ $subdir = new DirectoryIterator(SYSPATH.'resources/'.$element) ;
 					break;
 					case 'agents':
 						Core::$_agents[] = $c_name ;
+					break;
+					case 'models':
+						Core::$_models[] = $c_name ;
 					break;
 				}
 		}

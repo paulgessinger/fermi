@@ -16,6 +16,7 @@ class Core
 	static $_controller_instances ;
 	static $_agents ;
 	static $_agent_instances ;
+	static $_models ;
 	protected $agent = 'Delivery' ;
 	protected $controller = 'Sites' ;
 	protected $task = 'index' ;
