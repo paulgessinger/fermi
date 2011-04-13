@@ -44,17 +44,16 @@ class Sites extends FermiController
 		
 		Request::set('site', $site) ;
 
-			
-		if($site_db = R::findOne('site', 'name=?', array($site)))
+		$this->site_content = Response::getTemplate('sites:page.php') ;
+		
+		if($site_db = SiteModel::find('name=?', array($site)))
 		{
-			$this->site_content = Response::getTemplate('sites:page.php', array('text' => $site_db->content)) ;
+			$this->site_content->text = $site_db->content ;
 		}
 		else
 		{
-			$this->site_content = Response::getTemplate('sites:page.php', array('text' => 'Whoops, looks like this site doesn\'t exist.')) ;
+			$this->site_content->text = 'Whoops, looks like this site doesn\'t exist.' ;
 		}
-		
-		
 		
 		
 		
