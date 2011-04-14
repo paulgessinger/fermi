@@ -31,9 +31,9 @@ class Registry
 		
 		
 		
-		define(SYSPATH, $SYSPATH) ;
-		define(SYSURI, $URI) ;
-		define(PATH, $relative_path) ;
+		define('SYSPATH', $SYSPATH) ;
+		define('SYSURI', $URI) ;
+		define('PATH', $relative_path) ;
 		
 		
 		
@@ -381,7 +381,7 @@ class Registry
 	 */
 	function __destruct()
 	{
-		if($this->modified === true)
+		if($this->_modified === true)
 		{
 			$data = '<?php
 ' ;

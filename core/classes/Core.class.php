@@ -31,20 +31,20 @@ class Core
 	{		
 		header("Content-type: text/html; charset=utf-8");
 		
-		error_reporting(E_ALL ^ E_NOTICE) ;
+		error_reporting(E_ERROR | E_WARNING | E_PARSE);
 		
-		function exception_error_handler($errno, $errstr, $errfile, $errline ) 
-		{
-   			throw new ErrorException($errstr, 0, $errno, $errfile, $errline) ;
+		function exception_error_handler($errno, $errstr, $errfile, $errline) 
+		{			
+			throw new ErrorException($errstr, 0, $errno, $errfile, $errline) ;
 		}
-		set_error_handler("exception_error_handler", E_ALL ^ E_NOTICE) ;
+		set_error_handler("exception_error_handler", E_ERROR | E_WARNING | E_PARSE) ;
 	}
 	
 	/**
 	 * Is called directly from index.php. It's the starting point of the system and instanciates Core itself
 	 * as well as Registry.
 	 */
-	public function _launch()
+	public static function _launch()
 	{
 		
 		Core::$_self = new Core ;
