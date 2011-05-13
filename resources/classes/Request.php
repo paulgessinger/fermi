@@ -52,10 +52,6 @@ class Request
 		
 		
 		
-
-		
-		
-		
 		
 		$this->setPathParser(function($query){
 		
@@ -88,7 +84,6 @@ class Request
 				
 		}) ;
 
-		
 		
 	}
 	

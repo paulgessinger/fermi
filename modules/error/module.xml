@@ -3,9 +3,15 @@
 	<version>1.0</version>
 	<name>Error</name>
 	<author></author>
+	<active>true</active>
 	
-	<includes>
-		<include></include>
-	</includes>
+	<instances>
+		<instance>Debug</instance>
+	</instances>
+	
+	<controllers>
+		<controller>DebugController</controller>
+		<controller>ErrorController</controller>
+	</controllers>
 	
 </module>

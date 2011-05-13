@@ -2,8 +2,8 @@
 ob_start();
 try
 {
-	require_once 'core/classes/Core.class.php' ;
-	require_once 'core/classes/Registry.class.php' ;
+	require 'core/classes/Core.php' ;
+	require 'core/classes/Registry.php' ;
 
 	Core::_launch() ;
 	

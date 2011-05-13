@@ -17,9 +17,9 @@ class Core
 	static $_agents ;
 	static $_agent_instances ;
 	static $_models ;
-	protected $agent = 'Delivery' ;
-	protected $controller = 'Sites' ;
-	protected $task = 'index' ;
+	protected $agent ;
+	protected $controller ;
+	protected $action = 'index' ;
 	protected $error_triggered = false ;
 	var $events = array() ;
 	var $launch_exception ;
@@ -38,6 +38,30 @@ class Core
 			throw new ErrorException($errstr, 0, $errno, $errfile, $errline) ;
 		}
 		set_error_handler("exception_error_handler", E_ERROR | E_WARNING | E_PARSE) ;
+		
+		spl_autoload_register(array($this, 'loader')) ;
+	}
+	
+	private function loader($class)
+	{
+			
+		foreach(Registry::$_modules as $module)
+		{
+			if(file_exists(SYSPATH.'modules/'.$module.'/classes/'.$class.'.php'))
+			{
+				include SYSPATH.'modules/'.$module.'/classes/'.$class.'.php' ;
+				return true ;
+			}
+		}
+		
+		if(file_exists(SYSPATH.'resources/classes/'.$class.'.php'))
+		{
+			include SYSPATH.'resources/classes/'.$class.'.php' ;
+			return true ;
+		}
+		
+
+		throw new Exception('Class "'.$class.'" could not be found.') ;
 	}
 	
 	/**
@@ -62,6 +86,7 @@ class Core
 		Core::$_registry = $reg ;
 		Core::_()->reg = $reg ;
 		
+		
 		Core::fireEvent('onClassesReady') ;
 		
 		
@@ -71,7 +96,7 @@ class Core
 		$mtime = $mtime[1] + $mtime[0]; 
 		Core::$starttime = $mtime ;
 			
-		foreach(Core::$_agents as $agent)
+		/*foreach(Core::$_agents as $agent)
 		{
 			Core::$_agent_instances[$agent] = new $agent ;
 		}
@@ -79,12 +104,12 @@ class Core
 		foreach(Core::$_controllers as $controller)
 		{
 			Core::$_controller_instances[$controller] = new $controller ;
-		}
+		}*/
 		
 		
 		
 		Core::fireEvent('onCoreReady') ;
-		
+
 	}
 	
 	/**
@@ -101,23 +126,29 @@ class Core
 		{
 			try 
 			{
-			
-				if(!$force)
+				if(count(Registry::$_errors) != 0)
 				{
-					$req = Request::getPath() ;
+					throw new RegistryException(implode('<br />', Registry::$_errors)) ;
+				}
+					
+				$request = Request::getPath() ;
 				
-					if(!empty($req['agent']))
+				print_r($request) ;
+				
+				$this->agent = Registry::get('default_agent') ;
+				$this->controller = Registry::get('default_controller') ;
+				
+				$rounds = array('action', 'controller', 'agent') ;
+				
+				foreach($rounds as $round)
+				{
+					if(!empty($request[$round]))
 					{
-						$this->agent = $req['agent'] ;
+						$this->$round = $request[$round] ;		
 					}
-					if(!empty($req['controller']))
-					{
-						$this->controller = $req['controller'] ;
-					}
-					if(!empty($req['task']))
-					{
-						$this->task = $req['task'] ;
-					}
+				}	
+				
+				echo $this->agent.'/'.$this->controller.'/'.$this->action ;
 					
 				
 					if(is_object($this->launch_exception))
@@ -125,7 +156,6 @@ class Core
 						throw $this->launch_exception ;
 					}
 					
-				}
 			
 			
 			
@@ -159,7 +189,7 @@ class Core
 			}
 			catch(Exception $e)
 			{				
-				if(!$this->error_triggered)
+				/*if(!$this->error_triggered)
 				{
 					$this->error_triggered = true ;
 					//$this->agent = 'DebugAgent' ;
@@ -169,7 +199,7 @@ class Core
 					Response::disableOutput();
 					Core::resetEvents() ;
 					$this->_route(true) ;
-				}
+				}*/
 				
 			}
 			
@@ -187,7 +217,7 @@ class Core
 	 */
 	function _render()
 	{
-		if($this instanceof Core)
+	/*	if($this instanceof Core)
 		{
 			try 
 			{
@@ -211,7 +241,7 @@ class Core
 		else
 		{	
 			return Core::_()->_render() ;
-		}
+		}*/
 	}
 	
 	/**
@@ -221,6 +251,7 @@ class Core
 	{
 		return Core::$_self ;
 	}
+	
 	
 	/**
 	 * Sets the agent to the one provided in $agent. Must implement the interface Agent.

@@ -8,11 +8,12 @@
 class Registry
 {
 	static $_self ;
+	static $_errors = array() ;
+	static $_modules = array() ;
 	var $_instances = array() ;
-	static $_autoQueue = array() ;
+	
 	protected $_modified = false ;
 	protected $conf = array() ;
-	protected $classnames = array() ;
 	
 	/**
 	 * Calculates certain values and includes all necessary php files.
@@ -44,68 +45,102 @@ class Registry
 		$this->buildRegistry() ;
 		
 		$this->includeLibs();
-		//Registry::set('modules:error', '1') ;
-		//Registry::set('modules:sites', '0') ;
-		//Registry::set('modules:', '1') ;
 		
+		$this->initializeResources() ;
 		
-		require_once SYSPATH.'resources/loader.inc.php' ;
+		$this->initializeModules() ;
 		
-		require_once SYSPATH.'modules/loader.inc.php' ;
-		
-		$this->runQueue() ;
-		
-		
+		$this->performAutoInstances() ;
 	}
 	
-	/**
-	 * Exectues the queue, instanciating all classes that have autoInstance set to true.
-	 */
-	private function runQueue()
+	private function performAutoInstances()
 	{
-		/*
-		 *  Round one, copy all classnames into storage and call _extendClass on everyone. 
-		 *	First come first served, overwriting only works if desired parent class has already
-		 *	been registered. Use alphabetic order.
-		 */
-		foreach(Registry::$_autoQueue as $class)
-		{	
-			$props = get_class_vars($class) ;
-
-			$this->classnames[$class] = $class ;
-			
-			if(isset($props['_extendClass'])) 
+		foreach($this->auto_instances as $class => $path)
+		{
+			include $path ;
+			$this->_instances[$class] = $this->getInstance($class) ;
+			if(method_exists($this->_instances[$class], 'launch'))
 			{
-				$this->classnames[$props['_extendClass']] = $class ;
+				Core::addListener('onClassesReady', array($this->_instances[$class], 'launch')) ;
+			}	
+		}
+	}
+	
+	private function initializeResources()
+	{
+		$raw = file_get_contents(SYSPATH.'resources/resources.xml') ;
+		$xml = new SimpleXMLElement($raw) ;
+		
+		if(isset($xml->instances->instance))
+		{
+			foreach($xml->instances->instance as $instance)
+			{
+				$this->auto_instances[(string)$instance] = SYSPATH.'resources/classes/'.$instance.'.php' ;
 			}
 		}
-		
-		
-		/*
-		 * Round two, do autoInstance 
-		 */
-		foreach(Registry::$_autoQueue as $class)
-		{	
-			$props = get_class_vars($class) ;
-			
-			
-			if($props['_autoInstance'] === true) 
+	}
+	
+	private function initializeModules()
+	{
+		$errors = array() ;
+		$directory = new DirectoryIterator(SYSPATH.'modules') ;
+		foreach($directory as $module)
+		{
+			if(!$module->isDot())
 			{
-				try
+				if($module->isDir())
 				{
-					$instance = $this->getInstance($this->classnames[$class]) ;
-					if(method_exists($instance, 'launch'))
+					if(file_exists(SYSPATH.'modules/'.$module.'/module.xml'))
 					{
-						Core::addListener('onClassesReady', array($instance, 'launch')) ;
+						try
+						{
+							$raw = file_get_contents(SYSPATH.'modules/'.$module.'/module.xml') ;
+							$xml = new SimpleXMLElement($raw) ;
+							
+							if($xml->active == 'true')
+							{
+								
+								Registry::$_modules[(string)$module] = (string)$module ;
+								
+								$this->module_xml[(string)$module] = $xml ;
+				
+								if(isset($xml->instances->instance))
+								{
+									foreach($xml->instances->instance as $instance)
+									{
+										$this->auto_instances[(string)$instance] = SYSPATH.'modules/'.$module.'/classes/'.$instance.'.php' ;
+									}
+								}
+								
+								if(isset($xml->controllers->controller))
+								{
+									foreach($xml->controllers->controller as $controller)
+									{
+										$this->controllers[(string)$controller] = SYSPATH.'modules/'.$module.'/classes/'.$controller.'.php' ;
+									}
+								}
+									
+								if(isset($xml->rewrites->rewrite))
+								{
+									foreach($xml->rewrites->rewrite as $rewrite)
+									{
+										$this->rewrites[] = (string)$rewrite ;
+									}
+								}
+							}
+							
+							
+						}
+						catch(Exception $e)
+						{
+							echo $e->getMessage() ;
+							Registry::$_errors[] = $e->getMessage() ;
+						}
+						
 					}
 				}
-				catch(Exception $e)
-				{
-					Core::_()->launch_exception = $e ;
-				}
 			}
 		}
-		
 	}
 	
 	/**
@@ -347,26 +382,11 @@ class Registry
 			}
 			else
 			{
-				
-				/*
-				 * FUCK THIS
-				 * We will now just get an instance of the class stored under the name requested. 
-				 * If you want to extend a class, then use alphabetic order.
-				 */
-				
-				if(array_key_exists($class, $this->classnames))
-				{
-					if(class_exists($this->classnames[$class]))
-					{
-						$new_instance = new $this->classnames[$class] ;
+				$new_instance = new $class ;
 						
-						$this->_instances[$class] = $new_instance ;
-						$this->_instances[$this->classnames[$class]] = $new_instance ;
+				$this->_instances[$class] = $new_instance ;
 						
-						return $new_instance ;
-					}
-				}
-				
+				return $new_instance ;
 			}
 		}
 		else

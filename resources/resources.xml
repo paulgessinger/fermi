@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<resources>
+	<instances>
+		<instance>Database</instance>
+		<instance>HTML</instance>
+		<instance>Request</instance>
+		<instance>Response</instance>
+	</instances>
+</resources>

@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <module>
 	<version>1.0</version>
-	<name>Error</name>
+	<name>Sites</name>
 	<author></author>
+	<active>true</active>
 	
-	<includes>
-		<include></include>
-	</includes>
+	<instances>
+		<instance>HTaccess</instance>
+	</instances>
+	
+	
 	
 </module>
