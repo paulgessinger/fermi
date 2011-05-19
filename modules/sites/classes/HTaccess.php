@@ -24,43 +24,55 @@ class HTaccess
 			Core::get('Request')->setPathParser(function($query)
 			{
 				
+				$query = substr($query, 0, strrpos($query, '.')) ;
+			
 				$query_array = explode('/', $query) ;
 				
+				$path['agent'] = false ;
+				$path['controller'] = false ;
+				$path['action'] = false ;
 				
-				if(count($query_array) == 1)
+				$tokens = count($query_array) ;
+				
+				switch($tokens)
 				{
-					$path['agent'] 		= false ;
-					$path['controller'] = false ;
-					$path['action']		= false ;
-					$path['params']		= array(substr($query_array[0], 0, strrpos($query_array[0], '.'))) ;
+					case 1: // only one parameter given. loading default agent/controller/action and give that param to it
+						$path['params']['default'] = $query_array[0] ;
+					break;
+					case 2:
+						$path['action'] = $query_array[0] ;
+						$path['params']['default'] = $query_array[1] ;
+					break;
+					case 3:
+						$path['controller'] = $query_array[0] ;
+						$path['action'] = $query_array[1] ;
+						$path['params']['default'] = $query_array[2] ;
+					break;
+					case 4:
+						$path['agent'] = $query_array[0] ;
+						$path['controller'] = $query_array[1] ;
+						$path['action'] = $query_array[2] ;
+						$path['params']['default'] = $query_array[3] ;
+					break;
+					default:
 					
-				}
-				elseif(count($query_array) == 4)
-				{
-					$path['agent'] 		= false ;
-					$path['controller'] = $query_array[0] ;
-					$path['action']		= $query_array[1] ;
-					$path['params']		= array(substr($query_array[2], 0, strrpos($query_array[2], '.'))) ;
+						$path['agent'] = $query_array[0] ;
+						$path['controller'] = $query_array[1] ;
+						$path['action'] = $query_array[2] ;
+						
+						if((($tokens-3)%2) == 0)
+						{
+							for($i=3; $i<$tokens; $i++)
+							{
+								$path['params'][$query_array[$i]] = $query_array[$i+1] ;			
+								$i = $i+2 ;	
+							}
+						}
 					
-					echo 'drei' ;
+					break;
 				}
-				else
-				{
+			
 				
-					$path['agent'] 		= $query_array[0] ;
-					$path['controller'] = $query_array[1] ;
-					$path['action'] 		= $query_array[2] ;
-				
-					$params = substr($query_array[3], 0, strrpos($query_array[3], '.')) ;
-					$params = explode(',', $params) ;
-				
-					if(count($params) != 1) // no guesswork to be done
-					{
-					
-					}
-				
-					$path['params'] = $params ;
-				}
 				return $path ;
 			}) ;
 			

@@ -11,6 +11,10 @@ class Registry
 	static $_errors = array() ;
 	static $_modules = array() ;
 	var $_instances = array() ;
+	var $auto_instances = array() ;
+	var $includes = array() ;
+	var $agents = array() ;
+	var $controllers = array() ;
 	
 	protected $_modified = false ;
 	protected $conf = array() ;
@@ -50,9 +54,19 @@ class Registry
 		
 		$this->initializeModules() ;
 		
+		$this->performIncludes() ;
+		
 		$this->performAutoInstances() ;
 	}
 	
+	private function performIncludes()
+	{
+		foreach($this->includes as $path)
+		{
+			include $path ;
+		}
+	}
+
 	private function performAutoInstances()
 	{
 		foreach($this->auto_instances as $class => $path)
@@ -78,6 +92,23 @@ class Registry
 				$this->auto_instances[(string)$instance] = SYSPATH.'resources/classes/'.$instance.'.php' ;
 			}
 		}
+		
+		if(isset($xml->includes->include))
+		{
+			foreach($xml->includes->include as $include)
+			{
+				$this->includes[] = SYSPATH.'resources/'.$include ;
+			}
+		}
+		
+		if(isset($xml->agents->agent))
+		{
+			foreach($xml->agents->agent as $agent)
+			{
+				$this->agents[(string)$agent] = SYSPATH.'resources/agents/'.$agent.'.php' ;
+			}
+		}
+		
 	}
 	
 	private function initializeModules()
@@ -104,6 +135,14 @@ class Registry
 								
 								$this->module_xml[(string)$module] = $xml ;
 				
+								if(isset($xml->includes->include))
+								{
+									foreach($xml->includes->include as $include)
+									{
+										$this->includes[(string)$include] = SYSPATH.'modules/'.$module.'/'.$include ;
+									}
+								}
+								
 								if(isset($xml->instances->instance))
 								{
 									foreach($xml->instances->instance as $instance)
@@ -116,7 +155,15 @@ class Registry
 								{
 									foreach($xml->controllers->controller as $controller)
 									{
-										$this->controllers[(string)$controller] = SYSPATH.'modules/'.$module.'/classes/'.$controller.'.php' ;
+										$this->controllers[(string)$controller] = SYSPATH.'modules/'.$module.'/controllers/'.$controller.'.php' ;
+									}
+								}
+								
+								if(isset($xml->agents->agent))
+								{
+									foreach($xml->agents->agent as $agent)
+									{
+										$this->agents[(string)$agent] = SYSPATH.'modules/'.$module.'/agents/'.$agent.'.php' ;
 									}
 								}
 									

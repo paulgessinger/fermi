@@ -11,22 +11,22 @@ class ErrorController extends FermiController
 	 */
 	function __construct()
 	{
-		$this->registerWith('Delivery') ;
-		$this->registerTask('display') ;
 	}
 	
 	/**
 	 * Gets the Exception and prepares the information for the template.
 	 */
-	function display()
+	function displayAction($params)
 	{
 		
 		$tpl = Response::getTemplate('error:error.php') ;
 
 		
 		// this is temporary until we have a template/output system
-		$e = Request::_('Exception') ;
+		//$e = Request::_('Exception') ;
 		//echo $e ;
+		
+		$e = $params['exception'] ;
 		
 		$tpl->bind('message', $e->getMessage()) ;
 		$tpl->bind('exception', get_class($e)) ;

@@ -9,6 +9,8 @@
 		<instance>HTaccess</instance>
 	</instances>
 	
-	
+	<controllers>
+		<controller>Sites</controller>
+	</controllers>
 	
 </module>

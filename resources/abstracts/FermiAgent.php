@@ -17,40 +17,26 @@ abstract class FermiAgent implements Agent
 	 */
 	function __construct()
 	{
-		//$this->registerTask('index') ;
-	}
-	
-	/**
-	 * Registers the Controller given to the Agent. Once the Agent is aware of the attached Controllers, it can dispatch
-	 * calls to them
-	 * @param Controller $controller The Controller that is to be registered.
-	 */
-	function registerController(Controller $controller)
-	{
-		$this->controllers[get_class($controller)] = $controller ;
 	}
 	
 	/**
 	 * dispatches the call to the controller given.
 	 * @param Controller $controller The Controller that is to process the request
 	 */
-	function dispatch($controller, $task, $params)
+	function dispatch(FermiController $controller, $action, $params)
 	{
 		$this->agent = $this ;
 		$this->controller = $controller ;
-		$this->task = $task ;
+		$this->action = $action ;
 		
 		
-		Core::fireEvent('onAgentReady', $this->agent, $this->controller, $this->task) ;
+		Core::fireEvent('onAgentReady', $this->agent, $this->controller, $this->action) ;
 		Core::rechargeEvent('onAgentReady') ;
-		Core::fireEvent('on'.get_class($this).'Ready', $this->agent, $this->controller, $this->task) ;
+		Core::fireEvent('on'.get_class($this).'Ready', $this->agent, $this->controller, $this->action) ;
+		Core::rechargeEvent('on'.get_class($this).'Ready') ;
+	
 		
-		if(!is_object($this->controllers[$this->controller]) OR !array_key_exists($this->controller, $this->controllers))
-		{
-			throw new RoutingException('Controller "'.$this->controller.'" does not exist.') ;
-		}
-		
-		$this->controllers[$this->controller]->execute($this->task, $params) ;
+		$this->controller->execute($this->action, $params) ;
 	}
 	
 	/**

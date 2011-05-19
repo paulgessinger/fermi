@@ -18,7 +18,7 @@
 foreach($tpl->traces as $trace)
 {
 ?>
-	<div style="font-size:12px;padding-bottom:2px;margin-bottom:10px;border-bottom:1px solid black;width:600px;">
+	<div style="font-size:12px;padding-bottom:2px;margin-bottom:10px;border-bottom:1px solid black;width:900px;">
 	
 	#<?=$trace['depth']?> - <strong><?=$trace['file']?></strong> in line <strong><?=$trace['line']?></strong><br/>
 	&nbsp;&nbsp;&rArr; <strong><?=$trace['function']?></strong>

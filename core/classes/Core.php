@@ -44,21 +44,28 @@ class Core
 	
 	private function loader($class)
 	{
+		$places = array('classes', 'abstracts', 'interfaces') ;
 			
 		foreach(Registry::$_modules as $module)
 		{
-			if(file_exists(SYSPATH.'modules/'.$module.'/classes/'.$class.'.php'))
+			foreach($places as $place)
 			{
-				include SYSPATH.'modules/'.$module.'/classes/'.$class.'.php' ;
-				return true ;
+				if(file_exists(SYSPATH.'modules/'.$module.'/'.$place.'/'.$class.'.php'))
+				{
+					include SYSPATH.'modules/'.$module.'/'.$place.'/'.$class.'.php' ;
+					return true ;
+				}
 			}
 		}
 		
-		if(file_exists(SYSPATH.'resources/classes/'.$class.'.php'))
-		{
-			include SYSPATH.'resources/classes/'.$class.'.php' ;
-			return true ;
-		}
+		foreach($places as $place)
+			{
+				if(file_exists(SYSPATH.'resources/'.$place.'/'.$class.'.php'))
+				{
+					include SYSPATH.'resources/'.$place.'/'.$class.'.php' ;
+					return true ;
+				}
+			}
 		
 
 		throw new Exception('Class "'.$class.'" could not be found.') ;
@@ -133,7 +140,7 @@ class Core
 					
 				$request = Request::getPath() ;
 				
-				print_r($request) ;
+				//print_r($request) ;
 				
 				$this->agent = Registry::get('default_agent') ;
 				$this->controller = Registry::get('default_controller') ;
@@ -148,47 +155,49 @@ class Core
 					}
 				}	
 				
-				echo $this->agent.'/'.$this->controller.'/'.$this->action ;
-					
-				
-					if(is_object($this->launch_exception))
-					{
-						throw $this->launch_exception ;
-					}
-					
-			
-			
-			
+				/*echo $this->agent.'/'.$this->controller.'/'.$this->action ;
+				print_r($request['params']) ;*/
+
 
 				Core::fireEvent('onRoute') ;
 				
-				
-				
-				
-				if(!Core::$_agent_instances[$this->agent])
+				if(!isset(Core::$_registry->agents[$this->agent]))
 				{
 					throw new RoutingException('Agent "'.$this->agent.'" could not be retrieved.') ;
 				}
-				if(!isset(Core::$_controller_instances[$this->controller]))
+				if(!isset(Core::$_registry->controllers[$this->controller]))
 				{
 					throw new RoutingException('Controller "'.$this->controller.'" could not be retrieved.') ;
 				}
 				
+
+				include Core::$_registry->agents[$this->agent] ;
 				
+				$this->agent_instance =  new $this->agent ;
 				
-				$this->agent_instance = Core::$_agent_instances[$this->agent] ;
 				
 				$this->agent_instance->notify() ;
 				
 				Core::fireEvent('onAgentDispatch') ;
 				
-				$this->agent_instance->dispatch($this->controller, $this->task, $req['params']) ;
+				include Core::$_registry->controllers[$this->controller] ;
+				$this->agent_instance->dispatch(new $this->controller, $this->action, $request['params']) ;
 				
 				
 				
 			}
 			catch(Exception $e)
-			{				
+			{	
+				$default_agent = Registry::get('default_agent') ;
+				if(get_class($this->agent_instance) != $default_agent)
+				{
+					$this->agent_instance = new $default_agent ;
+				}
+				
+				include Core::$_registry->controllers['ErrorController'] ;
+				$this->agent_instance->dispatch(new ErrorController, 'display', array('exception' => $e)) ;
+				
+				
 				/*if(!$this->error_triggered)
 				{
 					$this->error_triggered = true ;

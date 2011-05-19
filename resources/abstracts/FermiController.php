@@ -7,61 +7,25 @@
  */
 abstract class FermiController implements Controller
 {
-	var $tasks = array() ;
+	var $actions = array() ;
 	
 	function __construct()
 	{
-		$this->registerWith('Delivery') ;
-		$this->registerTask('index') ;
-	}
-	
-	/**
-	 * Registers this Controller with the Agent specified. It can now be called through said Agent.
-	 * @param string $agent The name of the Agent the Controller is to be registered with.
-	 */
-	final function registerWith($agent) 
-	{
-		if(isset(Core::$_agent_instances[$agent]))
-		{
-			Core::$_agent_instances[$agent]->registerController($this) ;
-		}
-		else
-		{
-			throw new SystemException('Controller "'.get_class($this).'" tried to register with Agent "'.$agent.'", but it does not exist.') ;
-		}
-	}
-	
-	/**
-	 * registers a task with the controller
-	 * @param string $task The task name.
-	 * @param string $method The method associated with the task. Must be inside the Controller.
-	 */
-	function registerTask($task, $method = false)
-	{
-		if(!$method)
-		{
-			$this->tasks[$task] = $task ;
-		}
-		else
-		{
-			$this->tasks[$task] = $method ;
-		}
-		
 	}
 	
 	/**
 	 * executes the given task.
 	 * @param string $task The task to be executed.
 	 */
-	function execute($task, $params)
+	function execute($action, $params)
 	{
-		if(array_key_exists($task, $this->tasks) AND is_callable(array($this, $this->tasks[$task])))
+		if(method_exists($this, $action.'Action'))
 		{
-			call_user_func_array(array($this, $this->tasks[$task]), array('params' => $params)) ;
+			call_user_func_array(array($this, $action.'Action'), array('params' => $params)) ;
 		}
 		else
 		{
-			throw new RoutingException('Task "'.$task.'" is not registered in controller "'.get_class($this).'"') ;
+			throw new RoutingException('Action "'.$action.'" is not available in controller "'.get_class($this).'"') ;
 		}
 	}
 	

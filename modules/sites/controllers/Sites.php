@@ -22,6 +22,13 @@ class Sites extends FermiController
 		}) ;
 	}	
 	
+	public function indexAction()
+	{
+		throw new Exception('something went awry') ;
+		
+		echo 'fucking index' ;
+	}
+	
 	/**
 	 * retrieves the data belonging to the site requested and forwards it to the template
 	 */

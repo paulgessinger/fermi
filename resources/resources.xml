@@ -6,4 +6,13 @@
 		<instance>Request</instance>
 		<instance>Response</instance>
 	</instances>
+	
+	<agents>
+		<agent>Index</agent>
+	</agents>
+	
+	<includes>
+		<include>abstracts/Exceptions.php</include>
+		<include>classes/Event.php</include>
+	</includes>
 </resources>
