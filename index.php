@@ -9,8 +9,6 @@ try
 	
 	Core::_route() ;
 	
-	Core::_render() ;
-	
 }
 catch(Exception $e)
 {

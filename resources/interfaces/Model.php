@@ -7,6 +7,6 @@
 interface Model
 {
 	function __construct();
-	static function load($criterion) ;
+	function load($criterion) ;
 	function save() ;
 }

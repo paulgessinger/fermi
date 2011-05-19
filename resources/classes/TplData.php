@@ -29,6 +29,10 @@ class TplData
 	 */
 	function __get($name)
 	{
+		if(is_object($this->values[$name]) AND get_class($this->values[$name]) == 'Template')
+		{
+			return $this->values[$name]->render() ;
+		}
 		return $this->values[$name] ;
 	}
 	

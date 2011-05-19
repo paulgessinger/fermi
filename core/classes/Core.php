@@ -12,11 +12,11 @@ class Core
 	static $_self ;
 	static $_registry ;
 	static $starttime ;
-	static $_controllers ;
-	static $_controller_instances ;
-	static $_agents ;
-	static $_agent_instances ;
-	static $_models ;
+	var $_controllers ;
+	var $_controller_instances ;
+	var $_agents ;
+	var $_agent_instances ;
+	var $_models = array() ;
 	protected $agent ;
 	protected $controller ;
 	protected $action = 'index' ;
@@ -31,13 +31,13 @@ class Core
 	{		
 		header("Content-type: text/html; charset=utf-8");
 		
-		error_reporting(E_ERROR | E_WARNING | E_PARSE);
+		error_reporting(E_ERROR | E_WARNING | E_PARSE | E_RECOVERABLE_ERROR);
 		
 		function exception_error_handler($errno, $errstr, $errfile, $errline) 
 		{			
 			throw new ErrorException($errstr, 0, $errno, $errfile, $errline) ;
 		}
-		set_error_handler("exception_error_handler", E_ERROR | E_WARNING | E_PARSE) ;
+		set_error_handler("exception_error_handler", E_ERROR | E_WARNING | E_PARSE | E_RECOVERABLE_ERROR) ;
 		
 		spl_autoload_register(array($this, 'loader')) ;
 	}
@@ -188,6 +188,7 @@ class Core
 			}
 			catch(Exception $e)
 			{	
+				
 				$default_agent = Registry::get('default_agent') ;
 				if(get_class($this->agent_instance) != $default_agent)
 				{
@@ -219,39 +220,6 @@ class Core
 		}
 	}
 	
-	/**
-	 * Is called after _route() has ended, and triggers the agent to render its contents, if this has not
-	 * yet been done. Subsequently, Response is instructed to assemble the root_template if per-se 
-	 * output has not been disabled, and send the accumulated string to the client.
-	 */
-	function _render()
-	{
-	/*	if($this instanceof Core)
-		{
-			try 
-			{
-				Core::fireEvent('onRender') ;
-				$this->agent_instance->render() ;
-				$this->get('Response')->render() ;
-			}
-			catch(Exception $e)
-			{
-				$this->agent = 'DebugAgent' ;
-				$this->controller = 'ErrorController' ;
-				$this->task = 'display' ;
-				Request::set('Exception', $e) ;
-				Response::disableOutput();
-				Core::resetEvents() ;
-				Core::sealEvent('onRender') ;
-				$this->_route(true) ;
-				$this->_render();
-			}
-		}
-		else
-		{	
-			return Core::_()->_render() ;
-		}*/
-	}
 	
 	/**
 	 * returns an instance of Core, shortcut to Core::$_self
@@ -295,6 +263,41 @@ class Core
 		}
 	}
 	
+	function getModel($model)
+	{
+		if($this instanceof Core)
+		{
+			if(array_key_exists($model, $this->_models))
+			{
+				return new $model ;
+			}
+			else
+			{
+				foreach(Registry::$_modules as $module)
+				{
+					if(file_exists(SYSPATH.'modules/'.$module.'/models/'.$model.'.php'))
+					{
+						include SYSPATH.'modules/'.$module.'/models/'.$model.'.php' ;
+						$this->_models[$model] = true ;
+						
+						return new $model ;
+					}
+				}
+				
+				if(file_exists(SYSPATH.'resources/models/'.$model.'.php'))
+					{
+						include SYSPATH.'resources/models/'.$model.'.php' ;
+						$this->_models[$model] = true ;
+						return new $model ;
+				}				
+			}
+		}
+		else
+		{
+			return Core::_()->getModel($model) ;
+		}
+	}
+	
 	
 	/**
 	 * registers an event listener to an event specified
@@ -331,7 +334,7 @@ class Core
 			if(!array_key_exists($event, $this->events))
 			{
 				$this->events[$event] = new Event($event) ;
-				$this->events[$event]->fired = true ;
+				//$this->events[$event]->fired = true ;
 			}
 			else
 			{

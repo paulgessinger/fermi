@@ -17,8 +17,9 @@ class Event
 	 * Takes the event name and stores it for later use.
 	 * @param $event_name The name for the Event to be created.
 	 */
-	function __construct($event_name)
+	function __construct($event_name, $multiple = true)
 	{
+		$this->multiple = $multiple ;
 		$this->event_name = $event_name ;
 	}
 	
@@ -81,7 +82,12 @@ class Event
 			{
 				$return_val .= call_user_func_array($listener, $arg_arr) ;
 			}
-			$this->fired = true ;
+			
+			if($this->multiple === false)
+			{
+				$this->fired = true ;
+			}
+			
 			return $return_val ;
 		}
 		elseif(!$this->sealed AND $this->fired)

@@ -24,7 +24,6 @@ class Template
 	 	$this->bind_array = $global_binds ;
 	 	$this->functions = $functions ;
 	 	
-	 	
 	}
 	
 	/**
@@ -104,30 +103,8 @@ class Template
 		return $output ;
 	}
 	
-	/**
-	 * Acts the same as render(), it only assigns the output to a GLOBAL template variable.
-	 * @param string $target_var
-	 */
-	function embed($target_var)
+	function __toString()
 	{
-		Core::get('Response')->bind($target_var, $this->render()) ;
-	}
-	
-	/**
-	 * Acts the same as render(), it only appends the output to a GLOBAL template variable.
-	 * @param string $target_var
-	 */
-	function embedAppend($target_var)
-	{
-		Core::get('Response')->append($target_var, $this->render()) ;
-	}
-
-	/**
-	 * Acts the same as render(), it only prepends the output to a GLOBAL template variable.
-	 * @param string $target_var
-	 */
-	function embedPrepend($target_var)
-	{
-		Core::get('Response')->prepend($target_var, $this->render()) ;
+		return $this->render() ;	
 	}
 }

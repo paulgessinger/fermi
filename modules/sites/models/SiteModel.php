@@ -2,7 +2,7 @@
 
 class SiteModel extends FermiModel 
 {
-	static $type = 'site' ;
+	var $type = 'site' ;
 	
 	function __construct() 
 	{

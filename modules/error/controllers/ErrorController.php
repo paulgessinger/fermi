@@ -19,7 +19,7 @@ class ErrorController extends FermiController
 	function displayAction($params)
 	{
 		
-		$tpl = Response::getTemplate('error:error.php') ;
+		//$tpl = Response::getTemplate('error:error.phtml') ;
 
 		
 		// this is temporary until we have a template/output system
@@ -28,8 +28,8 @@ class ErrorController extends FermiController
 		
 		$e = $params['exception'] ;
 		
-		$tpl->bind('message', $e->getMessage()) ;
-		$tpl->bind('exception', get_class($e)) ;
+		Response::bind('message', $e->getMessage()) ;
+		Response::bind('exception', get_class($e)) ;
 		
 		foreach($e->getTrace() as $trace_depth => $trace)
 			{
@@ -72,10 +72,14 @@ class ErrorController extends FermiController
 			
 		unset($traces[0]) ;
 	
-		$tpl->bind('traces', $traces) ;
+		//$tpl->bind('traces', $traces) ;
 		
 		
-		echo $tpl->render();
+		//echo $tpl->render();
+		Response::setRootTemplate('error:error.phtml') ;
+		Response::bind('traces', $traces) ;
+		Response::render() ;
+		
 	}
 	
 	

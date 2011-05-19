@@ -10,20 +10,18 @@ abstract class FermiModel implements Model
 		
 	}
 	
-	static function load($id)
+	function load($id)
 	{
-		$requested_model = get_called_class() ;
-		$vars = get_class_vars($requested_model) ;
+		/*$requested_model = get_called_class() ;
+		$vars = get_class_vars($requested_model) ;*/
 		
-		$bean = R::load($vars['type'], $id) ;
+		$this->bean = R::load($this->type, $id) ;
 		
-		$id_format = FermiBeanFormatter::formatBeanID($vars['type']) ;
+		$id_format = FermiBeanFormatter::formatBeanID($this->type) ;
 	
-		if($bean->$id_format != 0)
+		if($this->bean->$id_format != 0)
 		{
-			$model = new $requested_model ;
-			$model->bean = $bean ;
-			return $model ;
+			return $this ;
 		}
 		else
 		{
@@ -31,20 +29,16 @@ abstract class FermiModel implements Model
 		}
 	}
 	
-	static function find($sql, array $values)
+	function find($sql, array $values)
 	{
-		$requested_model = get_called_class() ;
-		$vars = get_class_vars($requested_model) ;
 
-		$bean = R::findOne($vars['type'], $sql, $values) ;
+		$this->bean = R::findOne($this->type, $sql, $values) ;
 		
 		$id_format = FermiBeanFormatter::formatBeanID($vars['type']) ;
 			
 		if($bean->$id_format != 0)
 		{
-			$model = new $requested_model ;
-			$model->bean = $bean ;
-			return $model ;
+			return $this ;
 		}
 		else
 		{
@@ -54,11 +48,20 @@ abstract class FermiModel implements Model
 	
 	function __set($key, $value)
 	{
+		if(!$this->bean)
+		{
+			$this->bean = R::dispense($this->type) ;
+		}
 		$this->values[$key] = $value ;  
 	}
 	
 	function __get($key)
 	{
+		
+		if(!$this->bean)
+		{
+			$this->bean = R::dispense($this->type) ;
+		}
 		
 		if(array_key_exists($key, $this->values))  
 		{

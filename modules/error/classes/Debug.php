@@ -20,7 +20,7 @@ class Debug
 		$endtime = $mtime;
 		$totaltime = round(($endtime - Core::$starttime)*1000, 2); 
 
-		$tpl = Response::getTemplate('error:debug.php') ;
+		$tpl = Response::getTemplate('error:debug.phtml') ;
 		$tpl->bind('runtime', $totaltime) ;
 		$tpl->bind('memory', memory_get_peak_usage(true)/1048576) ;
 		

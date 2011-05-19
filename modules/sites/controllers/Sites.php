@@ -22,27 +22,17 @@ class Sites extends FermiController
 		}) ;
 	}	
 	
-	public function indexAction()
-	{
-		throw new Exception('something went awry') ;
-		
-		echo 'fucking index' ;
-	}
-	
+
 	/**
 	 * retrieves the data belonging to the site requested and forwards it to the template
 	 */
-	function index($params)
+	function indexAction($params)
 	{
 		$site = 'index' ;
 		
 		if(empty($params['site']))
 		{
-			if(!empty($params[0]))
-			{
-				$site = $params[0] ;
-				
-			}
+			$site = $params['default'] ;
 		}
 		else
 		{
@@ -51,9 +41,9 @@ class Sites extends FermiController
 		
 		Request::set('site', $site) ;
 
-		$this->site_content = Response::getTemplate('sites:page.php') ;
-		
-		if($site_db = SiteModel::find('name=?', array($site)))
+		$this->site_content = Response::getTemplate('sites:page.phtml') ;
+
+		if($site_db = Core::getModel('SiteModel')->find('name=?', array($site)))
 		{
 			$this->site_content->text = $site_db->content ;
 		}
@@ -62,7 +52,12 @@ class Sites extends FermiController
 			$this->site_content->text = 'Whoops, looks like this site doesn\'t exist.' ;
 		}
 		
+		$site_tpl = Response::getTemplate('sites:page.phtml', array('text' => $this->site_content->text)) ;
 		
+		
+		
+		Response::bind('main', $site_tpl) ;
+		Response::render() ;
 		
 		/*$contents = array(
 		'index' => 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
@@ -72,20 +67,12 @@ class Sites extends FermiController
 		
 		if(isset($contents[$site]))
 		{
-			$this->site_content = Response::getTemplate('sites:page.php', array('text' => $contents[$site])) ;
+			$this->site_content = Response::getTemplate('sites:page.phtml', array('text' => $contents[$site])) ;
 		}
 		else
 		{
-			$this->site_content = Response::getTemplate('sites:page.php', array('text' => 'Whoops, looks like this site doesn\'t exist.')) ;
+			$this->site_content = Response::getTemplate('sites:page.phtml', array('text' => 'Whoops, looks like this site doesn\'t exist.')) ;
 		}*/
 		
-	}
-	
-	/**
-	 * embeds the template into the root_template
-	 */
-	function render()
-	{
-		$this->site_content->embed('main') ;
 	}
 }

@@ -9,7 +9,7 @@ class Response
 	static $_autoInstance = true ;
 	var $template_dir ;
 	var $compile_dir ;
-	protected $root_template = true ;
+	protected $root_template = false ;
 	var $bind_array = array() ;
 	var $skin = false ;
 	protected $accumulated ;
@@ -20,7 +20,7 @@ class Response
 	 */
 	function __construct()
 	{
-		Core::addListener('onAgentDispatch', array($this, '_prepareResponse')) ;
+		//Core::addListener('onAgentDispatch', array($this, '_prepareResponse')) ;
 	}	
 
 	/**
@@ -31,9 +31,9 @@ class Response
 		
 		Core::fireEvent('onResponseGoingHot') ;
 		
-		if($this->root_template !== false)
+		if($this->root_template === false)
 		{
-			$this->root_template = 'index.php' ;
+			$this->root_template = 'index.phtml' ;
 		}
 
 		
@@ -48,15 +48,30 @@ class Response
 		
 		$this->template_dir = SYSPATH.'skins/'.$this->skin.'/' ;
 				
-		$this->bind_array = array(
-			'syspath' => SYSPATH,
-			'sysuri' => SYSURI,
-			'skin' => SYSURI.'skins/'.$this->skin.'',
-			'title' => 'Charon powered Site'
-		);
+		$this->bind_array['syspath'] = SYSPATH ;
+		$this->bind_array['sysuri'] = SYSURI ;
+		$this->bind_array['skin'] = SYSURI.'skins/'.$this->skin.'' ;
+		
+		if(!isset($this->bind_array['title']))
+		{
+			$this->bind_array['title'] = 'Charon powered Site' ;
+		}
+		
 		
 
 		
+	}
+	
+	function setRootTemplate($template)
+	{
+		if($this instanceof Response)
+		{
+			$this->root_template = $template ;
+		}
+		else
+		{
+			return Core::get('Response')->setRootTemplate($template) ;
+		}	
 	}
 	
 	/**
@@ -224,9 +239,12 @@ class Response
 		}
 		else
 		{
-			$mod_arr = Registry::get('modules') ;
+			$mod_arr = Registry::$_modules ;
+	
+	
 			if(array_key_exists($module, $mod_arr))
 			{
+
 				if($mod_arr[$module] == true AND file_exists(SYSPATH.'modules/'.$module.'/html/'.$name))
 				{
 					$file = SYSPATH.'modules/'.$module.'/html/'.$name ;
@@ -283,19 +301,47 @@ class Response
 	 */
 	function render()
 	{
-		
-		$this->_doAux();
-
-		if($this->root_template)
-		{			
-
-			$tpl = $this->getTemplate($this->root_template) ;
-			$this->accumulated .= $tpl->render() ;
+			
+		if($this instanceof Response)
+		{
+			//var_dump($this->bind_array) ;
+			
+			$this->_prepareResponse() ;
+			
+			$this->_doAux();
+	
+			try
+			{
+				
+				if($this->root_template)
+				{			
+					$tpl = $this->getTemplate($this->root_template) ;
+					$this->accumulated .= $tpl->render() ;
+				}
+				
+			}
+			catch(Exception $e)
+			{
+				ob_end_clean();
+				ob_start();
+				throw $e ;
+			}
+			
+			
+			//echo $this->root_template ;
+			
+			echo $this->accumulated ;
+			
+			
+			
+			
 		}
-		/*ob_end_clean();
-		ob_start();*/
-		echo $this->accumulated ;
+		else
+		{
+			return Core::get('Response')->render() ;
+		}	
 	}
+
 
 	private function  _doAux()
 	{
