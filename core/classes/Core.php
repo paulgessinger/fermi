@@ -267,13 +267,50 @@ class Core
 	{
 		if($this instanceof Core)
 		{
-			if(array_key_exists($model, $this->_models))
+			$arr = explode(':', $model) ;
+			
+			if(array_key_exists($arr[1], $this->_models))
 			{
-				return new $model ;
+				$class = $arr[1].'Model' ;
+				return new $class ;
 			}
 			else
 			{
-				foreach(Registry::$_modules as $module)
+				
+				
+				if($arr[0] == 'core')
+				{
+					if(file_exists(SYSPATH.'resources/models/'.$arr[1].'Model.php'))
+					{
+						include SYSPATH.'resources/models/'.$arr[1].'Model.php' ;
+						
+						$this->_models[$arr[1]] = true ;
+						
+						$class = $arr[1].'Model' ;
+						return new $class ;
+					}
+				}
+				
+				
+				if($path = $this->reg->getModule($arr[0]))
+				{
+					if(file_exists($path.'models/'.$arr[1].'Model.php'))
+					{
+						include $path.'models/'.$arr[1].'Model.php' ;
+					
+						$this->_models[$arr[1]] = true ;
+						
+						$class = $arr[1].'Model' ;
+						return new $class ;
+					}
+				}
+				
+				
+				
+				throw new ErrorException('Model "'.$model.'" could not be retrieved.') ;
+				
+				
+				/*foreach(Registry::$_modules as $module)
 				{
 					if(file_exists(SYSPATH.'modules/'.$module.'/models/'.$model.'.php'))
 					{
@@ -289,7 +326,7 @@ class Core
 						include SYSPATH.'resources/models/'.$model.'.php' ;
 						$this->_models[$model] = true ;
 						return new $model ;
-				}				
+				}*/				
 			}
 		}
 		else

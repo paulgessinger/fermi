@@ -40,10 +40,13 @@ class Sites extends FermiController
 		}
 		
 		Request::set('site', $site) ;
+		
+		$index = Core::getModel('sites:Site') ;
+		
 
 		$this->site_content = Response::getTemplate('sites:page.phtml') ;
 
-		if($site_db = Core::getModel('SiteModel')->find('name=?', array($site)))
+		if($site_db = Core::getModel('sites:Site')->find('name=?', array($site)))
 		{
 			$this->site_content->text = $site_db->content ;
 		}

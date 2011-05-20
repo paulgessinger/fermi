@@ -20,7 +20,14 @@ class Response
 	 */
 	function __construct()
 	{
-		//Core::addListener('onAgentDispatch', array($this, '_prepareResponse')) ;
+		if(!$this->skin)
+		{
+			/**
+			 * get default skin
+			 * @todo implement fetching from DB, as soon as we have DB
+			 */
+			$this->skin = 'dynamic' ;
+		}	
 	}	
 
 	/**
@@ -37,14 +44,7 @@ class Response
 		}
 
 		
-		if(!$this->skin)
-		{
-			/**
-			 * get default skin
-			 * @todo implement fetching from DB, as soon as we have DB
-			 */
-			$this->skin = 'dynamic' ;
-		}		
+			
 		
 		$this->template_dir = SYSPATH.'skins/'.$this->skin.'/' ;
 				
@@ -304,6 +304,7 @@ class Response
 			
 		if($this instanceof Response)
 		{
+			Core::fireEvent('onRender') ;
 			//var_dump($this->bind_array) ;
 			
 			$this->_prepareResponse() ;

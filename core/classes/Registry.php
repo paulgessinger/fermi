@@ -59,6 +59,25 @@ class Registry
 		$this->performAutoInstances() ;
 	}
 	
+	public function getModule($module)
+	{
+		if($this instanceof Registry)
+		{
+			if(array_key_exists($module, Registry::$_modules))
+			{
+				return SYSPATH.'modules/'.$module.'/' ;
+			}
+			else
+			{
+				return false ;
+			}
+		}
+		else
+		{
+			return Registry::_()->getModule($module) ;
+		}
+	}
+	
 	private function performIncludes()
 	{
 		foreach($this->includes as $path)

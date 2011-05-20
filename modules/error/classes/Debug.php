@@ -5,7 +5,6 @@ class Debug
 	
 	function __construct()
 	{
-
 		if(Registry::conf('misc:debug') == true)
 		{
 			Core::addListener('onRender', array($this, 'debug')) ;
@@ -19,6 +18,7 @@ class Debug
 		$mtime = $mtime[1] + $mtime[0];
 		$endtime = $mtime;
 		$totaltime = round(($endtime - Core::$starttime)*1000, 2); 
+		
 
 		$tpl = Response::getTemplate('error:debug.phtml') ;
 		$tpl->bind('runtime', $totaltime) ;
@@ -26,6 +26,7 @@ class Debug
 		
 		
 		
-		$tpl->embedPrepend('aux_js') ;
+		Response::prepend('aux_js', $tpl) ;
+		//$tpl->embedPrepend('aux_js') ;
 	}
 }

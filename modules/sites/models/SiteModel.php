@@ -6,7 +6,7 @@ class SiteModel extends FermiModel
 	
 	function __construct() 
 	{
-		
+
 	}
 	
 	function validate() 
