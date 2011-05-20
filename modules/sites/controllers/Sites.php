@@ -41,14 +41,28 @@ class Sites extends FermiController
 		
 		Request::set('site', $site) ;
 		
-		$index = Core::getModel('sites:Site') ;
+		/*$index = Core::getModel('sites:Site') ;
 		$index->name = 'hans' ;
-		$index->content =  'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.' ;
+		//$index->find('name=?', array('hans')) ;
+		$index->content =  'Serious business' ;
 		
 		if(($errors = $index->save()) !== true)
 		{
 			var_dump($errors) ;	
-		}
+		}*/
+		
+		
+		
+		
+		/*$sites = Core::getModel('sites:Site')->getCollection() ;
+		$sites->find() ;
+		
+		foreach($sites as $sitex)
+		{
+			echo $sitex->name.'<br/>' ;
+		}*/
+		
+		
 
 		$this->site_content = Response::getTemplate('sites:page.phtml') ;
 

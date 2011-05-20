@@ -4,6 +4,8 @@ abstract class FermiModel implements Model
 {
 	var $bean = false ;
 	var $values = array() ;
+	protected $new = false ;
+	protected $errors = array() ;
 	
 	function __construct()
 	{
@@ -12,8 +14,10 @@ abstract class FermiModel implements Model
 	
 	function load($id)
 	{
-		/*$requested_model = get_called_class() ;
-		$vars = get_class_vars($requested_model) ;*/
+		if($this->bean)
+		{
+			throw new ErrorException('Model "'.get_class($this).'" has already been tainted. You can not load values from db into it.') ;
+		}
 		
 		$this->bean = R::load($this->type, $id) ;
 		
@@ -31,12 +35,16 @@ abstract class FermiModel implements Model
 	
 	function find($sql, array $values)
 	{
-
+		if($this->bean)
+		{
+			throw new ErrorException('Model "'.get_class($this).'" has already been tainted. You can not load values from db into it.') ;
+		}
+		
 		$this->bean = R::findOne($this->type, $sql, $values) ;
 		
-		$id_format = FermiBeanFormatter::formatBeanID($vars['type']) ;
+		$id_format = FermiBeanFormatter::formatBeanID($this->type) ;
 			
-		if($bean->$id_format != 0)
+		if($this->bean->$id_format != 0)
 		{
 			return $this ;
 		}
@@ -51,6 +59,7 @@ abstract class FermiModel implements Model
 		if(!$this->bean)
 		{
 			$this->bean = R::dispense($this->type) ;
+			$this->new = true ;
 		}
 		$this->values[$key] = $value ;  
 	}
@@ -61,6 +70,7 @@ abstract class FermiModel implements Model
 		if(!$this->bean)
 		{
 			$this->bean = R::dispense($this->type) ;
+			$this->new = true ;
 		}
 		
 		if(array_key_exists($key, $this->values))  
@@ -86,6 +96,16 @@ abstract class FermiModel implements Model
 		}
 	}
 	
+	final function isNew()
+	{
+		return $this->new ;
+	}
+	
+	final function addError($error)
+	{
+		$this->errors[] = $error ;
+	}
+	
 	final function save()
 	{
 		$this->_beforeSave() ;
@@ -93,11 +113,11 @@ abstract class FermiModel implements Model
 		
 		try
 		{
-			$errors = $this->validate() ;
+			$this->validate() ;
 			
-			if(count($errors) != 0)
+			if(count($this->errors) != 0)
 			{
-				return $errors ;
+				return $this->errors ;
 			}
 		
 			foreach($this->values as $key => $value)
@@ -105,9 +125,12 @@ abstract class FermiModel implements Model
 				$this->bean->__set($key, $value) ; 
 			}
 			
+			
 			R::store($this->bean) ;
 		
 			$this->bean->save() ;
+			
+			
 		}
 		catch(DatabaseException $e)
 		{
@@ -115,6 +138,18 @@ abstract class FermiModel implements Model
 		}
 		
 		return true ;
+	}
+	
+	
+	function getCollection()
+	{
+		if($this->bean)
+		{
+			throw new ErrorException('Cannot create collection out of loaded module.') ;
+		}
+		
+		$collection = new FermiCollection($this) ;
+		return $collection ;
 	}
 	
 	function _beforeSave() {}

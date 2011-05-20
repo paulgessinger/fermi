@@ -1,8 +1,8 @@
 <?php
 
-class SiteModel extends FermiModel 
+class SettingModel extends FermiModel 
 {
-	var $type = 'site' ;
+	var $type = 'setting' ;
 	var $bean = false ;
 	
 	function __construct() 
@@ -21,11 +21,11 @@ class SiteModel extends FermiModel
 		
 		if($this->isNew())
 		{
-			$tester = Core::getModel('sites:Site') ;
+			$tester = Core::getModel('core:Setting') ;
 		
 			if($tester->find('name=?', array($this->name)))
 			{
-				$this->addError('A site with this identifier already exists.') ;
+				$this->addError('A setting with this identifier already exists.') ;
 			}
 		}
 		

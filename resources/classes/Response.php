@@ -51,10 +51,10 @@ class Response
 		$this->bind_array['syspath'] = SYSPATH ;
 		$this->bind_array['sysuri'] = SYSURI ;
 		$this->bind_array['skin'] = SYSURI.'skins/'.$this->skin.'' ;
-		
+				
 		if(!isset($this->bind_array['title']))
 		{
-			$this->bind_array['title'] = 'Charon powered Site' ;
+			$this->bind_array['title'] = Core::getModel('core:Setting')->find('name=?', array('pagetitle'))->value ;
 		}
 		
 		
