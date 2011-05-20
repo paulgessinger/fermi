@@ -30,14 +30,18 @@ class Sites extends FermiController
 	{
 		$site = 'index' ;
 		
-		if(empty($params['site']))
-		{
-			$site = $params['default'] ;
-		}
-		else
+		if(!empty($params['site']))
 		{
 			$site = $params['site'] ;
 		}
+		
+		if(!empty($params['default']))
+		{
+			$site = $params['default'] ;
+		}
+	
+		
+
 		
 		Request::set('site', $site) ;
 		
@@ -65,8 +69,6 @@ class Sites extends FermiController
 		
 
 		$this->site_content = Response::getTemplate('sites:page.phtml') ;
-
-		$sitemodel = Core::getModel('sites:Site') ;
 
 
 		if($site_db = Core::getModel('sites:Site')->find('name=?', array($site)))
