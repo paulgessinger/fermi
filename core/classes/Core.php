@@ -309,24 +309,6 @@ class Core
 				
 				throw new ErrorException('Model "'.$model.'" could not be retrieved.') ;
 				
-				
-				/*foreach(Registry::$_modules as $module)
-				{
-					if(file_exists(SYSPATH.'modules/'.$module.'/models/'.$model.'.php'))
-					{
-						include SYSPATH.'modules/'.$module.'/models/'.$model.'.php' ;
-						$this->_models[$model] = true ;
-						
-						return new $model ;
-					}
-				}
-				
-				if(file_exists(SYSPATH.'resources/models/'.$model.'.php'))
-					{
-						include SYSPATH.'resources/models/'.$model.'.php' ;
-						$this->_models[$model] = true ;
-						return new $model ;
-				}*/				
 			}
 		}
 		else

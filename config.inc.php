@@ -1,7 +1,7 @@
 <?php /*
 
 [db]
-database = false
+database = true
 host = localhost
 user = root
 pwd = 
