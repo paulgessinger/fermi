@@ -8,7 +8,7 @@ class FermiObject
 		{
 			return call_user_func_array(array(Core::get(get_called_class()), '_'.$function), $arguments) ;
 		}
-		
+	
 		throw new ErrorException('Call to undefined method "'.$function.'" in class "'.get_called_class().'"') ;
 	}
 	
@@ -18,5 +18,7 @@ class FermiObject
 		{
 			return call_user_func_array(array($this, '_'.$function), $arguments) ;
 		}
+		
+		throw new ErrorException('Call to undefined method "'.$function.'" in class "'.get_class($this).'"') ;
 	}
 }

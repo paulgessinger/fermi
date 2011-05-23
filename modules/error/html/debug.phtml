@@ -1,8 +1,8 @@
 $(document).ready(function()
 {
 	$('body').prepend('<div id="debug" class=""'
-	+'style="-moz-border-radius-bottomleft: 3px; -webkit-border-bottom-left-radius: 3px; border-bottom-left-radius: 3px; '
-	+ 'font-family:myriad pro, arial;font-size:12px;color:#000000;-webkit-box-shadow: 0px 0px 25px #565656;"'
+	+'style="'
+	+ 'font-family:myriad pro, arial;font-size:12px;color:#000000;"'
 	+'></div>');
 	
 	
@@ -18,18 +18,50 @@ $(document).ready(function()
 	paddingRight: 20,
 	paddingLeft: 20
 	}) ;
-	$('#debug').append('<div id="debug_registry" style="float:left;margin-right:20px;cursor:pointer;"><img style="display:block;margin-top:-1px;margin-right:5px;float:left;"'
-	+ 'src="core/icons/registry.png"/></div>');
+    
+    
+    /**
+     * DEBUG ROUTE
+     */
+    
+	$('#debug').append('<div id="debug_route" style="float:left;margin-right:20px;cursor:pointer;">route info</div>');
+    
+    $('#debug').append('<div id="debug_route_dialog" style="" title="Route information"><?php
+    
+		$req = Request::getPath();
+		echo '<div style="font-size:40px;width:100%;text-align:center;padding-top:20px;padding-bottom:20px;"><span style="color:#666;">'.Core::_()->agent.'</span>/<span style="color:#999;">'.Core::_()->controller.'</span>/<span style="color:#CCC;">'.Core::_()->action.'</span></div>' ;
+		
+		foreach($req['params'] as $param => $value)
+		{
+			echo $param.': '.$value.'<br/>' ;
+		}
+	
+	?></div>') ;
+    
+     $("#debug_route_dialog").dialog({autoOpen: false, width: 500, height: 300});
+    
+    $('#debug_route').click(function() {
+    	$("#debug_route_dialog").dialog('open');
+    }) ;
+    
+    
+    
 	
 	$('#debug').append('<div id="debug_runtime" style="float:left;margin-right:20px;cursor:pointer;"><img style="display:block;margin-top:-1px;margin-right:5px;float:left;"'
-	+ 'src="core/icons/runtime.png"/><?=$tpl->runtime?> ms</div>');
+	+ 'src="<?=SYSURI?>core/icons/runtime.png"/><?=$tpl->runtime?> ms</div>');
 	
 	$('#debug').append('<div id="debug_memory" style="float:left;"><img style="display:block;margin-top:-1px;margin-right:5px;float:left;"'
-	+ 'src="core/icons/memory.png"/><?=$tpl->memory?> mb</div>');
+	+ 'src="<?=SYSURI?>core/icons/memory.png"/><?=$tpl->memory?> mb</div>');
 	
 	
 	
-	
+    
+    
+   
+    
+    
+    
+    
 	
 	$('#debug').append('<br style="clear:both;"/>');
 

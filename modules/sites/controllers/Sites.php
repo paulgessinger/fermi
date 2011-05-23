@@ -14,13 +14,27 @@ class Sites extends FermiController
 		parent::__construct();
 		
 		Response::bindTemplateFunction('site', function($site) { 
-			return HTML::sitelink('Delivery', 'Sites', 'index', $site) ;
+			return HTML::sitelink('Index', 'Sites', 'index', $site) ;
 		}) ;
 		
 		Response::bindTemplateFunction('link', function($agent, $controller, $task) { 
 		
 		}) ;
-	}	
+	}
+	
+	function modelAction()
+	{
+		
+		$site = Core::getModel('sites:Site')->find('name=?', array('index')) ;
+		$user = Core::getModel('core:User')->find('name=?', array('paul')) ;
+		
+		$site->setAuthor($user) ;
+		
+		
+		
+		
+		Response::render() ;
+	}
 	
 
 	/**

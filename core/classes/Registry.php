@@ -295,7 +295,7 @@ class Registry
 	/**
 	 * returns an instance of Registry.
 	 */
-	function _()
+	static function _()
 	{
 		return Registry::$_self ;
 	}

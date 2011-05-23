@@ -12,17 +12,24 @@ class Core
 	static $_self ;
 	static $_registry ;
 	static $starttime ;
+	
 	var $_controllers ;
 	var $_controller_instances ;
 	var $_agents ;
 	var $_agent_instances ;
 	var $_models = array() ;
-	protected $agent ;
-	protected $controller ;
-	protected $action = 'index' ;
-	protected $error_triggered = false ;
 	var $events = array() ;
 	var $launch_exception ;
+	var $agent ;
+	var $controller ;
+	var $action = 'index' ;
+	var $params ;
+	
+	
+	protected $agent_instance ;
+	
+	protected $error_triggered = false ;
+	
 	
 	/**
 	 * registers error exception to have custom handling of all php errors
@@ -31,16 +38,17 @@ class Core
 	{		
 		header("Content-type: text/html; charset=utf-8");
 		
-		error_reporting(E_ERROR | E_WARNING | E_PARSE | E_RECOVERABLE_ERROR);
-		
+		error_reporting(-1);
+	
 		function exception_error_handler($errno, $errstr, $errfile, $errline) 
 		{			
 			throw new ErrorException($errstr, 0, $errno, $errfile, $errline) ;
 		}
-		set_error_handler("exception_error_handler", E_ERROR | E_WARNING | E_PARSE | E_RECOVERABLE_ERROR) ;
+		set_error_handler("exception_error_handler") ;
 		
 		spl_autoload_register(array($this, 'loader')) ;
 	}
+	
 	
 	private function loader($class)
 	{
@@ -170,8 +178,8 @@ class Core
 				}
 			}	
 				
-			/*echo $this->agent.'/'.$this->controller.'/'.$this->action ;
-			print_r($request['params']) ;*/
+			//echo $this->agent.'/'.$this->controller.'/'.$this->action ;
+			//print_r($request['params']) ;
 
 
 			Core::fireEvent('onRoute') ;
@@ -189,6 +197,7 @@ class Core
 			include Core::$_registry->agents[$this->agent] ;
 				
 			$this->agent_instance =  new $this->agent ;
+			$this->params = $request['params'] ;
 				
 				
 			$this->agent_instance->notify() ;
@@ -219,7 +228,7 @@ class Core
 	/**
 	 * returns an instance of Core, shortcut to Core::$_self
 	 */
-	function _()
+	static function _()
 	{
 		return Core::$_self ;
 	}

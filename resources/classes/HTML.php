@@ -6,7 +6,6 @@
  */
 class HTML extends FermiObject
 {
-	static $_autoInstance = true ;
 	protected $helpers = array() ;
 	
 	function __construct()
@@ -23,7 +22,7 @@ class HTML extends FermiObject
 			// bla bla bla get url format
 			return SYSURI.Request::renderPath($agent, $controller, $task, array('site' => $site)) ;
 		}) ;
-		
+
 		HTML::registerHelper('sitelink', function($agent, $controller, $task, $site)
 		{
 			// bla bla bla get url format
@@ -81,7 +80,6 @@ $("#'.$trigger_id.'").click(function(){
 	 */
 	private function callHelper($helper_key, $arguments)
 	{
-	
 		if(array_key_exists($helper_key, $this->helpers))
 		{
 			return call_user_func_array($this->helpers[$helper_key], $arguments) ;
@@ -96,6 +94,13 @@ $("#'.$trigger_id.'").click(function(){
 	
 	public static function __callStatic($helper, $arguments)
 	{
-		return Core::get('HTML')->callHelper($helper, $arguments) ;
+		try
+		{
+			parent::__callStatic($helper, $arguments) ;
+		}
+		catch(ErrorException $e)
+		{
+			return Core::get('HTML')->callHelper($helper, $arguments) ;
+		}
 	}
 }

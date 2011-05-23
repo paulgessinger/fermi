@@ -61,19 +61,30 @@ class Database extends FermiObject
 	}
 	
 	
-	function __call($function, $arguments)
+	public static function __callStatic($function, $arguments)
 	{	
-		if(array_key_exists($function, $this->functions))
-		{	
-			return call_user_func_array($this->functions[$function], $arguments) ;
-		}
-		else
+		$database = Core::get('Database') ;
+
+		if(is_callable(array($database->linkManager, $function)))
 		{
-			return false ;
-		}		
+			return call_user_func_array(array($database->linkManager, $function), $arguments) ;
+		}
+		
+		if(is_callable(array($database->assocManager, $function)))
+		{
+			return call_user_func_array(array($database->assocManager, $function), $arguments) ;
+		}
+		
+		if(is_callable(array($database->treeManager, $function)))
+		{
+			return call_user_func_array(array($database->treeManager, $function), $arguments) ;
+		}
+		
+		
+		throw new ErrorException('Call to undefined method "'.$function.'" in class "'.get_class($this).'"') ;
+		
 	}
 	
-	//function __callStatic($function, $arguments
 
 }
 
@@ -86,8 +97,14 @@ class FermiBeanFormatter implements RedBean_IBeanFormatter
      
     public function formatBeanID( $table ) 
     {
-        return $table.'_id'; // append table name to id. The table should not inclide the prefix.
+        return $table.'_id'; // append table name to id. The table should not include the prefix.
     }
+	
+	static function _formatBeanId($table)
+	{
+		 return $table.'_id';
+	}
+	
 }
 
 class FermiModelFormatter implements RedBean_IModelFormatter

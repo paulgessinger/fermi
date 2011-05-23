@@ -123,14 +123,23 @@ class Response extends FermiObject
 	 */
 	function _prepend($key, $value)
 	{
-		if(is_string($this->bind_array[$key]) OR !array_key_exists($key, $this->bind_array))
+		
+		if(array_key_exists($key, $this->bind_array))
 		{
-			$this->bind_array[$key] = $value.$this->bind_array[$key] ;
+			if(is_string($this->bind_array[$key]))
+			{
+				$this->bind_array[$key] = $value.$this->bind_array[$key] ;
+			}
+			else
+			{
+				throw new ErrorException('Cannot prepend value to a non string Template bind.') ;
+			}
 		}
 		else
 		{
-			return false ;
+			$this->bind_array[$key] = $value ;
 		}
+		
 	}
 	
 	/**
