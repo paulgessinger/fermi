@@ -59,22 +59,34 @@ class Registry
 		$this->performAutoInstances() ;
 	}
 	
-	public function getModule($module)
+	
+	public static function __callStatic($function, $arguments)
 	{
-		if($this instanceof Registry)
+		if(method_exists(get_called_class(), '_'.$function))
 		{
-			if(array_key_exists($module, Registry::$_modules))
-			{
-				return SYSPATH.'modules/'.$module.'/' ;
-			}
-			else
-			{
-				return false ;
-			}
+			return call_user_func_array(array(Registry::_(), '_'.$function), $arguments) ;
+		}
+	}
+	
+	public function __call($function, $arguments)
+	{
+		if(method_exists($this, '_'.$function))
+		{
+			return call_user_func_array(array($this, '_'.$function), $arguments) ;
+		}
+	}
+	
+	
+	
+	public function _getModule($module)
+	{
+		if(array_key_exists($module, Registry::$_modules))
+		{
+			return SYSPATH.'modules/'.$module.'/' ;
 		}
 		else
 		{
-			return Registry::_()->getModule($module) ;
+			return false ;
 		}
 	}
 	
@@ -251,39 +263,32 @@ class Registry
 	 * retrieves a value from the configuration.
 	 * @param string $key The key to get, in form SECTION:KEY
 	 */
-	function conf($key)
+	function _conf($key)
 	{
-		if($this instanceof Registry)
+		$key_arr = explode(':', $key) ;
+			
+		if(array_key_exists($key, $this->conf))
 		{
-			$key_arr = explode(':', $key) ;
-			
-			if(array_key_exists($key, $this->conf))
-			{
-				return $this->conf[$key] ;
-			}
-			elseif(count($key_arr) == 1)
-			{
-				$sec = 'default' ;
-				$item = $key_arr[0] ;
-			}
-			else
-			{
-				$sec = $key_arr[0] ;
-				$item = $key_arr[1] ;
-			}
-			
-		
-			if(array_key_exists($sec, $this->conf))
-			{
-				if(array_key_exists($item, $this->conf[$sec]))
-				{
-					return $this->conf[$sec][$item] ;
-				}
-			}
+			return $this->conf[$key] ;
+		}
+		elseif(count($key_arr) == 1)
+		{
+			$sec = 'default' ;
+			$item = $key_arr[0] ;
 		}
 		else
 		{
-			return Registry::_()->conf($key) ;
+			$sec = $key_arr[0] ;
+			$item = $key_arr[1] ;
+		}
+			
+		
+		if(array_key_exists($sec, $this->conf))
+		{
+			if(array_key_exists($item, $this->conf[$sec]))
+			{
+				return $this->conf[$sec][$item] ;
+			}
 		}
 	}
 	
@@ -300,62 +305,53 @@ class Registry
 	 * retrieves a value from the registry.
 	 * @param string $key The key to get, in form SECTION:KEY
 	 */
-	function get($key)
+	function _get($key)
 	{
-		if($this instanceof Registry)
+		$key_arr = explode(':', $key) ;
+		if(count($key_arr) == 1)
 		{
-		
-			$key_arr = explode(':', $key) ;
-			if(count($key_arr) == 1)
+			if(array_key_exists($key_arr[0], $this->reg))
 			{
-				if(array_key_exists($key_arr[0], $this->reg))
+				foreach($this->reg[$key_arr[0]] as $key => $value)
 				{
-					foreach($this->reg[$key_arr[0]] as $key => $value)
+					if(!isset($this->unserialized[$key_arr[0]][$key]))
 					{
-						if(!isset($this->unserialized[$key_arr[0]][$key]))
-						{
-							$this->unserialized[$key_arr[0]][$key] = unserialize($this->reg[$key_arr[0]][$key]) ;
-						}
+						$this->unserialized[$key_arr[0]][$key] = unserialize($this->reg[$key_arr[0]][$key]) ;
+					}
 						
-						$return[$key] = $this->unserialized[$key_arr[0]][$key] ;
-					}
-					
-					return $return ;
-					
+					$return[$key] = $this->unserialized[$key_arr[0]][$key] ;
 				}
-				else 
-				{
-					$sec = 'default' ;
-					$item = $key_arr[0] ;
-				}
+					
+				return $return ;
+					
+			}
+			else 
+			{
+				$sec = 'default' ;
+				$item = $key_arr[0] ;
+			}
 				
-			}
-			else
-			{
-				$sec = $key_arr[0] ;
-				$item = $key_arr[1] ;
-			}
-			
-			
-			if(array_key_exists($sec, $this->reg))
-			{
-				if(array_key_exists($item, $this->reg[$sec]))
-				{	
-					if(!isset($this->unserialized[$sec][$item]))
-					{
-						$this->unserialized[$sec][$item] = unserialize($this->reg[$sec][$item]) ;	
-					}
-					return $this->unserialized[$sec][$item] ;
-				}
-			}
-			return false ;
-			
-			
 		}
 		else
 		{
-			return Registry::_()->get($key) ;
+			$sec = $key_arr[0] ;
+			$item = $key_arr[1] ;
 		}
+			
+			
+		if(array_key_exists($sec, $this->reg))
+		{
+			if(array_key_exists($item, $this->reg[$sec]))
+			{	
+				if(!isset($this->unserialized[$sec][$item]))
+				{
+					$this->unserialized[$sec][$item] = unserialize($this->reg[$sec][$item]) ;	
+				}
+				return $this->unserialized[$sec][$item] ;
+			}
+		}
+		return false ;
+
 	}
 	
 	/**
@@ -363,74 +359,56 @@ class Registry
 	 * @param $key The Key in form of SECTION:KEY
 	 * @param $value The value.
 	 */
-	function set($key, $value)
+	function _set($key, $value)
 	{
-		if($this instanceof Registry)
+		$key_arr = explode(':', $key) ;
+		if(count($key_arr) == 1)
 		{
-			
-
-			$key_arr = explode(':', $key) ;
-			if(count($key_arr) == 1)
-			{
-				$sec = 'default' ;
-				$item = $key_arr[0] ;
-			}
-			else
-			{
-				$sec = $key_arr[0] ;
-				$item = $key_arr[1] ;
-			}
-			
-			$this->unserialized[$sec][$item] = $value ;
-			
-			$value = serialize($value) ;
-						
-			$this->reg[$sec][$item] = $value ;
-			
-			$this->modified = true ;
-			
+			$sec = 'default' ;
+			$item = $key_arr[0] ;
 		}
 		else
 		{
-			return Registry::_()->set($key, $value) ;
+			$sec = $key_arr[0] ;
+			$item = $key_arr[1] ;
 		}
+			
+		$this->unserialized[$sec][$item] = $value ;
+			
+		$value = serialize($value) ;
+						
+		$this->reg[$sec][$item] = $value ;
+			
+		$this->modified = true ;
 	}
 	
 	/**
 	 * permanently removes a key-value pair from the registry.
 	 * @param string $key The Key to remove.
 	 */
-	function remove($key)
+	function _remove($key)
 	{
-		if($this instanceof Registry)
+		$key_arr = explode(':', $key) ;
+		if(count($key_arr) == 1)
 		{
-			
-			$key_arr = explode(':', $key) ;
-			if(count($key_arr) == 1)
-			{
-			$sec = 'default' ;
-			$item = $key_arr[0] ;
-			}
-			else
-			{
-				$sec = $key_arr[0] ;
-				$item = $key_arr[1] ;
-			}
-			
-			unset($this->reg[$sec][$item]) ;
-			
-			if(count($this->reg[$sec]) == 0)
-			{
-				unset($this->reg[$sec]) ;
-			}	
-			
-			$this->modified = true ;
-					
+		$sec = 'default' ;
+		$item = $key_arr[0] ;
 		}
 		else
 		{
-			return Registry::_()->remove($key) ;
+			$sec = $key_arr[0] ;
+			$item = $key_arr[1] ;
 		}
+			
+		unset($this->reg[$sec][$item]) ;
+			
+		if(count($this->reg[$sec]) == 0)
+		{
+			unset($this->reg[$sec]) ;
+		}	
+			
+		$this->modified = true ;
+
 	}
 	
 	/**
@@ -440,24 +418,17 @@ class Registry
 	 */
 	function getInstance($class)
 	{
-		if($this instanceof Registry)
+		if(array_key_exists($class, $this->_instances))
 		{
-			if(array_key_exists($class, $this->_instances))
-			{
-				return $this->_instances[$class] ;
-			}
-			else
-			{
-				$new_instance = new $class ;
-						
-				$this->_instances[$class] = $new_instance ;
-						
-				return $new_instance ;
-			}
+			return $this->_instances[$class] ;
 		}
 		else
 		{
-			return Registry::_()->getInstance($class) ;
+			$new_instance = new $class ;
+						
+			$this->_instances[$class] = $new_instance ;
+						
+			return $new_instance ;
 		}
 	}
 	

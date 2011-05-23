@@ -1,6 +1,6 @@
 <?php
 
-abstract class FermiModel implements Model
+abstract class FermiModel extends FermiObject implements Model
 {
 	var $bean = false ;
 	var $values = array() ;

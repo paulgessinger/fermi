@@ -4,7 +4,7 @@
  * @author Paul Gessinger
  *
  */
-class Request
+class Request extends FermiObject
 {
 	static $_autoInstance = true ;
 	protected $pathParser ;
@@ -114,16 +114,9 @@ class Request
 	 * Uses the current pathParser to extract routing data from the Request values.
 	 * @return array The Information on the query, that has been extracted by pathParser. 
 	 */
-	function getPath()
+	function _getPath()
 	{
-		if($this instanceof Request)
-		{
-			return call_user_func_array($this->pathParser, array('query' => $this->query)) ;
-		}
-		else
-		{
-			return Core::get('Request')->getPath() ;
-		}
+		return call_user_func_array($this->pathParser, array('query' => $this->query)) ;
 	}
 	
 	/**
@@ -132,23 +125,16 @@ class Request
 	 * @param string $controller
 	 * @param string $task
 	 */
-	function renderPath($agent, $controller, $task, $params = array())
+	function _renderPath($agent, $controller, $task, $params = array())
 	{
-		if($this instanceof Request)
-		{
-			return call_user_func_array($this->pathRenderer, array('agent' => $agent, 'controller' => $controller, 'task' => $task, 'params' => $params)) ;
-		}
-		else
-		{
-			return Core::get('Request')->renderPath($agent, $controller, $task, $params) ;
-		}
+		return call_user_func_array($this->pathRenderer, array('agent' => $agent, 'controller' => $controller, 'task' => $task, 'params' => $params)) ;
 	}
 	
 	/**
 	 * Assigns a pathParser.
 	 * @param $closure Callable resource
 	 */
-	function setPathParser($closure)
+	function _setPathParser($closure)
 	{
 		if(!is_callable($closure))
 		{
@@ -161,7 +147,7 @@ class Request
 	 * Assigns a pathRenderer
 	 * @param $closure Callable resource
 	 */
-	function setPathRenderer($closure)
+	function _setPathRenderer($closure)
 	{
 		if(!is_callable($closure))
 		{
@@ -177,46 +163,39 @@ class Request
 	 * @param string Specifies where the value shall come from.
 	 * @return string
 	 */
-	function _($key, $default = '', $source = false)
+	function __($key, $default = '', $source = false)
 	{
-		if($this instanceof Request)
+		if($source)
 		{
-			if($source)
+			if(isset($this->vars[$source][$key]))
 			{
-				if(isset($this->vars[$source][$key]))
-				{
-					return $this->vars[$source][$key] ;
-				}
-				elseif(!empty($default))
-				{
-					$this->vars[$source][$key] = $default ;
-					return $default ;
-				}
-				else
-				{
-					return false ;
-				}
+				return $this->vars[$source][$key] ;
+			}
+			elseif(!empty($default))
+			{
+				$this->vars[$source][$key] = $default ;
+				return $default ;
 			}
 			else
 			{
-				if(isset($this->var_merged[$key]))
-				{
-					return $this->var_merged[$key] ;
-				}
-				elseif(!empty($default))
-				{
-					$this->var_merged[$key] = $default ;
-					return $default ;
-				}
-				else
-				{
-					return false ;
-				}
+				return false ;
 			}
 		}
 		else
 		{
-			return Core::get('Request')->_($key, $default, $source) ;
+			if(isset($this->var_merged[$key]))
+			{
+				return $this->var_merged[$key] ;
+			}
+			elseif(!empty($default))
+			{
+				$this->var_merged[$key] = $default ;
+				return $default ;
+			}
+			else
+			{
+				return false ;
+			}
 		}
 	}
 	
@@ -227,22 +206,15 @@ class Request
 	 * @param string Which type of request var is the value associated with.
 	 * @return void
 	 */
-	function set($key, $value, $target = false)
+	function _set($key, $value, $target = false)
 	{
-		if($this instanceof Request)
+		if($target)
 		{
-			if($target)
-			{
-				$this->vars[$target][$key] = $value ;
-			}
-			else
-			{
-				$this->var_merged[$key] = $value ;
-			}
+			$this->vars[$target][$key] = $value ;
 		}
 		else
 		{
-			return Core::get('Request')->set($key, $value, $target) ;
+			$this->var_merged[$key] = $value ;
 		}
 	}
 }

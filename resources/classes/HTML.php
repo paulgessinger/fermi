@@ -4,7 +4,7 @@
  * @author Paul Gessinger
  *
  */
-class HTML
+class HTML extends FermiObject
 {
 	static $_autoInstance = true ;
 	protected $helpers = array() ;
@@ -64,21 +64,14 @@ $("#'.$trigger_id.'").click(function(){
 	 * @param string $key A Key to access the Helper.
 	 * @param $function A callable entity that processes the given arguments.
 	 */
-	function registerHelper($key, $function)
+	function _registerHelper($key, $function)
 	{
-		if($this instanceof HTML)
+		if(!is_callable($function))
 		{
-			if(!is_callable($function))
-			{
-				throw new SystemException('Function "'.print_r($function, true).'" is not callable.') ;
-			}
+			throw new SystemException('Function "'.print_r($function, true).'" is not callable.') ;
+		}
 			
-			$this->helpers[$key] = $function ;
-		}
-		else
-		{
-			return Core::get('HTML')->registerHelper($key, $function) ;
-		}
+		$this->helpers[$key] = $function ;
 	}
 	
 	/**

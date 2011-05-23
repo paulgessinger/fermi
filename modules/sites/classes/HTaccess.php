@@ -1,5 +1,5 @@
 <?php
-class HTaccess
+class HTaccess extends FermiObject
 {
 	static $_autoInstance = true ;
 	

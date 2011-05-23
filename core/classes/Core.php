@@ -71,6 +71,23 @@ class Core
 		throw new Exception('Class "'.$class.'" could not be found.') ;
 	}
 	
+	public static function __callStatic($function, $arguments)
+	{
+		if(method_exists(get_called_class(), '_'.$function))
+		{
+			return call_user_func_array(array(Core::$_self, '_'.$function), $arguments) ;
+		}
+	}
+	
+	public function __call($function, $arguments)
+	{
+		if(method_exists($this, '_'.$function))
+		{
+			return call_user_func_array(array($this, '_'.$function), $arguments) ;
+		}
+	}
+	
+	
 	/**
 	 * Is called directly from index.php. It's the starting point of the system and instanciates Core itself
 	 * as well as Registry.
@@ -127,96 +144,74 @@ class Core
 	 * Set $force to true to bypass overwriting of default or set values through uri
 	 * @param bool $force
 	 */
-	public function _route($force = false)
+	public function __route($force = false)
 	{	
-		if($this instanceof Core)
+		try 
 		{
-			try 
+			if(count(Registry::$_errors) != 0)
 			{
-				if(count(Registry::$_errors) != 0)
-				{
-					throw new RegistryException(implode('<br />', Registry::$_errors)) ;
-				}
+				throw new RegistryException(implode('<br />', Registry::$_errors)) ;
+			}
 					
-				$request = Request::getPath() ;
+			$request = Request::getPath() ;
 				
-				//print_r($request) ;
+			//print_r($request) ;
 				
-				$this->agent = Registry::get('default_agent') ;
-				$this->controller = Registry::get('default_controller') ;
+			$this->agent = Registry::get('default_agent') ;
+			$this->controller = Registry::get('default_controller') ;
 				
-				$rounds = array('action', 'controller', 'agent') ;
+			$rounds = array('action', 'controller', 'agent') ;
 				
-				foreach($rounds as $round)
+			foreach($rounds as $round)
+			{
+				if(!empty($request[$round]))
 				{
-					if(!empty($request[$round]))
-					{
-						$this->$round = $request[$round] ;		
-					}
-				}	
-				
-				/*echo $this->agent.'/'.$this->controller.'/'.$this->action ;
-				print_r($request['params']) ;*/
-
-
-				Core::fireEvent('onRoute') ;
-				
-				if(!isset(Core::$_registry->agents[$this->agent]))
-				{
-					throw new RoutingException('Agent "'.$this->agent.'" could not be retrieved.') ;
+					$this->$round = $request[$round] ;		
 				}
-				if(!isset(Core::$_registry->controllers[$this->controller]))
-				{
-					throw new RoutingException('Controller "'.$this->controller.'" could not be retrieved.') ;
-				}
+			}	
 				
+			/*echo $this->agent.'/'.$this->controller.'/'.$this->action ;
+			print_r($request['params']) ;*/
 
-				include Core::$_registry->agents[$this->agent] ;
+
+			Core::fireEvent('onRoute') ;
 				
-				$this->agent_instance =  new $this->agent ;
-				
-				
-				$this->agent_instance->notify() ;
-				
-				Core::fireEvent('onAgentDispatch') ;
-				
-				include Core::$_registry->controllers[$this->controller] ;
-				$this->agent_instance->dispatch(new $this->controller, $this->action, $request['params']) ;
-				
-				
-				
+			if(!isset(Core::$_registry->agents[$this->agent]))
+			{
+				throw new RoutingException('Agent "'.$this->agent.'" could not be retrieved.') ;
 			}
-			catch(Exception $e)
-			{	
-				
-				$default_agent = Registry::get('default_agent') ;
-				if(get_class($this->agent_instance) != $default_agent)
-				{
-					$this->agent_instance = new $default_agent ;
-				}
-				
-				include Core::$_registry->controllers['ErrorController'] ;
-				$this->agent_instance->dispatch(new ErrorController, 'display', array('exception' => $e)) ;
-				
-				
-				/*if(!$this->error_triggered)
-				{
-					$this->error_triggered = true ;
-					//$this->agent = 'DebugAgent' ;
-					$this->controller = 'ErrorController' ;
-					$this->task = 'display' ;
-					Request::set('Exception', $e) ;
-					Response::disableOutput();
-					Core::resetEvents() ;
-					$this->_route(true) ;
-				}*/
-				
+			if(!isset(Core::$_registry->controllers[$this->controller]))
+			{
+				throw new RoutingException('Controller "'.$this->controller.'" could not be retrieved.') ;
 			}
-			
+				
+
+			include Core::$_registry->agents[$this->agent] ;
+				
+			$this->agent_instance =  new $this->agent ;
+				
+				
+			$this->agent_instance->notify() ;
+				
+			Core::fireEvent('onAgentDispatch') ;
+				
+			include Core::$_registry->controllers[$this->controller] ;
+			$this->agent_instance->dispatch(new $this->controller, $this->action, $request['params']) ;
+				
+				
+				
 		}
-		else
+		catch(Exception $e)
 		{	
-			return Core::_()->_route() ;
+				
+			$default_agent = Registry::get('default_agent') ;
+			if(get_class($this->agent_instance) != $default_agent)
+			{
+				$this->agent_instance = new $default_agent ;
+			}
+				
+			include Core::$_registry->controllers['ErrorController'] ;
+			$this->agent_instance->dispatch(new ErrorController, 'display', array('exception' => $e)) ;				
 		}
 	}
 	
@@ -234,16 +229,9 @@ class Core
 	 * Sets the agent to the one provided in $agent. Must implement the interface Agent.
 	 * @param Agent $agent The Agent to set.
 	 */
-	function setAgent(Agent $agent)
+	function _setAgent(Agent $agent)
 	{
-		if($this instanceof Core)
-		{
-			$this->agent = $agent ;
-		}
-		else
-		{
-			Core::_()->setAgent($agent) ;
-		}
+		$this->agent = $agent ;
 	}
 	
 	/**
@@ -251,69 +239,55 @@ class Core
 	 * @param string $class The class to retrieve.
 	 * @return object
 	 */	
-	function get($class)
+	function _get($class)
 	{
-		if($this instanceof Core)
-		{
-			return $this->reg->getInstance($class) ;
-		}
-		else
-		{
-			return Core::_()->get($class) ;
-		}
+		return $this->reg->getInstance($class) ;
 	}
 	
-	function getModel($model)
+	function _getModel($model)
 	{
-		if($this instanceof Core)
-		{
-			$arr = explode(':', $model) ;
+		$arr = explode(':', $model) ;
 			
-			if(array_key_exists($arr[1], $this->_models))
-			{
-				$class = $arr[1].'Model' ;
-				return new $class ;
-			}
-			else
-			{
-				
-				
-				if($arr[0] == 'core')
-				{
-					if(file_exists(SYSPATH.'resources/models/'.$arr[1].'Model.php'))
-					{
-						include SYSPATH.'resources/models/'.$arr[1].'Model.php' ;
-						
-						$this->_models[$arr[1]] = true ;
-						
-						$class = $arr[1].'Model' ;
-						return new $class ;
-					}
-				}
-				
-				
-				if($path = $this->reg->getModule($arr[0]))
-				{
-					if(file_exists($path.'models/'.$arr[1].'Model.php'))
-					{
-						include $path.'models/'.$arr[1].'Model.php' ;
-					
-						$this->_models[$arr[1]] = true ;
-						
-						$class = $arr[1].'Model' ;
-						return new $class ;
-					}
-				}
-				
-				
-				
-				throw new ErrorException('Model "'.$model.'" could not be retrieved.') ;
-				
-			}
+		if(array_key_exists($arr[1], $this->_models))
+		{
+			$class = $arr[1].'Model' ;
+			return new $class ;
 		}
 		else
 		{
-			return Core::_()->getModel($model) ;
+				
+				
+			if($arr[0] == 'core')
+			{
+				if(file_exists(SYSPATH.'resources/models/'.$arr[1].'Model.php'))
+				{
+					include SYSPATH.'resources/models/'.$arr[1].'Model.php' ;
+						
+					$this->_models[$arr[1]] = true ;
+						
+					$class = $arr[1].'Model' ;
+					return new $class ;
+				}
+			}
+				
+				
+			if($path = $this->reg->getModule($arr[0]))
+			{
+				if(file_exists($path.'models/'.$arr[1].'Model.php'))
+				{
+					include $path.'models/'.$arr[1].'Model.php' ;
+				
+					$this->_models[$arr[1]] = true ;
+						
+					$class = $arr[1].'Model' ;
+					return new $class ;
+				}
+			}
+				
+				
+				
+			throw new ErrorException('Model "'.$model.'" could not be retrieved.') ;
+				
 		}
 	}
 	
@@ -324,21 +298,14 @@ class Core
 	 * @param string/array Either a string name of a function or an array containing both reference to an object and method name
 	 * @return void
 	 */
-	function addListener($event, $function)
+	function _addListener($event, $function)
 	{
-		if($this instanceof Core)
+		if(!array_key_exists($event, $this->events))
 		{
-			if(!array_key_exists($event, $this->events))
-			{
-				$this->events[$event] = new Event($event) ;
-			}
+			$this->events[$event] = new Event($event) ;
+		}
 			
-			$this->events[$event]->registerListener($function) ;
-		}
-		else
-		{
-			return Core::$_self->addListener($event, $function) ;
-		}
+		$this->events[$event]->registerListener($function) ;
 	}
 	
 	/**
@@ -346,30 +313,21 @@ class Core
 	 * @param string Event to be fired
 	 * @return unknown_type All the returns of functions registered to the Event
 	 */
-	function fireEvent($event)
+	function _fireEvent($event)
 	{
-		if($this instanceof Core)
+		if(!array_key_exists($event, $this->events))
 		{
-			if(!array_key_exists($event, $this->events))
-			{
-				$this->events[$event] = new Event($event) ;
-				//$this->events[$event]->fired = true ;
-			}
-			else
-			{
-			
-				$arg_arr = func_get_args() ;
-				unset($arg_arr[0]) ;
-			
-				return call_user_func_array(array($this->events[$event], 'fire'), $arg_arr) ;
-				//$this->events[$event]->fire($arg_arr) ;
-			}
-			
+			$this->events[$event] = new Event($event) ;
+			//$this->events[$event]->fired = true ;
 		}
 		else
 		{
+			
 			$arg_arr = func_get_args() ;
-			return call_user_func_array(array(Core::$_self, 'fireEvent'), $arg_arr) ;
+			unset($arg_arr[0]) ;
+			
+			return call_user_func_array(array($this->events[$event], 'fire'), $arg_arr) ;
+			//$this->events[$event]->fire($arg_arr) ;
 		}
 	}
 	
@@ -377,49 +335,28 @@ class Core
 	 * Prevents the event from being fired again, despite being recharged.
 	 * @param string $event
 	 */
-	function sealEvent($event)
+	function _sealEvent($event)
 	{
-		if($this instanceof Core)
-		{
-			$this->events[$event]->seal() ;
-		}
-		else
-		{
-			return Core::$_self->sealEvent($event) ;
-		}
+		$this->events[$event]->seal() ;
 	}
 	
 	/**
 	 * Resets an event to its status previous to being fired. Enables it to be fired again.
 	 * @param string $event The event to recharge
 	 */
-	function rechargeEvent($event)
+	function _rechargeEvent($event)
 	{
-		if($this instanceof Core)
-		{
-			$this->events[$event]->recharge() ;
-		}
-		else
-		{
-			return Core::$_self->rechargeEvent($event) ;
-		}
+		$this->events[$event]->recharge() ;
 	}
 	
 	/**
 	 * Works like rechargeEvent() but for all Events at once.
 	 */
-	function resetEvents()
+	function _resetEvents()
 	{
-		if($this instanceof Core)
+		foreach($this->events as $event)
 		{
-			foreach($this->events as $event)
-			{
-				$event->recharge() ;
-			}
-		}
-		else
-		{
-			return Core::$_self->rechargeEvent($event) ;
+			$event->recharge() ;
 		}
 	}
 }

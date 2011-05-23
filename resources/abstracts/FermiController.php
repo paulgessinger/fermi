@@ -5,7 +5,7 @@
  * @author Paul Gessinger
  *
  */
-abstract class FermiController implements Controller
+abstract class FermiController extends FermiObject implements Controller
 {
 	var $actions = array() ;
 	

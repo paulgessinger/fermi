@@ -4,9 +4,12 @@
  * @author Paul Gessinger
  *
  */
-class Database
+class Database extends FermiObject
 {
 	static $_autoInstance = true ;
+	protected $assocManager ;
+	protected $linkManager ;
+	protected $treeManager ;
 	var $_redbean ;
 	
 	/**
@@ -50,7 +53,27 @@ class Database
 		R::$writer->setBeanFormatter(new FermiBeanFormatter()) ;
 		RedBean_ModelHelper::setModelFormatter(new FermiModelFormatter());
 			
+			
+		$this->linkManager = new RedBean_LinkManager($this->redbean);
+		$this->assocManager = new RedBean_AssociationManager($this->redbean);
+		$this->treeManager = new RedBean_TreeManager($this->redbean);
+		
 	}
+	
+	
+	function __call($function, $arguments)
+	{	
+		if(array_key_exists($function, $this->functions))
+		{	
+			return call_user_func_array($this->functions[$function], $arguments) ;
+		}
+		else
+		{
+			return false ;
+		}		
+	}
+	
+	//function __callStatic($function, $arguments
 
 }
 

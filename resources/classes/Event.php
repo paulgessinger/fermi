@@ -4,7 +4,7 @@
  * @author Paul Gessinger
  *
  */
-class Event 
+class Event extends FermiObject
 {
 	static $_autoInstance = false ;
 	var $event_name ;

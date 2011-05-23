@@ -4,7 +4,7 @@
  *
  * Template Wrapper class that encapsulates the .php templates. Exposes all relevant variables and functions to the template under $tpl.
  */
-class TplData
+class TplData extends FermiObject
 {
 	static $_autoInstance = false ;
 	protected $functions ;
