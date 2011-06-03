@@ -7,5 +7,5 @@
 interface Controller
 {
 	function __construct();
-	function execute($action, $params);
+	function execute($action);
 }

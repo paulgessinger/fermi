@@ -23,7 +23,7 @@ abstract class FermiAgent extends FermiObject implements Agent
 	 * dispatches the call to the controller given.
 	 * @param Controller $controller The Controller that is to process the request
 	 */
-	function dispatch(FermiController $controller, $action, $params)
+	function dispatch(FermiController $controller, $action)
 	{
 		$this->agent = $this ;
 		$this->controller = $controller ;
@@ -36,7 +36,7 @@ abstract class FermiAgent extends FermiObject implements Agent
 		Core::rechargeEvent('on'.get_class($this).'Ready') ;
 	
 		
-		$this->controller->execute($this->action, $params) ;
+		$this->controller->execute($this->action) ;
 	}
 	
 	/**
