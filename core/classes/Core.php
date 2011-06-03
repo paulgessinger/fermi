@@ -120,7 +120,7 @@ class Core
 		
 		
 		Core::fireEvent('onClassesReady') ;
-		
+		Core::fireEvent('onAfterClassesReady') ;
 		
 		
 		$mtime = microtime(); 
@@ -181,7 +181,7 @@ class Core
 				}
 			}	
 				
-			echo $this->agent.'/'.$this->controller.'/'.$this->action ;
+			//echo $this->agent.'/'.$this->controller.'/'.$this->action ;
 			//print_r($request['params']) ;
 
 
@@ -214,15 +214,18 @@ class Core
 		}
 		catch(Exception $e)
 		{	
-				
+			
 			$default_agent = Registry::get('default_agent') ;
 			if(get_class($this->agent_instance) != $default_agent)
 			{
+				include Core::$_registry->agents[$default_agent] ;
 				$this->agent_instance = new $default_agent ;
 			}
-				
+			
+			Request::set('exception', $e) ;	
+			
 			include Core::$_registry->controllers['ErrorController'] ;
-			$this->agent_instance->dispatch(new ErrorController, 'display', array('exception' => $e)) ;				
+			$this->agent_instance->dispatch(new ErrorController, 'display') ;				
 		}
 	}
 	

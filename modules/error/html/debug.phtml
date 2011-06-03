@@ -28,10 +28,10 @@ $(document).ready(function()
     
     $('#debug').append('<div id="debug_route_dialog" style="" title="Route information"><?php
     
-		$req = Request::getPath();
+		$req = Core::get('Request')->vars['get'] ;
 		echo '<div style="font-size:40px;width:100%;text-align:center;padding-top:20px;padding-bottom:20px;"><span style="color:#666;">'.Core::_()->agent.'</span>/<span style="color:#999;">'.Core::_()->controller.'</span>/<span style="color:#CCC;">'.Core::_()->action.'</span></div>' ;
 		
-		foreach($req['params'] as $param => $value)
+		foreach($req as $param => $value)
 		{
 			echo $param.': '.$value.'<br/>' ;
 		}

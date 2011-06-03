@@ -4,7 +4,7 @@
  * @author Paul Gessinger
  *
  */
-class Request
+class Request extends FermiObject
 {
 	static $_autoInstance = true ;
 	protected $pathParser ;
@@ -95,7 +95,7 @@ class Request
 	 * @param string A Default value that is to be returned in case nothing is found.
 	 * @return string
 	 */
-	function getPost($key, $default = '')
+	function _getPost($key, $default = '')
 	{
 		return Core::get('Request')->vars['post'] ;
 	}
@@ -106,26 +106,19 @@ class Request
 	 * Uses the current pathParser to extract routing data from the Request values.
 	 * @return array The Information on the query, that has been extracted by pathParser. 
 	 */
-	function getPath()
+	function _getPath()
 	{
-		if($this instanceof Request)
+		$path = call_user_func_array($this->pathParser, array('query' => $this->query)) ;
+			
+		$this->set('agent', $path['agent']) ;
+		$this->set('controller', $path['controller']) ;
+		$this->set('action', $path['action']) ;
+			
+		foreach($path['params'] as $key => $value)
 		{
-			$path = call_user_func_array($this->pathParser, array('query' => $this->query)) ;
-			
-			$this->set('agent', $path['agent']) ;
-			$this->set('controller', $path['controller']) ;
-			$this->set('action', $path['action']) ;
-			
-			foreach($path['params'] as $key => $value)
-			{
-				$this->set($key, $value) ;
-			}
-			
+			$this->set($key, $value) ;
 		}
-		else
-		{
-			return Core::get('Request')->getPath() ;
-		}
+			
 	}
 	
 	/**
@@ -163,7 +156,7 @@ class Request
 	 * Assigns a pathRenderer
 	 * @param $closure Callable resource
 	 */
-	function setPathRenderer($closure)
+	function _setPathRenderer($closure)
 	{
 		if(!is_callable($closure))
 		{
@@ -179,23 +172,15 @@ class Request
 	 * @param string Specifies where the value shall come from.
 	 * @return string
 	 */
-	function get($key)
+	function _get($key)
 	{
-		if($this instanceof Request)
+		if(isset($this->vars['get'][$key]))
 		{
-			if(isset($this->vars['get'][$key]))
-			{
-				return $this->vars['get'][$key] ;
-			}
-			else
-			{
-				return false ;
-			}
-			
+			return $this->vars['get'][$key] ;
 		}
 		else
 		{
-			return Core::get('Request')->get($key) ;
+			return false ;
 		}
 	}
 	
@@ -206,16 +191,8 @@ class Request
 	 * @param string Which type of request var is the value associated with.
 	 * @return void
 	 */
-	function set($key, $value)
+	function _set($key, $value)
 	{
-		if($this instanceof Request)
-		{
-		
-			$this->vars['get'][$key] = $value ;
-		}
-		else
-		{
-			return Core::get('Request')->set($key, $value) ;
-		}
+		$this->vars['get'][$key] = $value ;
 	}
 }

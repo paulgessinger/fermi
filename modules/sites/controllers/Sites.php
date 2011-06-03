@@ -44,7 +44,7 @@ class Sites extends FermiController
 	{
 		$site = 'index' ;
 		
-		if($param = Request::get('site'))
+		if($param = Request::get('default'))
 		{
 			$site = $param ;
 		}
@@ -52,7 +52,6 @@ class Sites extends FermiController
 		{
 			$site = $param ;
 		}
-
 		
 		Request::set('site', $site) ;
 		
