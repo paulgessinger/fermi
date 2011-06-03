@@ -5,7 +5,7 @@
  * @author Paul Gessinger
  *
  */
-abstract class FermiAgent implements Agent
+abstract class FermiAgent extends FermiObject implements Agent
 {
 	var $controllers = array() ;
 	

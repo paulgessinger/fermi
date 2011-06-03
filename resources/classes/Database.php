@@ -4,9 +4,12 @@
  * @author Paul Gessinger
  *
  */
-class Database
+class Database extends FermiObject
 {
 	static $_autoInstance = true ;
+	protected $assocManager ;
+	protected $linkManager ;
+	protected $treeManager ;
 	var $_redbean ;
 	
 	/**
@@ -50,7 +53,38 @@ class Database
 		R::$writer->setBeanFormatter(new FermiBeanFormatter()) ;
 		RedBean_ModelHelper::setModelFormatter(new FermiModelFormatter());
 			
+			
+		$this->linkManager = new RedBean_LinkManager($this->redbean);
+		$this->assocManager = new RedBean_AssociationManager($this->redbean);
+		$this->treeManager = new RedBean_TreeManager($this->redbean);
+		
 	}
+	
+	
+	public static function __callStatic($function, $arguments)
+	{	
+		$database = Core::get('Database') ;
+
+		if(is_callable(array($database->linkManager, $function)))
+		{
+			return call_user_func_array(array($database->linkManager, $function), $arguments) ;
+		}
+		
+		if(is_callable(array($database->assocManager, $function)))
+		{
+			return call_user_func_array(array($database->assocManager, $function), $arguments) ;
+		}
+		
+		if(is_callable(array($database->treeManager, $function)))
+		{
+			return call_user_func_array(array($database->treeManager, $function), $arguments) ;
+		}
+		
+		
+		throw new ErrorException('Call to undefined method "'.$function.'" in class "'.get_class($this).'"') ;
+		
+	}
+	
 
 }
 
@@ -63,8 +97,14 @@ class FermiBeanFormatter implements RedBean_IBeanFormatter
      
     public function formatBeanID( $table ) 
     {
-        return $table.'_id'; // append table name to id. The table should not inclide the prefix.
+        return $table.'_id'; // append table name to id. The table should not include the prefix.
     }
+	
+	static function _formatBeanId($table)
+	{
+		 return $table.'_id';
+	}
+	
 }
 
 class FermiModelFormatter implements RedBean_IModelFormatter

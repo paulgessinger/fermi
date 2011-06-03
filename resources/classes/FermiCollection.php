@@ -1,20 +1,26 @@
 <?php
 
-class FermiCollection implements Iterator
+class FermiCollection extends FermiObject implements Iterator
 {
 	protected $_model ;
-	protected $_beans ;
+	protected $_beans = false ;
   	private $position;
  
-	function __construct($model)
+	function __construct($model, $beans = false)
 	{
 		$this->_model = $model ;
+		if($beans !== false)
+		{
+			$this->_beans = $beans ;
+		}
 	}
 	
 	function find($where = '', $data = array())
 	{
-		$this->_beans = R::find($this->_model->type, $where, $data) ;
-
+		if($this->_beans === false)
+		{
+			$this->_beans = R::find($this->_model->type, $where, $data) ;
+		}
 	}
 	
 	

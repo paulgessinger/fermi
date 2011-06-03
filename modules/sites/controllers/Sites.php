@@ -20,7 +20,21 @@ class Sites extends FermiController
 		Response::bindTemplateFunction('link', function($agent, $controller, $task) { 
 		
 		}) ;
-	}	
+	}
+	
+	function modelAction()
+	{
+		
+		$site = Core::getModel('sites:Site')->find('name=?', array('index')) ;
+		$user = Core::getModel('core:User')->find('name=?', array('paul')) ;
+		
+		$site->setAuthor($user) ;
+		
+		
+		
+		
+		Response::render() ;
+	}
 	
 
 	/**

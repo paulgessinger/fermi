@@ -4,7 +4,7 @@
  * @author Paul Gessinger
  *
  */
-class Event 
+class Event extends FermiObject
 {
 	static $_autoInstance = false ;
 	var $event_name ;
@@ -77,7 +77,9 @@ class Event
 		if(!$this->fired AND !$this->sealed)
 		{
 			$arg_arr = func_get_args() ;
-			//print_r($this->listeners) ;
+			
+			$return_val = null ;
+			
 			foreach($this->listeners as $listener)
 			{
 				$return_val .= call_user_func_array($listener, $arg_arr) ;

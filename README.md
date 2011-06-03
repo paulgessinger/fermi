@@ -1,4 +1,4 @@
 This is fermi
 =============
 
-fermi is a PHP CMS/framework.
+fermi is a PHP CMS/framework

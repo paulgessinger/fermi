@@ -4,7 +4,7 @@
  *
  * Template Wrapper class that encapsulates the .php templates. Exposes all relevant variables and functions to the template under $tpl.
  */
-class TplData
+class TplData extends FermiObject
 {
 	static $_autoInstance = false ;
 	protected $functions ;
@@ -29,10 +29,16 @@ class TplData
 	 */
 	function __get($name)
 	{
+		if(!isset($this->values[$name]))
+		{
+			return false ;
+		}
+		
 		if(is_object($this->values[$name]) AND get_class($this->values[$name]) == 'Template')
 		{
 			return $this->values[$name]->render() ;
 		}
+		
 		return $this->values[$name] ;
 	}
 	

@@ -4,7 +4,7 @@
  * @author Paul Gessinger
  *
  */
-class Template
+class Template extends FermiObject
 {
 	static $_autoInstance = false ;	
 	protected $template_resource ;

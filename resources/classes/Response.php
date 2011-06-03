@@ -4,7 +4,7 @@
  * @author Paul Gessinger
  *
  */
-class Response
+class Response extends FermiObject
 {
 	static $_autoInstance = true ;
 	var $template_dir ;
@@ -62,34 +62,20 @@ class Response
 		
 	}
 	
-	function setRootTemplate($template)
+	function _setRootTemplate($template)
 	{
-		if($this instanceof Response)
-		{
-			$this->root_template = $template ;
-		}
-		else
-		{
-			return Core::get('Response')->setRootTemplate($template) ;
-		}	
+		$this->root_template = $template ;	
 	}
 	
 	/**
 	 * Override the currently set Skin. Make sure it exists.
 	 * @param string $skin The folder name of the Skin.
 	 */
-	function setSkin($skin)
+	function _setSkin($skin)
 	{
-		if($this instanceof Response)
+		//if($this->skin === false)
 		{
-			//if($this->skin === false)
-			{
-				$this->skin = $skin ;
-			}
-		}
-		else
-		{
-			return Core::get('Response')->setSkin($skin) ;
+			$this->skin = $skin ;
 		}
 	}
 	
@@ -97,16 +83,9 @@ class Response
 	 * Returns the currently set Skin.
 	 * @return string The name of the currently set Skin.
 	 */
-	function getSkin()
+	function _getSkin()
 	{
-		if($this instanceof Response)
-		{
-			return $this->skin ;
-		}
-		else
-		{
-			return Core::get('Response')->setSkin() ;
-		}
+		return $this->skin ;
 	}
 	
 	/**
@@ -115,16 +94,9 @@ class Response
 	 * @param string $key
 	 * @param mixed $value
 	 */
-	function bind($key, $value)
+	function _bind($key, $value)
 	{
-		if($this instanceof Response)
-		{
-			$this->bind_array[$key] = $value ;
-		}
-		else
-		{
-			return Core::get('Response')->bind($key, $value) ;
-		}
+		$this->bind_array[$key] = $value ;
 	}
 	
 	/**
@@ -132,22 +104,15 @@ class Response
 	 * @param string $key The key the value is to be appended to.
 	 * @param string $value The value that is to be appended. 
 	 */
-	function append($key, $value)
+	function _append($key, $value)
 	{
-		if($this instanceof Response)
+		if(is_string($this->bind_array[$key]) OR !array_key_exists($key, $this->bind_array))
 		{
-			if(is_string($this->bind_array[$key]) OR !array_key_exists($key, $this->bind_array))
-			{
-				$this->bind_array[$key] .= $value ;
-			}
-			else
-			{
-				return false ;
-			}
+			$this->bind_array[$key] .= $value ;
 		}
 		else
 		{
-			return Core::get('Response')->append($key, $value) ;
+			return false ;
 		}
 	}
 	
@@ -156,23 +121,25 @@ class Response
 	 * @param string $key The key the value is to be prepended to.
 	 * @param string $value The value that is to be prepended. 
 	 */
-	function prepend($key, $value)
+	function _prepend($key, $value)
 	{
-		if($this instanceof Response)
+		
+		if(array_key_exists($key, $this->bind_array))
 		{
-			if(is_string($this->bind_array[$key]) OR !array_key_exists($key, $this->bind_array))
+			if(is_string($this->bind_array[$key]))
 			{
 				$this->bind_array[$key] = $value.$this->bind_array[$key] ;
 			}
 			else
 			{
-				return false ;
+				throw new ErrorException('Cannot prepend value to a non string Template bind.') ;
 			}
 		}
 		else
 		{
-			return Core::get('Response')->append($key, $value) ;
+			$this->bind_array[$key] = $value ;
 		}
+		
 	}
 	
 	/**
@@ -181,18 +148,11 @@ class Response
 	 * @param array $bulk_vars Assigns a bulk of vars to the template.
 	 * @return object Template instance
 	 */
-	function getTemplate($template, $bulk_vars = array())
+	function _getTemplate($template, $bulk_vars = array())
 	{
-		if($this instanceof Response)
-		{
-			$var_array = array_merge($this->bind_array, $bulk_vars) ;
+		$var_array = array_merge($this->bind_array, $bulk_vars) ;
 			
-			return new Template($this->findTemplate($template), $var_array, $this->functions) ;
-		}
-		else
-		{
-			return Core::get('Response')->getTemplate($template, $bulk_vars) ;
-		}
+		return new Template($this->findTemplate($template), $var_array, $this->functions) ;
 	}
 	
 
@@ -277,20 +237,13 @@ class Response
 	 * @param string $name The name that the function will be exposed to the template under.
 	 * @param mixed $closure A callable resource to act upon function calling.
 	 */
-	function bindTemplateFunction($name, $closure)
+	function _bindTemplateFunction($name, $closure)
 	{
-		if($this instanceof Response)
-		{
-			if(!is_callable($closure))
+		if(!is_callable($closure))
 			{
 				throw new ResponseException('The resource provided is not callable. Yet it must to answer as a template function.') ;
 			}
-			$this->functions[$name] = $closure ;
-		}
-		else
-		{
-			return Core::get('Response')->bindTemplateFunction($name, $closure) ;
-		}	
+			$this->functions[$name] = $closure ;	
 	}
 
 
@@ -299,48 +252,33 @@ class Response
 	 * Renders the root template and echoes the accumulated string. If root_template is set to false it will
 	 * not be rendered.
 	 */
-	function render()
+	function _render()
 	{
+		Core::fireEvent('onRender') ;
+		//var_dump($this->bind_array) ;
 			
-		if($this instanceof Response)
-		{
-			Core::fireEvent('onRender') ;
-			//var_dump($this->bind_array) ;
+		$this->_prepareResponse() ;
 			
-			$this->_prepareResponse() ;
-			
-			$this->_doAux();
+		$this->_doAux();
 	
-			try
-			{
-				
-				if($this->root_template)
-				{			
-					$tpl = $this->getTemplate($this->root_template) ;
-					$this->accumulated .= $tpl->render() ;
-				}
-				
-			}
-			catch(Exception $e)
-			{
-				ob_end_clean();
-				ob_start();
-				throw $e ;
-			}
-			
-			
-			//echo $this->root_template ;
-			
-			echo $this->accumulated ;
-			
-			
-			
-			
-		}
-		else
+		try
 		{
-			return Core::get('Response')->render() ;
-		}	
+				
+			if($this->root_template)
+			{			
+				$tpl = $this->getTemplate($this->root_template) ;
+				$this->accumulated .= $tpl->render() ;
+			}
+				
+		}
+		catch(Exception $e)
+		{
+			ob_end_clean();
+			ob_start();
+			throw $e ;
+		}
+			
+		echo $this->accumulated ;
 	}
 
 
@@ -359,15 +297,8 @@ class Response
 	/**
 	 * Disables the output of the root_template by setting it to false.
 	 */
-	function disableOutput()
+	function _disableOutput()
 	{
-		if($this instanceof Response)
-		{
-			$this->root_template = false ;
-		}
-		else
-		{
-			return Core::get('Response')->disableOutput() ;
-		}
+		$this->root_template = false ;
 	}
 }

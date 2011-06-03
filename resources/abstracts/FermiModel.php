@@ -1,6 +1,6 @@
 <?php
 
-abstract class FermiModel implements Model
+abstract class FermiModel extends FermiObject implements Model
 {
 	var $bean = false ;
 	var $values = array() ;
@@ -21,7 +21,7 @@ abstract class FermiModel implements Model
 		
 		$this->bean = R::load($this->type, $id) ;
 		
-		$id_format = FermiBeanFormatter::formatBeanID($this->type) ;
+		$id_format = FermiBeanFormatter::_formatBeanID($this->type) ;
 	
 		if($this->bean->$id_format != 0)
 		{
@@ -42,8 +42,14 @@ abstract class FermiModel implements Model
 		
 		$this->bean = R::findOne($this->type, $sql, $values) ;
 		
-		$id_format = FermiBeanFormatter::formatBeanID($this->type) ;
+		$id_format = FermiBeanFormatter::_formatBeanID($this->type) ;
 			
+		
+		if(!is_object($this->bean))
+		{
+			return false ;
+		}
+		
 		if($this->bean->$id_format != 0)
 		{
 			return $this ;

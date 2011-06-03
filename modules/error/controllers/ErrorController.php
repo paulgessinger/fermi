@@ -36,8 +36,20 @@ class ErrorController extends FermiController
 				//$traces[$trace_depth] = '#'.$trace_depth.' '.$trace['file'].' in line '.$trace['line'] ;
 				
 				$traces[$trace_depth]['depth'] = $trace_depth ;
-				$traces[$trace_depth]['file'] = $trace['file'] ;
-				$traces[$trace_depth]['line'] = $trace['line'] ;
+				$traces[$trace_depth]['file'] = '' ;
+				$traces[$trace_depth]['line'] = '' ;
+				$traces[$trace_depth]['function'] = '' ;
+				
+				if(isset($trace['file']))
+				{
+					$traces[$trace_depth]['file'] = $trace['file'] ;
+				}
+				
+				if(isset($trace['line']))
+				{
+					$traces[$trace_depth]['line'] = $trace['line'] ;
+				}
+				
 				
 				if(!empty($trace['function']) AND $trace['function'] != 'exception_error_handler')
 				{
@@ -48,6 +60,11 @@ class ErrorController extends FermiController
 							if(is_object($arg))
 							{
 								$trace['args'][$key] = get_class($arg) ;
+							}
+							
+							if(is_array($arg))
+							{
+								$trace['args'][$key] = 'Array' ;
 							}
 						}
 					}
@@ -70,7 +87,7 @@ class ErrorController extends FermiController
 				}
 			}
 			
-		unset($traces[0]) ;
+		//unset($traces[0]) ;
 	
 		//$tpl->bind('traces', $traces) ;
 		

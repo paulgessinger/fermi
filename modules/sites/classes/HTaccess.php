@@ -1,5 +1,5 @@
 <?php
-class HTaccess
+class HTaccess extends FermiObject
 {
 	static $_autoInstance = true ;
 	
@@ -20,6 +20,7 @@ class HTaccess
 			{
 				return $agent.'/'.$controller.'/'.$task.'/'.implode('+', $params).'.html' ;
 			}) ;
+			
 			
 			
 			Core::get('Request')->setPathParser(function($query)
@@ -72,15 +73,18 @@ class HTaccess
 					
 					break;
 				}
+			
 				
 				return $path ;
 			}) ;
 			
+			
 			HTML::registerHelper('sitelink', function($agent, $controller, $task, $site)
 			{
-				// bla bla bla get url format
+				
 				return SYSURI.''.$site.'.html' ;
 			}) ;
+			
 			
 		}
 	

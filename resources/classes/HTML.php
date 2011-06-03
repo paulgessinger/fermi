@@ -4,9 +4,8 @@
  * @author Paul Gessinger
  *
  */
-class HTML
+class HTML extends FermiObject
 {
-	static $_autoInstance = true ;
 	protected $helpers = array() ;
 	
 	function __construct()
@@ -23,7 +22,7 @@ class HTML
 			// bla bla bla get url format
 			return SYSURI.Request::renderPath($agent, $controller, $task, array('site' => $site)) ;
 		}) ;
-		
+
 		HTML::registerHelper('sitelink', function($agent, $controller, $task, $site)
 		{
 			// bla bla bla get url format
@@ -64,21 +63,14 @@ $("#'.$trigger_id.'").click(function(){
 	 * @param string $key A Key to access the Helper.
 	 * @param $function A callable entity that processes the given arguments.
 	 */
-	function registerHelper($key, $function)
+	function _registerHelper($key, $function)
 	{
-		if($this instanceof HTML)
+		if(!is_callable($function))
 		{
-			if(!is_callable($function))
-			{
-				throw new SystemException('Function "'.print_r($function, true).'" is not callable.') ;
-			}
+			throw new SystemException('Function "'.print_r($function, true).'" is not callable.') ;
+		}
 			
-			$this->helpers[$key] = $function ;
-		}
-		else
-		{
-			return Core::get('HTML')->registerHelper($key, $function) ;
-		}
+		$this->helpers[$key] = $function ;
 	}
 	
 	/**
@@ -88,7 +80,6 @@ $("#'.$trigger_id.'").click(function(){
 	 */
 	private function callHelper($helper_key, $arguments)
 	{
-	
 		if(array_key_exists($helper_key, $this->helpers))
 		{
 			return call_user_func_array($this->helpers[$helper_key], $arguments) ;
@@ -103,6 +94,13 @@ $("#'.$trigger_id.'").click(function(){
 	
 	public static function __callStatic($helper, $arguments)
 	{
-		return Core::get('HTML')->callHelper($helper, $arguments) ;
+		try
+		{
+			parent::__callStatic($helper, $arguments) ;
+		}
+		catch(ErrorException $e)
+		{
+			return Core::get('HTML')->callHelper($helper, $arguments) ;
+		}
 	}
 }
