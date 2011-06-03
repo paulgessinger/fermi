@@ -40,7 +40,7 @@ class Sites extends FermiController
 	/**
 	 * retrieves the data belonging to the site requested and forwards it to the template
 	 */
-	function indexAction($params)
+	function indexAction()
 	{
 		$site = 'index' ;
 		

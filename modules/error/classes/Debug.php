@@ -7,11 +7,11 @@ class Debug
 	{
 		if(Registry::conf('misc:debug') == true)
 		{
-			Core::addListener('onRender', array($this, 'debug')) ;
+			Core::addListener('onRender', array($this, 'debugInit')) ;
 		}
 	}
 	
-	function debug()
+	function debugInit()
 	{
 		$mtime = microtime(); 
 		$mtime = explode(" ",$mtime); 

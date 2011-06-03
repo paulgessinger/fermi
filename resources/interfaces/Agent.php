@@ -7,7 +7,7 @@
  */
 interface Agent
 {
-	function dispatch(FermiController $controller, $action, $params) ;
+	function dispatch(FermiController $controller, $action) ;
 	function render() ;
 	function notify() ;
 }

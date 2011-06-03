@@ -161,7 +161,6 @@ class Core
 				throw new RegistryException(implode('<br />', Registry::$_errors)) ;
 			}
 					
-			$request = Request::getPath() ;
 				
 			//print_r($request) ;
 				
@@ -172,13 +171,17 @@ class Core
 				
 			foreach($rounds as $round)
 			{
-				if(!empty($request[$round]))
+				if($round_value = Request::get($round))
 				{
-					$this->$round = $request[$round] ;		
+					$this->$round = $round_value ;		
+				}
+				else
+				{
+					Request::set($round, $this->$round) ;
 				}
 			}	
 				
-			//echo $this->agent.'/'.$this->controller.'/'.$this->action ;
+			echo $this->agent.'/'.$this->controller.'/'.$this->action ;
 			//print_r($request['params']) ;
 
 
@@ -197,7 +200,6 @@ class Core
 			include Core::$_registry->agents[$this->agent] ;
 				
 			$this->agent_instance =  new $this->agent ;
-			$this->params = $request['params'] ;
 				
 				
 			$this->agent_instance->notify() ;
@@ -205,7 +207,7 @@ class Core
 			Core::fireEvent('onAgentDispatch') ;
 				
 			include Core::$_registry->controllers[$this->controller] ;
-			$this->agent_instance->dispatch(new $this->controller, $this->action, $request['params']) ;
+			$this->agent_instance->dispatch(new $this->controller, $this->action) ;
 				
 				
 				
