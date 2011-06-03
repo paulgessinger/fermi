@@ -21,6 +21,7 @@ class HTaccess
 				return $agent.'/'.$controller.'/'.$task.'/'.implode('+', $params).'.html' ;
 			}) ;
 			
+			
 			Core::get('Request')->setPathParser(function($query)
 			{
 				
@@ -71,7 +72,6 @@ class HTaccess
 					
 					break;
 				}
-			
 				
 				return $path ;
 			}) ;

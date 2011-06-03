@@ -14,7 +14,7 @@ class Sites extends FermiController
 		parent::__construct();
 		
 		Response::bindTemplateFunction('site', function($site) { 
-			return HTML::sitelink('Delivery', 'Sites', 'index', $site) ;
+			return HTML::sitelink('Index', 'Sites', 'index', $site) ;
 		}) ;
 		
 		Response::bindTemplateFunction('link', function($agent, $controller, $task) { 
@@ -26,21 +26,18 @@ class Sites extends FermiController
 	/**
 	 * retrieves the data belonging to the site requested and forwards it to the template
 	 */
-	function indexAction($params)
+	function indexAction()
 	{
 		$site = 'index' ;
 		
-		if(!empty($params['site']))
+		if($param = Request::get('site'))
 		{
-			$site = $params['site'] ;
+			$site = $param ;
 		}
-		
-		if(!empty($params['default']))
+		elseif($param = Request::get('default'))
 		{
-			$site = $params['default'] ;
+			$site = $param ;
 		}
-	
-		
 
 		
 		Request::set('site', $site) ;

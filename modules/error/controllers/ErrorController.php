@@ -16,7 +16,7 @@ class ErrorController extends FermiController
 	/**
 	 * Gets the Exception and prepares the information for the template.
 	 */
-	function displayAction($params)
+	function displayAction()
 	{
 		
 		//$tpl = Response::getTemplate('error:error.phtml') ;
@@ -26,7 +26,7 @@ class ErrorController extends FermiController
 		//$e = Request::_('Exception') ;
 		//echo $e ;
 		
-		$e = $params['exception'] ;
+		$e = Request::get('exception') ;
 		
 		Response::bind('message', $e->getMessage()) ;
 		Response::bind('exception', get_class($e)) ;

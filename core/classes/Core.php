@@ -95,7 +95,7 @@ class Core
 		
 		
 		Core::fireEvent('onClassesReady') ;
-		
+		Core::fireEvent('onAfterClassesReady') ;
 		
 		
 		$mtime = microtime(); 
@@ -138,7 +138,6 @@ class Core
 					throw new RegistryException(implode('<br />', Registry::$_errors)) ;
 				}
 					
-				$request = Request::getPath() ;
 				
 				//print_r($request) ;
 				
@@ -149,14 +148,19 @@ class Core
 				
 				foreach($rounds as $round)
 				{
-					if(!empty($request[$round]))
+					if($round_value = Request::get($round))
 					{
-						$this->$round = $request[$round] ;		
+						$this->$round = $round_value ;			
+					}
+					else
+					{
+						Request::set($round, $this->$round) ;
 					}
 				}	
 				
-				/*echo $this->agent.'/'.$this->controller.'/'.$this->action ;
-				print_r($request['params']) ;*/
+
+				
+				//echo $this->agent.'/'.$this->controller.'/'.$this->action ;
 
 
 				Core::fireEvent('onRoute') ;
@@ -190,6 +194,9 @@ class Core
 			{	
 				
 				$default_agent = Registry::get('default_agent') ;
+				
+				include Core::$_registry->agents[$default_agent] ;
+				
 				if(get_class($this->agent_instance) != $default_agent)
 				{
 					$this->agent_instance = new $default_agent ;

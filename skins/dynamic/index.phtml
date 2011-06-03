@@ -37,7 +37,7 @@ A free web template by spyka Webmaster (http://www.spyka.net)
 						
 					foreach($sites as $site)
 					{
-						if(Request::_('site') == $site->name)
+						if(Request::get('site') == $site->name)
             			{
             				echo '<li class="selected"><a href="'.$tpl->site($site->name).'"><span>'.$site->title.'</span></a></li>' ;
             			}

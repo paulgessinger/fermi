@@ -45,9 +45,10 @@ class Request
 		
 		$this->query = str_replace(PATH, '', $_SERVER['REQUEST_URI']) ;
 		
+		Core::addListener('onAfterClassesReady', array($this, 'getPath')) ;
 		
-		$this->var_merged = array_merge($this->vars['server'], $this->vars['get'], $this->vars['post'], $this->vars['files'],
-		$this->vars['cookie'], /*$this->vars['session'],*/ $this->vars['request'], $this->vars['env']) ;	
+		//$this->var_merged = array_merge($this->vars['server'], $this->vars['get'], $this->vars['post'], $this->vars['files'],
+		//$this->vars['cookie'], /*$this->vars['session'],*/ $this->vars['request'], $this->vars['env']) ;	
 	
 		
 		
@@ -94,21 +95,12 @@ class Request
 	 * @param string A Default value that is to be returned in case nothing is found.
 	 * @return string
 	 */
-	function _post($key, $default = '')
+	function getPost($key, $default = '')
 	{
-		return Request::_($key, $default, 'post') ;
+		return Core::get('Request')->vars['post'] ;
 	}
 	
-	/**
-	 * Shortcut for accessing GET values.
-	 * @param string The key.
-	 * @param string A Default value that is to be returned in case nothing is found.
-	 * @return string
-	 */
-	function _get($key, $default = '')
-	{
-		return Request::_($key, $default, 'get') ;
-	}
+
 
 	/**
 	 * Uses the current pathParser to extract routing data from the Request values.
@@ -118,7 +110,17 @@ class Request
 	{
 		if($this instanceof Request)
 		{
-			return call_user_func_array($this->pathParser, array('query' => $this->query)) ;
+			$path = call_user_func_array($this->pathParser, array('query' => $this->query)) ;
+			
+			$this->set('agent', $path['agent']) ;
+			$this->set('controller', $path['controller']) ;
+			$this->set('action', $path['action']) ;
+			
+			foreach($path['params'] as $key => $value)
+			{
+				$this->set($key, $value) ;
+			}
+			
 		}
 		else
 		{
@@ -177,46 +179,23 @@ class Request
 	 * @param string Specifies where the value shall come from.
 	 * @return string
 	 */
-	function _($key, $default = '', $source = false)
+	function get($key)
 	{
 		if($this instanceof Request)
 		{
-			if($source)
+			if(isset($this->vars['get'][$key]))
 			{
-				if(isset($this->vars[$source][$key]))
-				{
-					return $this->vars[$source][$key] ;
-				}
-				elseif(!empty($default))
-				{
-					$this->vars[$source][$key] = $default ;
-					return $default ;
-				}
-				else
-				{
-					return false ;
-				}
+				return $this->vars['get'][$key] ;
 			}
 			else
 			{
-				if(isset($this->var_merged[$key]))
-				{
-					return $this->var_merged[$key] ;
-				}
-				elseif(!empty($default))
-				{
-					$this->var_merged[$key] = $default ;
-					return $default ;
-				}
-				else
-				{
-					return false ;
-				}
+				return false ;
 			}
+			
 		}
 		else
 		{
-			return Core::get('Request')->_($key, $default, $source) ;
+			return Core::get('Request')->get($key) ;
 		}
 	}
 	
@@ -227,22 +206,16 @@ class Request
 	 * @param string Which type of request var is the value associated with.
 	 * @return void
 	 */
-	function set($key, $value, $target = false)
+	function set($key, $value)
 	{
 		if($this instanceof Request)
 		{
-			if($target)
-			{
-				$this->vars[$target][$key] = $value ;
-			}
-			else
-			{
-				$this->var_merged[$key] = $value ;
-			}
+		
+			$this->vars['get'][$key] = $value ;
 		}
 		else
 		{
-			return Core::get('Request')->set($key, $value, $target) ;
+			return Core::get('Request')->set($key, $value) ;
 		}
 	}
 }
