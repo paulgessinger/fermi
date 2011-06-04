@@ -79,6 +79,7 @@ class Core
 		throw new Exception('Class "'.$class.'" could not be found.') ;
 	}
 	
+	
 	public static function __callStatic($function, $arguments)
 	{
 		if(method_exists(get_called_class(), '_'.$function))

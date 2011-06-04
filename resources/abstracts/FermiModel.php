@@ -9,33 +9,21 @@ abstract class FermiModel extends FermiObject implements Model
 	
 	function __construct()
 	{
-	}
-	
-	function getId() 
-	{
-		$format = FermiBeanFormatter::_formatBeanID($this->type) ;
-		if(isset($this->bean->$format))
-		{
-			return $this->bean->$format ;
-		}
-		else
-		{
-			return false ;
-		}
+		
 	}
 	
 	function load($id)
 	{
 		if($this->bean)
 		{
-			throw new OrmException('Model "'.get_class($this).'" has already been tainted. You can not load values from db into it.') ;
+			throw new ErrorException('Model "'.get_class($this).'" has already been tainted. You can not load values from db into it.') ;
 		}
 		
 		$this->bean = R::load($this->type, $id) ;
 		
-		//$id_format = FermiBeanFormatter::_formatBeanID($this->type) ;
+		$id_format = FermiBeanFormatter::_formatBeanID($this->type) ;
 	
-		if($this->getId())
+		if($this->bean->$id_format != 0)
 		{
 			return $this ;
 		}
@@ -49,11 +37,12 @@ abstract class FermiModel extends FermiObject implements Model
 	{
 		if($this->bean)
 		{
-			throw new OrmException('Model "'.get_class($this).'" has already been tainted. You can not load values from db into it.') ;
+			throw new ErrorException('Model "'.get_class($this).'" has already been tainted. You can not load values from db into it.') ;
 		}
 		
 		$this->bean = R::findOne($this->type, $sql, $values) ;
 		
+		$id_format = FermiBeanFormatter::_formatBeanID($this->type) ;
 			
 		
 		if(!is_object($this->bean))
@@ -61,7 +50,7 @@ abstract class FermiModel extends FermiObject implements Model
 			return false ;
 		}
 		
-		if($this->getId())
+		if($this->bean->$id_format != 0)
 		{
 			return $this ;
 		}
@@ -162,7 +151,7 @@ abstract class FermiModel extends FermiObject implements Model
 	{
 		if($this->bean)
 		{
-			throw new OrmException('Cannot create collection out of loaded model.') ;
+			throw new ErrorException('Cannot create collection out of loaded module.') ;
 		}
 		
 		$collection = new FermiCollection($this) ;
