@@ -9,6 +9,20 @@ class UserModel extends FermiModel
 	{
 	}
 	
+	function addRole(RoleModel $role)
+	{
+		return R::associate($this->bean, $role->bean) ;
+	}
+	
+	function removeRole(RoleModel $role)
+	{
+		return R::unassociate($this->bean, $role->bean) ;
+	}
+	
+	function getRoles()
+	{
+		return new FermiCollection(Core::getModel('core:Role'), R::related($this->bean, 'role')) ;
+	}
 	
 	function validate() 
 	{	

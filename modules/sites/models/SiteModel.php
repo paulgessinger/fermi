@@ -9,9 +9,11 @@ class SiteModel extends FermiModel
 	{
 	}
 	
-	function setAuthor(FermiModel $author)
+	function setAuthor(UserModel $author)
 	{
-		return Database::link($this->bean, $author->bean) ;
+		//return Database::link($this->bean, $author->bean) ;
+		
+		return $this->author_id = $author->getId() ;
 	}
 	
 	function validate() 
