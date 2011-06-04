@@ -1,17 +1,23 @@
-<?php /*
-
-[db]
-database = true
-host = localhost
-user = root
-pwd = 
-name = fermi
-prefix = fermi
-
-[misc]
-debug = true
-
-
-[libs]
-redbean = redbean/redbean.inc.php
+<?php /*<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<db>
+		<database>true</database>
+		<host>localhost</host>
+		<user>root</user>
+		<pwd></pwd>
+		<name>fermi</name>
+		<prefix>fermi</prefix>
+	</db>
+	
+	<misc>
+		<debug>true</debug>
+	</misc>
+	
+	<libs>
+		<lib name="redbean">
+			<file>redbean.inc.php</file>
+		</lib>
+	</libs>
+	
+</config>
 

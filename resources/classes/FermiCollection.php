@@ -6,7 +6,7 @@ class FermiCollection extends FermiObject implements Iterator
 	protected $_beans = false ;
   	private $position;
  
-	function __construct($model, $beans = false)
+	function __construct(FermiModel $model, $beans = false)
 	{
 		$this->_model = $model ;
 		if($beans !== false)
@@ -20,6 +20,10 @@ class FermiCollection extends FermiObject implements Iterator
 		if($this->_beans === false)
 		{
 			$this->_beans = R::find($this->_model->type, $where, $data) ;
+		}
+		else
+		{
+			throw new OrmException('Cannot use find on a collection that already has a set of beans loaded.') ;
 		}
 	}
 	

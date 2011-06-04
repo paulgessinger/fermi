@@ -28,7 +28,9 @@ class Sites extends FermiController
 		$site = Core::getModel('sites:Site')->find('name=?', array('index')) ;
 		$user = Core::getModel('core:User')->find('name=?', array('paul')) ;
 		
-		$site->setAuthor($user) ;
+		$new_role = Core::getModel('core:Role') ;
+		$new_role->name = 'super' ;
+		$new_role->save() ;
 		
 		
 		
@@ -65,16 +67,6 @@ class Sites extends FermiController
 			var_dump($errors) ;	
 		}*/
 		
-		
-		
-		
-		/*$sites = Core::getModel('sites:Site')->getCollection() ;
-		$sites->find() ;
-		
-		foreach($sites as $sitex)
-		{
-			echo $sitex->name.'<br/>' ;
-		}*/
 		
 		
 

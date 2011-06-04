@@ -48,11 +48,12 @@ class Database extends FermiObject
 			Registry::conf('db:user'), 
 			Registry::conf('db:pwd'), 
 			$mode) ;
-				
+		
+			
 		R::configureFacadeWithToolbox($this->redbean) ;
 		R::$writer->setBeanFormatter(new FermiBeanFormatter()) ;
 		RedBean_ModelHelper::setModelFormatter(new FermiModelFormatter());
-			
+		//R::debug( true );
 			
 		$this->linkManager = new RedBean_LinkManager($this->redbean);
 		$this->assocManager = new RedBean_AssociationManager($this->redbean);

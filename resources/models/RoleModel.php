@@ -11,7 +11,20 @@ class RoleModel extends FermiModel
 	
 	function setParent(FermiModel $parent)
 	{
-		return Database::attach($parent->bean, $this->bean);
+		if(!$parent->getId())
+		{
+			return false ;
+		}
+		
+		
+		if(Database::attach($parent->bean, $this->bean))
+		{
+			return $this ;
+		}
+		else
+		{
+			return false ;
+		}
 	}
 	
 	function getParent()
@@ -19,6 +32,10 @@ class RoleModel extends FermiModel
 		if($this->bean->parent_id != null)
 		{
 			return Core::getModel('core:Role')->load($this->bean->parent_id) ;
+		}
+		else
+		{
+			return false ;
 		}
 	}
 	
