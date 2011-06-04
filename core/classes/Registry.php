@@ -211,7 +211,7 @@ class Registry
 						}
 						catch(Exception $e)
 						{
-							//echo $e->getMessage() ;
+							echo $e->getMessage() ;
 							Registry::$_errors[] = $e->getMessage() ;
 						}
 						
@@ -236,7 +236,7 @@ class Registry
 	{
 		$this->conf_string = file_get_contents(SYSPATH.'/config.inc.php') ;
 		$this->conf_string = substr($this->conf_string, 8) ;
-		$this->conf = new SimpleXMLElement($this->conf_string) ;
+		$this->conf = parse_ini_string($this->conf_string, true) ;
 	}
 	
 	/**
@@ -246,27 +246,17 @@ class Registry
 	{
 		foreach($this->conf('libs') as $lib)
 		{
-			
-			$path = SYSPATH.'core/libs/'.$lib->attributes()->name ;
-			if(!file_exists($path))
+			$lib = '/'.$lib ;
+			if(!file_exists(SYSPATH.'core/libs/'.$lib))
 			{
 				throw new Exception('<strong>'.SYSPATH.'core/libs'.$lib.'</strong> not found. It was configured in config.inc.php as a lib.') ;
 			}
-
-			foreach($lib->file as $file)
+			else
 			{
-				if(file_exists(SYSPATH.'core/libs/'.$lib->attributes()->name.'/'.$file))
-				{
-					include SYSPATH.'core/libs/'.$lib->attributes()->name.'/'.$file ;
-				}
-				else
-				{
-						throw new Exception('"'.$file.'" was not found in <strong>'.SYSPATH.'core/libs'.$lib.'</strong>. It was configured in config.inc.php as a lib file.') ;
-				}
+				include SYSPATH.'core/libs'.$lib ;
 			}
 			
 		}
-
 	}
 	
 	/**
@@ -275,37 +265,30 @@ class Registry
 	 */
 	function _conf($key)
 	{
-			
 		$key_arr = explode(':', $key) ;
-
-		if(count($key_arr) < 1)
+			
+		if(array_key_exists($key, $this->conf))
 		{
-			throw new Exception('Unable to retrieve config information for "'.$key.'"') ;
+			return $this->conf[$key] ;
 		}
-		
-		$node = $this->conf ;
-		
-		foreach($key_arr as $level)
+		elseif(count($key_arr) == 1)
 		{
-			if(isset($node->$level))
-			{
-				$node = $node->$level ;
-			}
-			else
-			{
-				return false ;
-			}
-		}
-		
-		$children = $node->children() ;
-		
-		if(count($children) != 0) 
-		{
-			return $children ;
+			$sec = 'default' ;
+			$item = $key_arr[0] ;
 		}
 		else
 		{
-			return $node ;
+			$sec = $key_arr[0] ;
+			$item = $key_arr[1] ;
+		}
+			
+		
+		if(array_key_exists($sec, $this->conf))
+		{
+			if(array_key_exists($item, $this->conf[$sec]))
+			{
+				return $this->conf[$sec][$item] ;
+			}
 		}
 	}
 	
