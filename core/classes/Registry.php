@@ -137,7 +137,7 @@ class Registry
 		{
 			foreach($xml->agents->agent as $agent)
 			{
-				$this->agents[(string)$agent] = SYSPATH.'resources/agents/'.$agent.'.php' ;
+				$this->agents[(string)$agent.'Agent'] = SYSPATH.'resources/agents/'.$agent.'.php' ;
 			}
 		}
 		
@@ -192,7 +192,7 @@ class Registry
 										
 										foreach($agent_controller->children() as $controller)
 										{
-											$this->controllers[$agent_name][(string)$controller] = SYSPATH.'modules/'.$module.'/controllers/'.$controller.'.php' ;
+											$this->controllers[ucfirst($agent_name).'Agent'][(string)$controller] = SYSPATH.'modules/'.$module.'/controllers/'.$controller.'.php' ;
 										}
 									}
 
@@ -202,7 +202,7 @@ class Registry
 								{
 									foreach($xml->agents->agent as $agent)
 									{
-										$this->agents[(string)$agent] = SYSPATH.'modules/'.$module.'/agents/'.$agent.'.php' ;
+										$this->agents[(string)$agent.'Agent'] = SYSPATH.'modules/'.$module.'/agents/'.$agent.'.php' ;
 									}
 								}
 									

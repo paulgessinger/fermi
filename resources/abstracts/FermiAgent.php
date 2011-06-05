@@ -23,11 +23,40 @@ abstract class FermiAgent extends FermiObject implements Agent
 	 * dispatches the call to the controller given.
 	 * @param Controller $controller The Controller that is to process the request
 	 */
-	function dispatch(FermiController $controller, $action)
+	function dispatch($action, $controller = false)
 	{
 		$this->agent = $this ;
-		$this->controller = $controller ;
 		$this->action = $action ;
+		$this->controller = $controller ;
+		
+		$this->preDispatch() ;
+		
+		if($this->controller === false)
+		{
+			return false ;
+		}
+		
+		if(is_string($this->controller))
+		{
+			if(!isset(Core::$_registry->controllers[get_class($this)][$this->controller]))
+			{
+				header("HTTP/1.0 404 Not Found");
+				throw new RoutingException('Controller "'.$this->controller.'" could not be retrieved.') ;
+			}
+			else
+			{
+				include Core::$_registry->controllers[get_class($this)][$this->controller] ;
+				$this->controller = new $this->controller ;
+			}
+		}
+		elseif(is_object($this->controller))
+		{	
+			if(!isset(Core::$_registry->controllers[get_class($this)][get_class($this->controller)]))
+			{
+				header("HTTP/1.0 404 Not Found");
+				throw new RoutingException('Controller "'.get_class($this->controller).'" is not assigned to this agent "'.get_class($this).'".') ;
+			}
+		}
 		
 		
 		Core::fireEvent('onAgentReady', $this->agent, $this->controller, $this->action) ;
@@ -38,6 +67,8 @@ abstract class FermiAgent extends FermiObject implements Agent
 		
 		$this->controller->execute($this->action) ;
 	}
+	
+	function preDispatch() {}
 	
 	/**
 	 * instructs the Controller to prepare its outputs to be sent.

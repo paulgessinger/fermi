@@ -20,7 +20,6 @@ class Request extends FermiObject
 		$this->vars['post'] = $_POST ;
 		$this->vars['files'] = $_FILES ;
 		$this->vars['cookie'] = $_COOKIE ;
-		//$this->vars['session'] = $_SESSION ;
 		$this->vars['request'] = $_REQUEST ;
 		$this->vars['env'] = $_ENV ;
 		

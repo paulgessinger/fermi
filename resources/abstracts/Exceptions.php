@@ -33,6 +33,11 @@ abstract class CustomException extends Exception implements IException
     
     public function __toString()
     {
+       /* return get_class($this) . " '{$this->message}' in {$this->file}({$this->line})\n"
+                                . "{$this->getTraceAsString()}";*/
+    	try
+		{
+		
 		$return = '' ;	
 		
     	foreach($this->getTrace() as $trace_depth => $trace)
@@ -77,7 +82,7 @@ abstract class CustomException extends Exception implements IException
 						$traces[$trace_depth]['func'] = $trace['class'].'::' ;
 					}
 					
-					$traces[$trace_depth]['func'] .= $trace['function'].'( '.implode(', ', $trace['args']).' ) ;' ;
+					$traces[$trace_depth]['func'] .= $trace['function'].'() ;' ;
 					
 					//$traces[$trace_depth] .= $trace['function'].'('.implode(',', $trace['args']).')' ;
 					
@@ -93,6 +98,11 @@ abstract class CustomException extends Exception implements IException
     	}
     	
     	return $return ;
+		}
+		catch(Exception $e)
+		{
+			echo $e->getMessage().$e->getLine() ;
+		}
     }
 }
 

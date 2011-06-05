@@ -5,6 +5,7 @@
 		<instance>HTML</instance>
 		<instance>Request</instance>
 		<instance>Response</instance>
+		<instance>Session</instance>
 	</instances>
 	
 	<agents>

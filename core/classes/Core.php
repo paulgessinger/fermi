@@ -166,9 +166,12 @@ class Core
 			//print_r($request) ;
 				
 			$this->agent = Registry::get('default_agent') ;
-			$this->controller = Registry::get('default_controller') ;
 				
-			$rounds = array('action', 'controller', 'agent') ;
+			$rounds = array(
+				'action', 
+				//'controller', 
+				'agent'
+			) ;
 				
 			foreach($rounds as $round)
 			{
@@ -180,7 +183,9 @@ class Core
 				{
 					Request::set($round, $this->$round) ;
 				}
-			}	
+			}
+			
+			$this->agent = $this->agent.'Agent' ;
 				
 			//echo $this->agent.'/'.$this->controller.'/'.$this->action ;
 			//print_r($request['params']) ;
@@ -192,24 +197,21 @@ class Core
 				header("HTTP/1.0 404 Not Found");
 				throw new RoutingException('Agent "'.$this->agent.'" could not be retrieved.') ;
 			}
-			if(!isset(Core::$_registry->controllers[strtolower($this->agent)][$this->controller]))
-			{
-				header("HTTP/1.0 404 Not Found");
-				throw new RoutingException('Controller "'.$this->controller.'" could not be retrieved.') ;
-			}
+		
 				
 
 			include Core::$_registry->agents[$this->agent] ;
 				
-			$this->agent_instance =  new $this->agent ;
+			$this->agent_instance = new $this->agent ;
 				
 				
 			$this->agent_instance->notify() ;
 				
 			Core::fireEvent('onAgentDispatch') ;
 				
-			include Core::$_registry->controllers[strtolower($this->agent)][$this->controller] ;
-			$this->agent_instance->dispatch(new $this->controller, $this->action) ;
+			/*include Core::$_registry->controllers[strtolower($this->agent)][$this->controller] ;
+			$this->agent_instance->dispatch(new $this->controller, $this->action) ;*/
+			$this->agent_instance->dispatch($this->action) ;
 				
 				
 				
@@ -226,8 +228,9 @@ class Core
 			
 			Request::set('exception', $e) ;	
 			
-			include Core::$_registry->controllers[strtolower($default_agent)]['ErrorController'] ;
-			$this->agent_instance->dispatch(new ErrorController, 'display') ;				
+			
+			include Core::$_registry->controllers[ucfirst($default_agent)]['ErrorController'] ;
+			$this->agent_instance->dispatch('display', new ErrorController) ;				
 		}
 	}
 	
