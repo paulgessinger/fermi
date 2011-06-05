@@ -10,7 +10,9 @@
 	</instances>
 	
 	<controllers>
-		<controller>Sites</controller>
+		<index>
+			<controller>Sites</controller>
+		</index>
 	</controllers>
 	
 </module>

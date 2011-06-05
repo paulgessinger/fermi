@@ -33,16 +33,25 @@ abstract class CustomException extends Exception implements IException
     
     public function __toString()
     {
-       /* return get_class($this) . " '{$this->message}' in {$this->file}({$this->line})\n"
-                                . "{$this->getTraceAsString()}";*/
-    	
+		$return = '' ;	
+		
     	foreach($this->getTrace() as $trace_depth => $trace)
 		{
-				//$traces[$trace_depth] = '#'.$trace_depth.' '.$trace['file'].' in line '.$trace['line'] ;
+				$keys = array('file', 'line', 'func') ;
+				
+				foreach($keys as $key)
+				{
+					if(!isset($trace[$key]))
+					{
+						$trace[$key] = array() ;
+					}
+				}
+
 				
 				$traces[$trace_depth]['depth'] = $trace_depth ;
 				$traces[$trace_depth]['file'] = $trace['file'] ;
 				$traces[$trace_depth]['line'] = $trace['line'] ;
+				$traces[$trace_depth]['func'] = '' ;
 				
 				if(!empty($trace['function']) AND $trace['func'] != 'exception_error_handler')
 				{

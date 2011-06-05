@@ -57,6 +57,7 @@ class Registry
 		$this->performIncludes() ;
 		
 		$this->performAutoInstances() ;
+		
 	}
 	
 	
@@ -182,12 +183,19 @@ class Registry
 									}
 								}
 								
-								if(isset($xml->controllers->controller))
+								if(isset($xml->controllers))
 								{
-									foreach($xml->controllers->controller as $controller)
+									
+									foreach($xml->controllers->children() as $agent_controller)
 									{
-										$this->controllers[(string)$controller] = SYSPATH.'modules/'.$module.'/controllers/'.$controller.'.php' ;
+										$agent_name = $agent_controller->getName() ;
+										
+										foreach($agent_controller->children() as $controller)
+										{
+											$this->controllers[$agent_name][(string)$controller] = SYSPATH.'modules/'.$module.'/controllers/'.$controller.'.php' ;
+										}
 									}
+
 								}
 								
 								if(isset($xml->agents->agent))

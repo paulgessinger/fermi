@@ -185,15 +185,16 @@ class Core
 			//echo $this->agent.'/'.$this->controller.'/'.$this->action ;
 			//print_r($request['params']) ;
 
-
 			Core::fireEvent('onRoute') ;
 				
 			if(!isset(Core::$_registry->agents[$this->agent]))
 			{
+				header("HTTP/1.0 404 Not Found");
 				throw new RoutingException('Agent "'.$this->agent.'" could not be retrieved.') ;
 			}
-			if(!isset(Core::$_registry->controllers[$this->controller]))
+			if(!isset(Core::$_registry->controllers[strtolower($this->agent)][$this->controller]))
 			{
+				header("HTTP/1.0 404 Not Found");
 				throw new RoutingException('Controller "'.$this->controller.'" could not be retrieved.') ;
 			}
 				
@@ -207,7 +208,7 @@ class Core
 				
 			Core::fireEvent('onAgentDispatch') ;
 				
-			include Core::$_registry->controllers[$this->controller] ;
+			include Core::$_registry->controllers[strtolower($this->agent)][$this->controller] ;
 			$this->agent_instance->dispatch(new $this->controller, $this->action) ;
 				
 				
@@ -225,7 +226,7 @@ class Core
 			
 			Request::set('exception', $e) ;	
 			
-			include Core::$_registry->controllers['ErrorController'] ;
+			include Core::$_registry->controllers[strtolower($default_agent)]['ErrorController'] ;
 			$this->agent_instance->dispatch(new ErrorController, 'display') ;				
 		}
 	}

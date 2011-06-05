@@ -10,8 +10,10 @@
 	</instances>
 	
 	<controllers>
-		<controller>DebugController</controller>
-		<controller>ErrorController</controller>
+		<index>
+			<controller>DebugController</controller>
+			<controller>ErrorController</controller>
+		</index>
 	</controllers>
 	
 </module>
