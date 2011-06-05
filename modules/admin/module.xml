@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<version>1.0</version>
+	<name>Admin</name>
+	<author></author>
+	<active>true</active>
+
+	
+	<controllers>
+		<admin>
+			<controller>Index</controller>
+		</admin>
+	</controllers>
+	
+	<agents>
+		<agent>Admin</agent>
+	</agents>
+	
+</module>
