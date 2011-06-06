@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 04. Juni 2011 um 15:52
+-- Erstellungszeit: 06. Juni 2011 um 20:18
 -- Server Version: 5.1.44
 -- PHP-Version: 5.3.1
 
@@ -12,6 +12,48 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 --
 -- Datenbank: `fermi`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `fermi_right`
+--
+
+CREATE TABLE IF NOT EXISTS `fermi_right` (
+  `right_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `path` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`right_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
+
+--
+-- Daten für Tabelle `fermi_right`
+--
+
+INSERT INTO `fermi_right` (`right_id`, `path`) VALUES
+(1, '*/*/*'),
+(2, 'admin/dashboard/*');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `fermi_right_role`
+--
+
+CREATE TABLE IF NOT EXISTS `fermi_right_role` (
+  `right_role_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `role_id` tinyint(3) unsigned DEFAULT NULL,
+  `right_id` tinyint(3) unsigned DEFAULT NULL,
+  PRIMARY KEY (`right_role_id`),
+  UNIQUE KEY `UQ_8e56061aa67ca191693fecda1efe930d4aab7f3a` (`right_id`,`role_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=12 ;
+
+--
+-- Daten für Tabelle `fermi_right_role`
+--
+
+INSERT INTO `fermi_right_role` (`right_role_id`, `role_id`, `right_id`) VALUES
+(1, 2, 1),
+(11, 4, 2);
 
 -- --------------------------------------------------------
 
@@ -48,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `fermi_role_user` (
   `user_id` tinyint(3) unsigned DEFAULT NULL,
   PRIMARY KEY (`role_user_id`),
   UNIQUE KEY `UQ_e25d3cdf36978e9b84d1e0e4732b23444d9575aa` (`role_id`,`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
 
 --
 -- Daten für Tabelle `fermi_role_user`
@@ -125,7 +167,7 @@ CREATE TABLE IF NOT EXISTS `fermi_user` (
 --
 
 INSERT INTO `fermi_user` (`user_id`, `email`, `pass`, `salt`, `name`) VALUES
-(1, 'ephimetheuss@gmail.com', 'admin', 'asd476', 'paul'),
+(1, 'ephimetheuss@gmail.com', 'ed28efcb2eba6009b7ede715b3f0496d68d38058', 'asd476', 'paul'),
 (2, 'hans@email.de', 'admin', 'asd476', 'hans');
 
 --
