@@ -93,8 +93,15 @@ class Template extends FermiObject
 		
 		$previous = ob_get_clean() ; // should be empty
 		ob_start() ;
+		try
+		{
+			include $this->template_resource ;
+		}
+		catch(Exception $e)
+		{
+			echo '<strong>Template Error:</strong> '.$e->getMessage().' in file <strong>'.$e->getFile().'</strong> on line <strong>'.$e->getLine().'</strong>' ;
+		}
 		
-		include $this->template_resource ;
 		$output = ob_get_clean();
 		
 		ob_start() ;

@@ -53,7 +53,7 @@ class Core
 	private function loader($class)
 	{
 		$places = array('classes', 'abstracts', 'interfaces') ;
-			
+		
 		foreach(Registry::$_modules as $module)
 		{
 			foreach($places as $place)
@@ -185,6 +185,8 @@ class Core
 				}
 			}
 			
+			
+			
 			$this->agent = $this->agent.'Agent' ;
 				
 			//echo $this->agent.'/'.$this->controller.'/'.$this->action ;
@@ -219,7 +221,7 @@ class Core
 		catch(Exception $e)
 		{	
 			
-			$default_agent = Registry::get('default_agent') ;
+			$default_agent = Registry::get('default_agent').'Agent' ;
 			if(get_class($this->agent_instance) != $default_agent)
 			{
 				include Core::$_registry->agents[$default_agent] ;
@@ -308,6 +310,16 @@ class Core
 			throw new ErrorException('Model "'.$model.'" could not be retrieved.') ;
 				
 		}
+	}
+	
+	function _redirect($agent, $controller, $action, $params = array())
+	{
+		header('Location: '.$this->getUrl($agent, $controller, $action, $params)) ;
+	}
+	
+	function _getUrl($agent, $controller, $action, $params = array())
+	{
+		return SYSURI.Request::renderPath($agent, $controller, $action, $params) ;
 	}
 	
 	

@@ -5,7 +5,14 @@ class Session extends FermiObject
 	
 	function __construct()
 	{
-		//$this->session = $_SESSION ;
+	}
+	
+	function launch()
+	{
+		Core::getModel('core:User') ;
+		Core::getModel('core:Right') ;
+		session_start() ;
+		$this->session = $_SESSION ;
 	}
 	
 	function _get($key)
@@ -26,7 +33,7 @@ class Session extends FermiObject
 		$_SESSION[$key] = $value ;
 	}
 	
-	function getUser()
+	function _getUser()
 	{
 		if($user = $this->get('user'))
 		{
@@ -34,8 +41,26 @@ class Session extends FermiObject
 		}
 		else
 		{
-			return Core::getModel('core:User') ;
+			$user = Core::getModel('core:User') ;
+			$this->set('user', $user) ;
+			
+			return $user ;
 		}
+	}
+	
+	static function generateHash($var)
+	{
+		return sha1($var) ;
+	}
+	
+	function _setUser(UserModel $user)
+	{
+		$this->set('user', $user) ;
+	}
+	
+	function _authorize($path)
+	{
+		return $this->_getUser()->authorize($path) ;
 	}
 	
 }

@@ -25,6 +25,7 @@ abstract class FermiController extends FermiObject implements Controller
 		}
 		else
 		{
+			header("HTTP/1.0 404 Not Found");
 			throw new RoutingException('Action "'.$action.'" is not available in controller "'.get_class($this).'"') ;
 		}
 	}

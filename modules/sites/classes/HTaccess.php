@@ -16,9 +16,23 @@ class HTaccess extends FermiObject
 	{
 		if(Registry::get('htaccess') == true)
 		{
-			Core::get('Request')->setPathRenderer(function($agent, $controller, $task, $params)
+			Core::get('Request')->setPathRenderer(function($agent, $controller, $action, $params)
 			{
-				return $agent.'/'.$controller.'/'.$task.'/'.implode('+', $params).'.html' ;
+				if(count($params) > 1)
+				{
+					return $agent.'/'.$controller.'/'.$action.'/'.implode('/', $params) ;
+				}
+				
+				if(count($params) == 0)
+				{
+					return $agent.'/'.$controller.'/'.$action ;
+				}
+				
+				if(count($params) == 1)
+				{
+					return $agent.'/'.$controller.'/'.$action.'/'.implode('', $params).'.html' ;
+				}
+				
 			}) ;
 			
 			

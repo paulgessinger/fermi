@@ -27,7 +27,25 @@ class FermiCollection extends FermiObject implements Iterator
 		}
 	}
 	
+	function merge(FermiCollection $collection)
+	{
+		foreach($collection as $bean)
+		{
+			array_push($this->_beans, $bean) ;
+		}
+	}
 	
+	function convert()
+	{
+		foreach($this->_beans as $key => $bean)
+		{
+			if(!($bean instanceof FermiModel))
+			{
+				$this->_beans[$key] = clone $this->_model ;
+				$this->_beans[$key]->bean = $bean ;
+			}
+		}
+	}
 	
 	public function rewind()
 	{

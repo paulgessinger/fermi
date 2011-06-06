@@ -9,6 +9,26 @@ class RoleModel extends FermiModel
 	{
 	}
 	
+	function addRight(RightModel $right)
+	{
+		if(!$right->getId())
+		{
+			return false ;
+		}
+		
+		return R::associate($this->bean, $right->bean) ;
+	}
+	
+	function removeRight(RightModel $right)
+	{
+		return R::unassociate($this->bean, $right->bean) ;
+	}
+	
+	function getRights()
+	{
+		return new FermiCollection(Core::getModel('core:Right'), R::related($this->bean, 'right')) ;
+	}
+	
 	function setParent(FermiModel $parent)
 	{
 		if(!$parent->getId())

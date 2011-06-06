@@ -57,14 +57,26 @@ class Request extends FermiObject
 		
 			$get_vars = Core::get('Request')->vars['get'] ;
 			
-			$path['agent'] = $get_vars['agent'] ;
-			unset($get_vars['agent']) ;
+			$values = array(
+				'agent',
+				'controller',
+				'action'
+			) ;
 			
-			$path['controller'] = $get_vars['controller'] ;
-			unset($get_vars['controller']) ;
-			
-			$path['task'] = $get_vars['task'] ;
-			unset($get_vars['task']) ;
+			foreach($values as $value)
+			{
+				if(isset($get_vars[$value]))
+				{
+					$path[$value] = $get_vars[$value] ;
+					unset($get_vars[$value]) ;
+					
+					if($value != 'action')
+					{
+						$path[$value] = ucfirst($path[$value]) ;
+					}
+					
+				}
+			}
 			
 			$path['params'] = $get_vars ;
 
@@ -74,13 +86,14 @@ class Request extends FermiObject
 		}) ;
 		
 		
-		$this->setPathRenderer(function($agent, $controller, $task, $params) {
+		$this->setPathRenderer(function($agent, $controller, $action, $params) {
 			
+			$par = '' ;
 			foreach($params as $param => $value)
 			{
 				$par .= '&'.$param.'='.$value ;
 			}
-			return 'index.php?agent='.$agent.'&controller='.$controller.'&task='.$task.''.$par ;
+			return 'index.php?agent='.$agent.'&controller='.$controller.'&action='.$action.''.$par ;
 				
 		}) ;
 
@@ -94,9 +107,16 @@ class Request extends FermiObject
 	 * @param string A Default value that is to be returned in case nothing is found.
 	 * @return string
 	 */
-	function _getPost($key, $default = '')
+	function _getPost()
 	{
-		return Core::get('Request')->vars['post'] ;
+		if(count(Core::get('Request')->vars['post']) != 0)
+		{
+			return Core::get('Request')->vars['post'] ;
+		}
+		else
+		{
+			return false ;
+		}
 	}
 	
 
@@ -108,10 +128,22 @@ class Request extends FermiObject
 	function _getPath()
 	{
 		$path = call_user_func_array($this->pathParser, array('query' => $this->query)) ;
+		
+		$values = array(
+			'agent',
+			'controller',
+			'action'
+		) ;
+		
+		foreach($values as $value)
+		{
 			
-		$this->set('agent', $path['agent']) ;
-		$this->set('controller', $path['controller']) ;
-		$this->set('action', $path['action']) ;
+			if(isset($path[$value]))
+			{
+				$this->set($value, $path[$value]) ;
+			}
+			
+		}
 			
 		foreach($path['params'] as $key => $value)
 		{
@@ -124,18 +156,11 @@ class Request extends FermiObject
 	 * Uses the current pathRenderer to create a callable path out of
 	 * @param string $agent
 	 * @param string $controller
-	 * @param string $task
+	 * @param string $action
 	 */
-	function renderPath($agent, $controller, $task, $params = array())
+	function _renderPath($agent, $controller, $action, $params = array())
 	{
-		if($this instanceof Request)
-		{
-			return call_user_func_array($this->pathRenderer, array('agent' => $agent, 'controller' => $controller, 'task' => $task, 'params' => $params)) ;
-		}
-		else
-		{
-			return Core::get('Request')->renderPath($agent, $controller, $task, $params) ;
-		}
+		return call_user_func_array($this->pathRenderer, array('agent' => $agent, 'controller' => $controller, 'action' => $action, 'params' => $params)) ;
 	}
 	
 	/**

@@ -148,7 +148,7 @@ class Registry
 		$errors = array() ;
 		$directory = new DirectoryIterator(SYSPATH.'modules') ;
 		foreach($directory as $module)
-		{
+		{		
 			if(!$module->isDot())
 			{
 				if($module->isDir())
@@ -159,7 +159,6 @@ class Registry
 						{
 							$raw = file_get_contents(SYSPATH.'modules/'.$module.'/module.xml') ;
 							$xml = new SimpleXMLElement($raw) ;
-							
 							if($xml->active == 'true')
 							{
 								

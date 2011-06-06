@@ -9,12 +9,12 @@ class IndexAgent extends FermiAgent
 			return true ;
 		}
 		
-		
-		
 		if(!($controller = Request::get('controller')))
 		{
 			$controller = Registry::get('default_controller') ;
 		}
+		
+		Request::set('controller', $controller) ;
 		
 		$this->controller = $controller ;
 	

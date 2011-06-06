@@ -34,7 +34,7 @@ class TplData extends FermiObject
 			return false ;
 		}
 		
-		if(is_object($this->values[$name]) AND get_class($this->values[$name]) == 'Template')
+		if(is_object($this->values[$name])) // AND get_class($this->values[$name]) == 'Template')
 		{
 			return $this->values[$name]->render() ;
 		}
@@ -53,6 +53,18 @@ class TplData extends FermiObject
 		if(array_key_exists($function, $this->functions))
 		{	
 			return call_user_func_array($this->functions[$function], $arguments) ;
+		}
+		else
+		{
+			return false ;
+		}
+	}
+	
+	function __isset($name)
+	{
+		if(array_key_exists($name, $this->values))
+		{
+			return true ;
 		}
 		else
 		{

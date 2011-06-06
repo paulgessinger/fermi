@@ -194,7 +194,7 @@ class Response extends FermiObject
 			}
 			else
 			{
-				throw new ResponseException('Unable to load template "'.$name.'". in directory "'.$this->paths[0].'".');
+				throw new ResponseException('Unable to load template "'.$name.'" in directory "'.$this->template_dir.'".');
 			}
 		}
 		else
