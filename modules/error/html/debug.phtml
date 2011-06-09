@@ -2,17 +2,17 @@ $(document).ready(function()
 {
 	$('body').prepend('<div id="debug" class=""'
 	+'style="'
-	+ 'font-family:myriad pro, arial;font-size:12px;color:#000000;"'
+	+ 'font-family:myriad pro, arial;font-size:12px;color:#000000;z-index:200000;"'
 	+'></div>');
 	
 	
 	$('#debug').css({
 	backgroundColor: 'white',
 	position: 'fixed',
-	top: 0,
+	bottom: 0,
 	right: 0,
 	padding: 10,
-	borderBottom: '1px solid #565656',
+	borderTop: '1px solid #565656',
 	borderLeft: '1px solid #565656',
 	opacity: 0.9,
 	paddingRight: 20,

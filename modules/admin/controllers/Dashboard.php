@@ -4,6 +4,6 @@ class Dashboard extends FermiController
 {
 	function indexAction()
 	{
-		echo 'dashboard' ;
+		Response::render() ;
 	}
 }

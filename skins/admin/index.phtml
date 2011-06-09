@@ -1,1 +1,94 @@
-hallo admin
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title><?=$tpl->title?></title>
+
+<link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
+
+<link rel="stylesheet" href="<?=$tpl->skin?>/reset.css" type="text/css" />
+<link rel="stylesheet" href="<?=$tpl->skin?>/style.css" type="text/css" />
+
+<?=$tpl->aux_head?>
+
+
+<script type="text/javascript" src="<?=$tpl->skin?>/init.js"></script> 
+
+
+<?=$tpl->aux_js?>
+
+</head>
+<body>
+
+
+	<div id="wrapper">
+    
+    	<div id="header">
+        	
+            <a id="logo" href="#">fermi</a>
+            
+            <div id="welcome">
+            
+            	<span>Welcome back, Paul</span>
+                <a href="#">logout</a>
+                 <a href="#">frontpage</a>
+            
+            </div>
+            
+            <div id="nav">
+            
+            	<span class="nav">
+                	<a href="#" class="title">Dashboard</a>
+                    <span class="sub">sub</span>
+                </span>
+                <span class="nav active">
+                	<a href="#" class="title">System</a>
+                    <span class="sub">
+                    
+                    	<a href="#">Settings</a>
+                        <a href="#">Modules</a>
+                        <a href="#">Widgets</a>
+                    
+                    </span>
+                </span>
+                <span class="nav">
+                	<a href="#" class="title">Users</a>
+                    <span class="sub">sub</span>
+                </span>
+                <span class="nav">
+                	<a href="#" class="title">Appearance</a>
+                    <span class="sub">sub</span>
+                </span>
+                <span class="nav">
+                	<a href="#" class="title">Structure</a>
+                    <span class="sub">sub</span>
+                </span>
+            
+            </div>
+
+        </div>
+    
+    	<div id="actions">
+        
+        	<a href="#">
+            	<span class="icon" style="background-image:url(<?=$tpl->skin?>/img/back.png);"></span>
+                Back
+            </a>
+            
+            <a href="#">
+            	<span class="icon" style="background-image:url(<?=$tpl->skin?>/img/cancel.png);"></span>
+                Cancel
+            </a>
+            
+            <a href="#">
+            	<span class="icon" style="background-image:url(<?=$tpl->skin?>/img/save.png);"></span>
+                Save
+            </a>
+        
+        </div>
+    
+    </div>
+
+</body>
+</html>
