@@ -159,6 +159,7 @@ span.sub a:hover {
 	position:absolute;
 	top:180px;
 	right:0px;
+	height:32px;
 	
 }
 
@@ -194,6 +195,21 @@ span.sub a:hover {
 	margin-right:5px;
 }
 
+.up {
+	
+	display:block;
+	width:32px;
+	height:32px;
+	background-position:top;
+	position:absolute;
+	left:0px;
+	margin-left:-40px;
+	background-image:url(img/up.png) ;
+	background-repeat:no-repeat;
+	background-position:center;
+	background-color:#464646;
+	cursor:pointer;
 
+}
 
 

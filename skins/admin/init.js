@@ -12,10 +12,23 @@ $(document).ready(function() {
 	}) ;
 	
 	$(window).trigger('resize') ;
-	
+
 	
 	var offset = $('#actions').offset() ;
 	var switched = '' ;
+	var timer = false ;
+	$('.up').css({opacity: 0, display: 'none'}) ;
+	$('.up').click(function() {
+		
+		$(window).scrollTo('#wrapper', 500) ;
+		
+		$('.up').stop(true).animate({opacity: 0}).queue(function() {
+					
+			$('.up').css({display: 'none'}) 
+					
+		}) ;
+		
+	}) ;
 	
 	$(window).scroll(function() {
 		
@@ -23,21 +36,36 @@ $(document).ready(function() {
 		
 		
 		
-		if(scroll > offset.top)
+		if(scroll >= offset.top)
 		{
 			if(switched !== true)
 			{
-				$('#actions').css({position: 'fixed', top: 0, right: 40}) ;
 				switched = true ;
+				
+				$('#actions').css({position: 'fixed', top: 0, right: 40, marginTop: 0}) ;
+				
+				$('.up').css({display: 'block'}) 
+				$('.up').stop(true).animate({opacity: 1}) ;
+				
+				
 			}
 		}
-		else
+		
+		if(scroll < offset.top)
 		{
 			if(switched !== false)
 			{
-				$('#actions').css({position: 'absolute', top: offset.top, right: 0}) ;
-				
 				switched = false ;
+				
+				$('#actions').css({position: 'absolute', top: offset.top, right: 0, marginTop: 0}) ;
+
+				$('.up').stop(true).animate({opacity: 0}).queue(function() {
+					
+					$('.up').css({display: 'none'}) 
+					
+				}) ;
+				
+				
 			}
 		}
 		
