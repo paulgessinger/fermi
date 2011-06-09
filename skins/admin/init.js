@@ -1,17 +1,7 @@
 $(document).ready(function() {
 	
 	
-	$(window).resize(function() {
-		var header_width = $('#header').outerWidth() ;
-		
-		$('span.sub').each(function() {
-		
-			$(this).css({width: (header_width - $(this).parents().position().left)}) ;
-			
-		}) ;
-	}) ;
 	
-	$(window).trigger('resize') ;
 
 	
 	var offset = $('#actions').offset() ;
@@ -20,9 +10,9 @@ $(document).ready(function() {
 	$('.up').css({opacity: 0, display: 'none'}) ;
 	$('.up').click(function() {
 		
-		$(window).scrollTo('#wrapper', 500) ;
+		$(window).scrollTo('#wrapper', 500, {easing: 'easeOutExpo'}) ;
 		
-		$('.up').stop(true).animate({opacity: 0}).queue(function() {
+		$('.up').stop(true).animate({opacity: 0}, 500, 'easeOutExpo').queue(function() {
 					
 			$('.up').css({display: 'none'}) 
 					
@@ -42,10 +32,13 @@ $(document).ready(function() {
 			{
 				switched = true ;
 				
-				$('#actions').css({position: 'fixed', top: 0, right: 40, marginTop: 0}) ;
+				//alert($('#wrapper').offset().left) ;
+				
+				$('#actions').css({position: 'fixed', top: 0, right: $('#wrapper').offset().left}) ;
+				
 				
 				$('.up').css({display: 'block'}) 
-				$('.up').stop(true).animate({opacity: 1}) ;
+				$('.up').stop(true).animate({opacity: 1}, 500, 'easeOutExpo') ;
 				
 				
 			}
@@ -57,7 +50,7 @@ $(document).ready(function() {
 			{
 				switched = false ;
 				
-				$('#actions').css({position: 'absolute', top: offset.top, right: 0, marginTop: 0}) ;
+				$('#actions').css({position: 'absolute', top: offset.top, right: 0}) ;
 
 				$('.up').stop(true).animate({opacity: 0}).queue(function() {
 					
@@ -71,5 +64,40 @@ $(document).ready(function() {
 		
 		
 	}) ;
+	
+	
+	
+	
+	$(window).resize(function() {
+		
+		if($(window).width() >= 1680)
+		{
+			
+			$('#wrapper').css({left: '50%', 'margin-left': -800}) ;
+			
+		}
+		else
+		{
+			$('#wrapper').css({left: 40, 'margin-left': 0}) ;
+		}
+		
+		
+		
+		if(switched === true)
+		{
+			//alert($(window).width()-$('#wrapper').outerWidth()-40) ;
+			$('#actions').css({right: $('#wrapper').offset().left}) ;
+		}
+		
+		var header_width = $('#header').outerWidth() ;
+		
+		$('span.sub').each(function() {
+		
+			$(this).css({width: (header_width - $(this).parents().position().left)}) ;
+			
+		}) ;
+	}) ;
+	
+	$(window).trigger('resize') ;
 	
 }) ;

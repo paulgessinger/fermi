@@ -20,7 +20,7 @@ class HTML extends FermiObject
 		HTML::registerHelper('link', function($agent, $controller, $task, $params)
 		{
 			// bla bla bla get url format
-			return SYSURI.Request::renderPath($agent, $controller, $task, array('site' => $site)) ;
+			return SYSURI.Request::renderPath($agent, $controller, $task, $params) ;
 		}) ;
 
 		HTML::registerHelper('sitelink', function($agent, $controller, $task, $site)

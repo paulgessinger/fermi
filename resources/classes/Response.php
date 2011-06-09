@@ -27,7 +27,14 @@ class Response extends FermiObject
 			 * @todo implement fetching from DB, as soon as we have DB
 			 */
 			$this->skin = 'dynamic' ;
-		}	
+		}
+		
+		
+		$this->bindTemplateFunction('link', function ($agent, $controller, $action, $params = array()) {
+			
+			return HTML::link($agent, $controller, $action, $params) ;
+			
+		})	;
 	}	
 
 	/**
