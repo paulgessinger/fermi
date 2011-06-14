@@ -93,9 +93,9 @@ body {
 	text-decoration:none;
 	font-size:14px;
 	position:relative;
-	-webkit-transition:0.1s linear;
-	-moz-transition:0.1s linear;
-	-o-transition:0.1s linear;
+	-webkit-transition:0.05s linear;
+	-moz-transition:0.05s linear;
+	-o-transition:0.05s linear;
 	cursor:pointer;
 	
 }
@@ -140,9 +140,9 @@ span.sub a, span.sub a:active, span.sub a:visited {
 	display:block;
 	float:left;
 	
-	-webkit-transition:0.1s linear;
-	-moz-transition:0.1s linear;
-	-o-transition:0.1s linear;
+	-webkit-transition:0.05s linear;
+	-moz-transition:0.05s linear;
+	-o-transition:0.05s linear;
 
 }
 

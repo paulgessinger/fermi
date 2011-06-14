@@ -53,7 +53,7 @@ class ErrorController extends FermiController
 				
 				if(!empty($trace['function']) AND $trace['function'] != 'exception_error_handler')
 				{
-					if(is_array($trace['args']))
+					if(isset($trace['args']))
 					{
 						foreach($trace['args'] as $key => $arg)
 						{

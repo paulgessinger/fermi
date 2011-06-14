@@ -33,16 +33,36 @@
             <div id="welcome">
             
             	<span>Welcome back, Paul</span>
-                <a href="<?=$tpl->link('admin', 'adminindex', 'logout')?>">logout</a>
+                <a href="<?=$tpl->link('admin', 'panel', 'logout')?>">logout</a>
                  <a href="<?=SYSURI?>">frontpage</a>
             
             </div>
             
             <div id="nav">
+            	<?php
+				
+					foreach(Admin::getSections() as $section => $values)
+					{
+						echo '<span class="nav">
+                			<a href="'.$values['target'].'" class="title">'.$values['label'].'</a>' ;
+						
+						if($items = Admin::getItems($section))
+						{
+							echo '<span class="sub">' ;
+							foreach($items as $item)
+							{
+								echo '<a href="'.$item['target'].'">'.$item['label'].'</a>' ;
+							}
+							echo '</span>' ;
+						}
+                		echo '</span>' ;
+					}
+				
+				?>
             
-            	<span class="nav">
+            
+            	<!--<span class="nav">
                 	<a href="#" class="title">Dashboard</a>
-                    <span class="sub">sub</span>
                 </span>
                 <span class="nav active">
                 	<a href="#" class="title">System</a>
@@ -56,16 +76,24 @@
                 </span>
                 <span class="nav">
                 	<a href="#" class="title">Users</a>
-                    <span class="sub">sub</span>
+                    <span class="sub">
+					
+						<a href="#">Roles</a>
+						<a href="#">Rights</a>
+						
+					</span>
                 </span>
                 <span class="nav">
                 	<a href="#" class="title">Appearance</a>
-                    <span class="sub">sub</span>
                 </span>
                 <span class="nav">
                 	<a href="#" class="title">Structure</a>
-                    <span class="sub">sub</span>
-                </span>
+                    <span class="sub">
+					
+						<a href="#">Categories</a>
+					
+					</span>
+                </span>-->
             
             </div>
 

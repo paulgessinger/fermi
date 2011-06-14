@@ -8,7 +8,7 @@
 	
 	<controllers>
 		<admin>
-			<controller>Adminindex</controller>
+			<controller>Panel</controller>
 			<controller>Dashboard</controller>
 		</admin>
 	</controllers>
@@ -16,5 +16,29 @@
 	<agents>
 		<agent>Admin</agent>
 	</agents>
+	
+	<instances>
+		<instance>Admin</instance>
+	</instances>
+	
+	<admin>
+		<menu>
+			<dashboard label="Dashboard" target="admin/dashboard/index" />
+			
+			<system label="System" target="admin/system/index">
+				<item label="Settings">admin/system/settings</item>
+				<item label="Modules">admin/system/settings</item>
+				<item label="Widgets">admin/system/widgets</item>
+			</system>
+			
+			<users label="Users" target="admin/users/index">
+				<item label="Roles">admin/users/roles</item>
+				<item label="Rights">admin/users/rights</item>
+			</users>
+			
+			<appearance label="appearance" target="admin/appearance/index" />
+
+		</menu>
+	</admin>
 	
 </module>

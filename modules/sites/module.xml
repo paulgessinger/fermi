@@ -15,4 +15,12 @@
 		</index>
 	</controllers>
 	
+	<admin>
+		<menu>
+			<structure label="Structure" target="admin/structure/index">
+				<item label="Categories">admin/structure/categories</item>
+			</structure>
+		</menu>
+	</admin>
+	
 </module>

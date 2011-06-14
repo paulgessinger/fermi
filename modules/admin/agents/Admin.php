@@ -13,7 +13,7 @@ class AdminAgent extends FermiAgent
 		
 		if(!$user->getId()) // no user is logged in, show login page
 		{
-			parent::dispatch('login', 'Adminindex') ;
+			parent::dispatch('login', 'Panel') ;
 			return true ;
 		}
 		
@@ -29,17 +29,17 @@ class AdminAgent extends FermiAgent
 				Request::set('action', 'index') ;
 			}
 			
+			
+			Admin::loadMenu() ;
+			
+			
 			parent::dispatch($action, Request::get('controller')) ;
 		}
 		else // user is logged in, but has no right to view admin, show access denied
 		{
-			parent::dispatch('accessdenied', 'Adminindex') ;
+			parent::dispatch('accessdenied', 'Panel') ;
 			return true ;
 		}
-	
-	
-	
-	
 	}
 
 }

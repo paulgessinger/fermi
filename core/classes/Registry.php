@@ -15,6 +15,7 @@ class Registry
 	var $includes = array() ;
 	var $agents = array() ;
 	var $controllers = array() ;
+	static $reg ;
 	
 	protected $_modified = false ;
 	protected $conf = array() ;
@@ -233,7 +234,7 @@ class Registry
 	 */
 	private function buildRegistry()
 	{		
-		$this->reg = include_once SYSPATH.'core/registry.inc.php' ;
+		Registry::$reg = include_once SYSPATH.'core/registry.inc.php' ;
 	}
 	
 	/**
@@ -334,13 +335,13 @@ class Registry
 		$key_arr = explode(':', $key) ;
 		if(count($key_arr) == 1)
 		{
-			if(array_key_exists($key_arr[0], $this->reg))
+			if(array_key_exists($key_arr[0], Registry::$reg))
 			{
 				foreach($this->reg[$key_arr[0]] as $key => $value)
 				{
 					if(!isset($this->unserialized[$key_arr[0]][$key]))
 					{
-						$this->unserialized[$key_arr[0]][$key] = unserialize($this->reg[$key_arr[0]][$key]) ;
+						$this->unserialized[$key_arr[0]][$key] = unserialize(Registry::$reg[$key_arr[0]][$key]) ;
 					}
 						
 					$return[$key] = $this->unserialized[$key_arr[0]][$key] ;
@@ -363,13 +364,13 @@ class Registry
 		}
 			
 			
-		if(array_key_exists($sec, $this->reg))
+		if(array_key_exists($sec, Registry::$reg))
 		{
-			if(array_key_exists($item, $this->reg[$sec]))
+			if(array_key_exists($item, Registry::$reg[$sec]))
 			{	
 				if(!isset($this->unserialized[$sec][$item]))
 				{
-					$this->unserialized[$sec][$item] = unserialize($this->reg[$sec][$item]) ;	
+					$this->unserialized[$sec][$item] = unserialize(Registry::$reg[$sec][$item]) ;	
 				}
 				return $this->unserialized[$sec][$item] ;
 			}
