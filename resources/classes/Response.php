@@ -69,6 +69,10 @@ class Response extends FermiObject
 		
 	}
 	
+	/**
+	 * Set a new root template that should be used to construct the output.
+	 * @param string $template The root template. make sur it exists.
+	 */
 	function _setRootTemplate($template)
 	{
 		$this->root_template = $template ;	

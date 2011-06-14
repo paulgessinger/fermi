@@ -1,11 +1,15 @@
 <?php
 
+/**
+ * Forms singleton that is used to register Element types for forms.
+ */
 class Forms extends FermiObject
 {
 	var $elements = array() ;
 	
-	function __construct() {}
-	
+	/**
+	 * Is called onClassesReady and registers default element types.
+	 */
 	function launch()
 	{
 		
@@ -60,6 +64,11 @@ class Forms extends FermiObject
 		
 	}
 	
+	/** 
+	 * Registers a form element with the singleton.
+	 * @param string $name The name of the element type.
+	 * @param closure / array $function A callable resource that returns HTML for an element.
+	 */
 	function _registerFormElement($name, $function)
 	{
 		if(!is_callable($function))
@@ -70,7 +79,13 @@ class Forms extends FermiObject
 		$this->elements[$name] = $function ;
 	}
 
-	function _getElementTemplate($element, $name, $options)
+	/**
+	 * Is used to load HTML for a given element from the elements that are registered.
+	 * @param string $element The element type.
+	 * @param string $name The name of the input.
+	 * @array options An array of additional options for the input.
+	 */
+	function _getElementTemplate($element, $name, $options = array() )
 	{
 		if(array_key_exists($element, $this->elements))
 		{

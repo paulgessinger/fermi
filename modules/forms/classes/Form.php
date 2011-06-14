@@ -1,9 +1,21 @@
 <?php
 
+/**
+ * Form class, that renders a form based on templates and fields that are given.
+ *
+ * @author Paul Gessinger
+ */
 class Form extends FermiObject
 {
 	var $elements = array() ;
 	
+	/**
+	 * Create a new form.
+	 *
+	 * @param string $name The name of the form.
+	 * @param string $action The action value of the form.
+	 * @param string $method POST or GET, defaults to POST.
+	 */
 	function __construct($name, $action, $method = 'POST')
 	{
 		$this->name = $name ;
@@ -12,6 +24,13 @@ class Form extends FermiObject
 		
 	}
 	
+	/** 
+	 * Adds an element to the form. Element types need to be registered.
+	 *
+	 * @param string $element The element type, e.g. text
+	 * @param string $name The name of the input element.
+	 * @param array $options An array with additional options such as value.
+	 */
 	function addElement($element, $name, $options = array())
 	{	
 		$array = array(
@@ -23,6 +42,10 @@ class Form extends FermiObject
 		
 	}
 	
+	/**
+	 * Instructs the form to generate HTML and returns it.
+	 * @return string HTML for form.
+	 */
 	function render()
 	{
 		
@@ -47,6 +70,10 @@ class Form extends FermiObject
 		return $form_template ;
 	}
 	
+	/**
+	 * Uses an associative array to fill the form with values.
+	 * @param array $array An associative array with key value pairs.
+	 */
 	function importPost($array = array())
 	{
 		foreach($array as $key => $value)

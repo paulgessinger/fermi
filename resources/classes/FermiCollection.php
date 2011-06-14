@@ -1,11 +1,20 @@
 <?php
-
+/**
+ * FermiCollection is a set of FermiModels that are populated from the database.
+ *
+ * @author Paul Gessinger
+ */
 class FermiCollection extends FermiObject implements Iterator
 {
 	protected $_model ;
 	protected $_beans = false ;
   	private $position;
  
+ 	/**
+	 * Sets up the collection with the model given as a base.
+	 * @param object FermiModel $model The model that is to be used as the base.
+	 * @param array $beans An array of beans that populate the collection immediately.
+	 */
 	function __construct(FermiModel $model, $beans = false)
 	{
 		$this->_model = $model ;
@@ -15,6 +24,11 @@ class FermiCollection extends FermiObject implements Iterator
 		}
 	}
 	
+	/**
+	 * Performs a search for beans and populates the collection with them.
+	 * @param string $where An SQL where clause.
+	 * @param array $data The data for the where clause.
+	 */
 	function find($where = '', $data = array())
 	{
 		if($this->_beans === false)
@@ -27,6 +41,10 @@ class FermiCollection extends FermiObject implements Iterator
 		}
 	}
 	
+	/**
+	 * Integrate another collection into this one.
+	 * @param object FermiCollection $collection The collection to merge into this one.
+	 */
 	function merge(FermiCollection $collection)
 	{
 		foreach($collection as $bean)
@@ -35,6 +53,9 @@ class FermiCollection extends FermiObject implements Iterator
 		}
 	}
 	
+	/**
+	 * Converts all of the beans in this collection into models. This is normaly only done while iterating.
+	 */
 	function convert()
 	{
 		foreach($this->_beans as $key => $bean)
@@ -46,6 +67,10 @@ class FermiCollection extends FermiObject implements Iterator
 			}
 		}
 	}
+	
+	
+	
+	
 	
 	public function rewind()
 	{

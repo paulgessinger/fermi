@@ -1,9 +1,17 @@
 <?php
 
+/**
+ * Default Controller of AdminAgent. Handles login, logout.
+ *
+ * @author Paul Gessinger
+ */
+
 class Panel extends FermiController 
 {
-	function __construct() {}
-	
+
+	/**
+	 * Logout action. Creates a new, empty model and stores it in the session. Subsequently redirects to login.
+	 */
 	function logoutAction()
 	{
 		
@@ -14,6 +22,9 @@ class Panel extends FermiController
 		
 	}
 	
+	/**
+	 * Renders a login page, that enables the user to log in.
+	 */
 	function loginAction()
 	{
 		
@@ -82,6 +93,10 @@ class Panel extends FermiController
 		Response::render() ;
 	}
 	
+	
+	/**
+	 * Shows an access denied message to users that have a session, but do not have permission to view the admin panel.
+	 */
 	function accessdeniedAction()
 	{
 		

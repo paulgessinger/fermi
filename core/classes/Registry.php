@@ -61,7 +61,10 @@ class Registry
 		
 	}
 	
-	
+	/**
+	 * Convenience Method fr creating pseudo-static methods. Static calls to Registry:: are now interpreted as calls to the singleton,
+	 * and tried to map on corresponding methods.
+	 */
 	public static function __callStatic($function, $arguments)
 	{
 		if(method_exists(get_called_class(), '_'.$function))
@@ -70,6 +73,9 @@ class Registry
 		}
 	}
 	
+	/**
+	 * Convenience Methods allowing pseude-static methods to be calles normally as well.
+	 */
 	public function __call($function, $arguments)
 	{
 		if(method_exists($this, '_'.$function))
@@ -79,7 +85,12 @@ class Registry
 	}
 	
 	
-	
+	/**
+	 * Checks if a Module is installed and loaded. Returns the path to the module.
+	 *
+	 * @param string $module The module name.
+	 * @return string The path to the module.
+	 */
 	public function _getModule($module)
 	{
 		if(array_key_exists($module, Registry::$_modules))
@@ -91,6 +102,7 @@ class Registry
 			return false ;
 		}
 	}
+	
 	
 	private function performIncludes()
 	{
@@ -278,8 +290,8 @@ class Registry
 	}
 	
 	/**
-	 * retrieves a value from the configuration.
-	 * @param string $key The key to get, in form SECTION:KEY
+	 * retrieves a value from the configuration. Due to the config being stored in XML : corresponds to a level down the dom
+	 * @param string $key The key to get
 	 */
 	function _conf($key)
 	{

@@ -50,6 +50,10 @@ class Core
 	}
 	
 	
+	/**
+	 * Autoloader for loading files fomr modules' classes folder
+	 * @param string $class The class that is to be loaded.
+	 */
 	private function loader($class)
 	{
 		$places = array('classes', 'abstracts', 'interfaces') ;
@@ -80,6 +84,10 @@ class Core
 	}
 	
 	
+	/**
+	 * Convenience Method fr creating pseudo-static methods. Static calls to Core:: are now interpreted as calls to the singleton,
+	 * and tried to map on corresponding methods.
+	 */
 	public static function __callStatic($function, $arguments)
 	{
 		if(method_exists(get_called_class(), '_'.$function))
@@ -88,6 +96,9 @@ class Core
 		}
 	}
 	
+	/**
+	 * Convenience Methods allowing pseude-static methods to be calles normally as well.
+	 */
 	public function __call($function, $arguments)
 	{
 		if(method_exists($this, '_'.$function))
@@ -129,18 +140,7 @@ class Core
 		$mtime = $mtime[1] + $mtime[0]; 
 		Core::$starttime = $mtime ;
 			
-		/*foreach(Core::$_agents as $agent)
-		{
-			Core::$_agent_instances[$agent] = new $agent ;
-		}
-		
-		foreach(Core::$_controllers as $controller)
-		{
-			Core::$_controller_instances[$controller] = new $controller ;
-		}*/
-		
-		
-		
+
 		Core::fireEvent('onCoreReady') ;
 
 	}
@@ -211,8 +211,7 @@ class Core
 				
 			Core::fireEvent('onAgentDispatch') ;
 				
-			/*include Core::$_registry->controllers[strtolower($this->agent)][$this->controller] ;
-			$this->agent_instance->dispatch(new $this->controller, $this->action) ;*/
+
 			$this->agent_instance->dispatch($this->action) ;
 				
 				
@@ -248,6 +247,7 @@ class Core
 	
 	/**
 	 * Sets the agent to the one provided in $agent. Must implement the interface Agent.
+	 *
 	 * @param Agent $agent The Agent to set.
 	 */
 	function _setAgent(Agent $agent)
@@ -257,6 +257,7 @@ class Core
 	
 	/**
 	 * Uses Registry to retrieve an instance of the class given in $class. Returns a new one if there is none.
+	 *
 	 * @param string $class The class to retrieve.
 	 * @return object
 	 */	
@@ -265,6 +266,14 @@ class Core
 		return $this->reg->getInstance($class) ;
 	}
 	
+	/**
+	 * Returns a fresh instance of the model specified. This is used to allow rerites of models.
+	 * Model names use a pseudo namespace in the form of module:Model. Stock modules can be found in the "core" namespace.
+	 *
+	 * @param string $model The "path" to the model, format: module:Model
+	 * @return FermiModel An instance of the model that was requested.
+	 * @throws exception ErrorException
+	 */
 	function _getModel($model)
 	{
 		$arr = explode(':', $model) ;
@@ -312,11 +321,27 @@ class Core
 		}
 	}
 	
+	/**
+	 * Uses getUrl to redirect the user agent by header('Location:') ;
+	 *
+	 * @param string $agent  
+	 * @param string $controller  
+	 * @param string $action  
+	 * @param array $params  
+	 */
 	function _redirect($agent, $controller, $action, $params = array())
 	{
 		header('Location: '.$this->getUrl($agent, $controller, $action, $params)) ;
 	}
 	
+	/**
+	 * Uses Request::renderPath() to geerate a URL out of the given target
+	 *
+	 * @param string $agent  
+	 * @param string $controller  
+	 * @param string $action  
+	 * @param array $params  
+	 */
 	function _getUrl($agent, $controller, $action, $params = array())
 	{
 		return SYSURI.Request::renderPath($agent, $controller, $action, $params) ;

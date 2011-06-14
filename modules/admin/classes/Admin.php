@@ -1,13 +1,18 @@
 <?php
 
+/**
+ * Admin Singleton helper.
+ *
+ * @author Paul Gessinger
+ */
 class Admin extends FermiObject 
 {
 	var $menu_xml ;
 	
-	function __construct() 
-	{
-	}
-	
+	/**
+	 * Loads the Menu from all the XML of the modules.
+	 * @todo Cache this somewhere.
+	 */
 	function _loadMenu()
 	{		
 		$this->menu_xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><menu/>') ;
@@ -53,6 +58,10 @@ class Admin extends FermiObject
 		
 	}
 	
+	/** 
+	 * Get an array of all the Sections that the Admin menu has.
+	 * @return array Admin menu sections.
+	 */
 	function _getSections() 
 	{
 		$sections = $this->menu_xml->children() ;
@@ -72,6 +81,10 @@ class Admin extends FermiObject
 		return $return ;
 	}
 	
+	/**
+	 * Retrieve a list of items within the current section
+	 * @return array An array with all of the items.
+	 */
 	function _getItems($section)
 	{
 		if(!($section_node = $this->menu_xml->$section))

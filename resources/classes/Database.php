@@ -1,8 +1,9 @@
 <?php
+
 /**
- * Database class. Utilises PDO to (mainly) connect to MySQL Servers and perform queries against them
- * @author Paul Gessinger
+ * Database class. Utilises Redbean to persist data.
  *
+ * @author Paul Gessinger
  */
 class Database extends FermiObject
 {
@@ -16,11 +17,6 @@ class Database extends FermiObject
 	 * Initiates Database connection utilizing Redbean
 	 * @return void
 	 */
-	function __construct()
-	{
-		
-	}
-	
 	function launch()
 	{
 		if(Registry::conf('db:database') == false)
@@ -61,7 +57,9 @@ class Database extends FermiObject
 		
 	}
 	
-	
+	/**
+	 * Using Magic getters and setters to route calls through to specific redbean objects.
+	 */
 	public static function __callStatic($function, $arguments)
 	{	
 		$database = Core::get('Database') ;
