@@ -1,12 +1,11 @@
 <?php
 /**
- * Serves as a wrapper for Events. 
+ * Serves as a wrapper for Events.
+ * 
  * @author Paul Gessinger
- *
  */
 class Event extends FermiObject
 {
-	static $_autoInstance = false ;
 	var $event_name ;
 	var $fired = false ;
 	var $listeners = array();
@@ -27,8 +26,6 @@ class Event extends FermiObject
 	 * Returns true if this Event has already been fired.
 	 * @return boolean True if Event has already been fired.
 	 */
-	
-	
 	function isFired()
 	{
 		return $this->fired ;
