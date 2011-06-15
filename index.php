@@ -12,6 +12,6 @@ try
 }
 catch(Exception $e)
 {
-	die('<strong>Uncatcheable error:</strong> '.$e.'<br /> <strong>Shutdown.</strong>') ;
+	die('<strong>Uncatcheable error:</strong><br/> '.$e.'<br /> <strong>Shutdown.</strong>') ;
 }
 ob_end_flush();

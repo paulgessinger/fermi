@@ -1,0 +1,20 @@
+username_field_label;Username
+password_field_label;Password
+login_submit;anmelden
+username_password_wrong;Username oder Passwort sind falsch.
+admin_panel_top_welcome_back;Willkommen zurück
+admin_panel_top_logout;abmelden
+admin_panel_top_frontpage;zur Webseite
+admin_menu_dashboard;Dashboard
+admin_menu_system;System
+admin_menu_users;User
+admin_menu_appearance;Aussehen
+admin_action_back;Zurück
+admin_action_cancel;Abbrechen
+admin_action_save;Speichern
+admin_menu_settings;Einstellungen
+admin_menu_modules;Module
+admin_menu_widgets;Widgets
+admin_menu_roles;Rollen
+admin_menu_rights;Rechte
+login_box_head;Anmelden

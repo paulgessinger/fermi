@@ -6,6 +6,7 @@
 		<instance>Request</instance>
 		<instance>Response</instance>
 		<instance>Session</instance>
+		<instance>I18n</instance>
 	</instances>
 	
 	<agents>

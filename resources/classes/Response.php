@@ -30,9 +30,11 @@ class Response extends FermiObject
 		}
 		
 		
-		$this->bindTemplateFunction('link', function ($agent, $controller, $action, $params = array()) {
+		$this->bindTemplateFunction('link', function ($target, $params = array()) {
 			
-			return HTML::link($agent, $controller, $action, $params) ;
+			$array = explode('/', $target) ;
+			
+			return HTML::link($array[0], $array[1], $array[2], $params) ;
 			
 		})	;
 	}	
@@ -61,7 +63,11 @@ class Response extends FermiObject
 				
 		if(!isset($this->bind_array['title']))
 		{
-			$this->bind_array['title'] = Core::getModel('core:Setting')->find('name=?', array('pagetitle'))->value ;
+			if($title = Core::getModel('core:Setting')->find('name=?', array('pagetitle')))
+			{
+				$this->bind_array['title'] = $title->value ;
+			}
+		
 		}
 		
 		
@@ -117,14 +123,25 @@ class Response extends FermiObject
 	 */
 	function _append($key, $value)
 	{
-		if(is_string($this->bind_array[$key]) OR !array_key_exists($key, $this->bind_array))
+		if(!isset($this->bind_array[$key]))
+		{
+			$this->bind_array[$key] = $value ;
+			return true ;
+		}
+		
+		if(is_string($this->bind_array[$key]))
 		{
 			$this->bind_array[$key] .= $value ;
+			return true ;
 		}
-		else
+		
+		if(is_array($this->bind_array[$key]))
 		{
-			return false ;
+			array_push($this->bind_array[$key], $value) ;
+			return true ;
 		}
+		
+		return false ;
 	}
 	
 	/**
@@ -135,21 +152,27 @@ class Response extends FermiObject
 	function _prepend($key, $value)
 	{
 		
-		if(array_key_exists($key, $this->bind_array))
-		{
-			if(is_string($this->bind_array[$key]))
-			{
-				$this->bind_array[$key] = $value.$this->bind_array[$key] ;
-			}
-			else
-			{
-				throw new ErrorException('Cannot prepend value to a non string Template bind.') ;
-			}
-		}
-		else
+		if(!isset($this->bind_array[$key]))
 		{
 			$this->bind_array[$key] = $value ;
+			return true ;
 		}
+		
+		if(is_string($this->bind_array[$key]))
+		{
+			$this->bind_array[$key] = $value.$this->bind_array[$key] ;
+			return true ;
+		}
+		
+		if(is_array($this->bind_array[$key]))
+		{
+			$reversed = array_reverse($this->bind_array[$key]) ;
+			array_push($reversed, $value) ;
+			$this->bind_array[$key] = array_reverse($reversed) ;
+			return true ;
+		}
+		
+		return false ;
 		
 	}
 	

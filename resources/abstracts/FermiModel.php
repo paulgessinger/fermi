@@ -37,13 +37,18 @@ abstract class FermiModel extends FermiObject implements Model
 	 */
 	function load($id)
 	{
+		if(!Database::$connection)
+		{
+			return false ;
+		}
+		
 		if($this->bean)
 		{
 			throw new OrmException('Model "'.get_class($this).'" has already been tainted. You can not load values from db into it.') ;
 		}
 		
-		$this->bean = R::load($this->type, $id) ;
 		
+		$this->bean = R::load($this->type, $id) ;
 		//$id_format = FermiBeanFormatter::_formatBeanID($this->type) ;
 	
 		if($this->getId())
@@ -64,12 +69,20 @@ abstract class FermiModel extends FermiObject implements Model
 	 */
 	function find($sql, array $values)
 	{
+		if(!Database::$connection)
+		{
+			return false ;
+		}
+		
+		
 		if($this->bean)
 		{
 			throw new OrmException('Model "'.get_class($this).'" has already been tainted. You can not load values from db into it.') ;
 		}
 		
+
 		$this->bean = R::findOne($this->type, $sql, $values) ;
+
 		
 			
 		

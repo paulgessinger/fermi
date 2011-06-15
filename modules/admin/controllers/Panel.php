@@ -83,6 +83,7 @@ class Panel extends FermiController
 			
 			
 			unset($post['password']) ;
+			unset($post['submit']) ;
 			$form->importPost($post) ;
 		}
 		

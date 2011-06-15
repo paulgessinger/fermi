@@ -98,6 +98,6 @@ $(document).ready(function() {
 		}) ;
 	}) ;
 	
-	$(window).trigger('resize') ;
+	setTimeout(function() {$(window).trigger('resize') ;}, 200) ;
 	
 }) ;

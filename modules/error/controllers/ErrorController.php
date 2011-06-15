@@ -31,68 +31,87 @@ class ErrorController extends FermiController
 		Response::bind('message', $e->getMessage()) ;
 		Response::bind('exception', get_class($e)) ;
 		
+		$traces = array() ;
+		
 		foreach($e->getTrace() as $trace_depth => $trace)
+		{
+				
+			/*
+			$traces[$trace_depth]['depth'] = $trace_depth ;
+			$traces[$trace_depth]['file'] = '' ;
+			$traces[$trace_depth]['line'] = '' ;
+			$traces[$trace_depth]['function'] = '' ;
+			*/
+				
+			$depth_array = array(
+				'depth' => $trace_depth
+			) ;	
+			
+			if(isset($trace['file']))
 			{
-				//$traces[$trace_depth] = '#'.$trace_depth.' '.$trace['file'].' in line '.$trace['line'] ;
+				$depth_array['file'] = $trace['file'] ;
+			}
+			else
+			{
+				$depth_array['file'] = '' ;
+			}
 				
-				$traces[$trace_depth]['depth'] = $trace_depth ;
-				$traces[$trace_depth]['file'] = '' ;
-				$traces[$trace_depth]['line'] = '' ;
-				$traces[$trace_depth]['function'] = '' ;
+			if(isset($trace['line']))
+			{
+				$depth_array['line'] = $trace['line'] ;
+			}
+			else
+			{
+				$depth_array['line'] = '' ;
+			}
 				
-				if(isset($trace['file']))
+				
+			
+			if(isset($trace['function']))
+			{
+									
+				if(isset($trace['class']))
 				{
-					$traces[$trace_depth]['file'] = $trace['file'] ;
+					$depth_array['function'] = $trace['class'].'::' ;
+				}
+				else
+				{
+					$depth_array['function'] = '' ;
 				}
 				
-				if(isset($trace['line']))
+				$depth_array['function'] .= $trace['function'] ;
+					
+					
+				if(isset($trace['args']) AND is_array($trace['args']))
 				{
-					$traces[$trace_depth]['line'] = $trace['line'] ;
-				}
-				
-				
-				if(!empty($trace['function']) AND $trace['function'] != 'exception_error_handler')
-				{
-					if(isset($trace['args']))
+					
+					foreach($trace['args'] as $i => $arg)
 					{
-						foreach($trace['args'] as $key => $arg)
+						if(is_object($arg))
 						{
-							if(is_object($arg))
-							{
-								$trace['args'][$key] = get_class($arg) ;
-							}
-							
-							if(is_array($arg))
-							{
-								$trace['args'][$key] = 'Array' ;
-							}
+							$trace['args'][$i] = get_class($arg) ;
+						}
+						
+						if(is_array($arg))
+						{
+							$trace['args'][$i] = 'Array' ;
 						}
 					}
-					else
-					{
-						$trace['args'] = array();
-					}
 					
-					/*$traces[$trace_depth] .= '<br/>&nbsp;&nbsp;&nbsp;
-					>> ' ;*/
-					if(!empty($trace['class']))
-					{
-						$traces[$trace_depth]['function'] = $trace['class'].'::' ;
-					}
-					
-					$traces[$trace_depth]['function'] .= $trace['function'].'( '.implode(', ', $trace['args']).' ) ;' ;
-					
-					//$traces[$trace_depth] .= $trace['function'].'('.implode(',', $trace['args']).')' ;
-					
+					//echo implode(', ', $trace['args']) ;
+					$depth_array['function'] .= '( '.implode(', ', $trace['args']).' ) ;' ;
 				}
+				else
+				{
+					$depth_array['function'] .= '() ;' ;
+				}
+					
 			}
 			
-		//unset($traces[0]) ;
-	
-		//$tpl->bind('traces', $traces) ;
-		
-		
-		//echo $tpl->render();
+			
+			array_push($traces, $depth_array) ;
+		}
+
 		Response::setRootTemplate('error:error.phtml') ;
 		Response::bind('traces', $traces) ;
 		Response::render() ;

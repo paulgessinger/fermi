@@ -28,30 +28,40 @@
     
     	<div id="header">
         	
-            <a id="logo" href="#">fermi</a>
+            <a id="logo" href="<?=$tpl->link('admin/dashboard/index')?>">fermi</a>
             
             <div id="welcome">
             
-            	<span>Welcome back, Paul</span>
-                <a href="<?=$tpl->link('admin', 'panel', 'logout')?>">logout</a>
-                 <a href="<?=SYSURI?>">frontpage</a>
+            	<span><?=I18n::_('admin_panel_top_welcome_back')?>, Paul</span>
+                <a href="<?=$tpl->link('admin/panel/logout')?>"><?=I18n::_('admin_panel_top_logout')?></a>
+                 <a href="<?=SYSURI?>"><?=I18n::_('admin_panel_top_frontpage')?></a>
             
             </div>
             
             <div id="nav">
             	<?php
+					$current = strtolower(Request::get('agent').'/'.Request::get('controller')) ;
 				
 					foreach(Admin::getSections() as $section => $values)
 					{
-						echo '<span class="nav">
-                			<a href="'.$values['target'].'" class="title">'.$values['label'].'</a>' ;
+						if(strpos($values['target'], $current) === 0)
+						{
+							$active = ' active' ;
+						}
+						else
+						{
+							$active = '' ;
+						}
+						
+						echo '<span class="nav'.$active.'">
+                			<a href="'.$tpl->link($values['target']).'" class="title">'.I18n::_($values['label']).'</a>' ;
 						
 						if($items = Admin::getItems($section))
 						{
 							echo '<span class="sub">' ;
 							foreach($items as $item)
 							{
-								echo '<a href="'.$item['target'].'">'.$item['label'].'</a>' ;
+								echo '<a href="'.$tpl->link($item['target']).'">'.I18n::_($item['label']).'</a>' ;
 							}
 							echo '</span>' ;
 						}
@@ -59,42 +69,7 @@
 					}
 				
 				?>
-            
-            
-            	<!--<span class="nav">
-                	<a href="#" class="title">Dashboard</a>
-                </span>
-                <span class="nav active">
-                	<a href="#" class="title">System</a>
-                    <span class="sub">
-                    
-                    	<a href="#">Settings</a>
-                        <a href="#">Modules</a>
-                        <a href="#">Widgets</a>
-                    
-                    </span>
-                </span>
-                <span class="nav">
-                	<a href="#" class="title">Users</a>
-                    <span class="sub">
-					
-						<a href="#">Roles</a>
-						<a href="#">Rights</a>
-						
-					</span>
-                </span>
-                <span class="nav">
-                	<a href="#" class="title">Appearance</a>
-                </span>
-                <span class="nav">
-                	<a href="#" class="title">Structure</a>
-                    <span class="sub">
-					
-						<a href="#">Categories</a>
-					
-					</span>
-                </span>-->
-            
+           
             </div>
 
         </div>
@@ -105,17 +80,17 @@
         
         	<a href="#">
             	<span class="icon" style="background-image:url(<?=$tpl->skin?>/img/back.png);"></span>
-                Back
+                <?=I18n::_('admin_action_back')?>
             </a>
             
             <a href="#">
             	<span class="icon" style="background-image:url(<?=$tpl->skin?>/img/cancel.png);"></span>
-                Cancel
+                 <?=I18n::_('admin_action_cancel')?>
             </a>
             
             <a href="#">
             	<span class="icon" style="background-image:url(<?=$tpl->skin?>/img/save.png);"></span>
-                Save
+                 <?=I18n::_('admin_action_save')?>
             </a>
         
         </div>

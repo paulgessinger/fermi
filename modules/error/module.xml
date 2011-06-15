@@ -14,6 +14,5 @@
 			<controller>DebugController</controller>
 			<controller>ErrorController</controller>
 		</index>
-	</controllers>
-	
+	</controllers>	
 </module>

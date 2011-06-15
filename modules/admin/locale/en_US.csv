@@ -1,0 +1,20 @@
+username_field_label;Username
+password_field_label;Password
+login_submit;log in
+username_password_wrong;Username or password is wrong.
+admin_panel_top_welcome_back;Welcome back
+admin_panel_top_logout;logout
+admin_panel_top_frontpage;frontpage
+admin_menu_dashboard;Dashboard
+admin_menu_system;System
+admin_menu_users;Users
+admin_menu_appearance;Appearance
+admin_action_back;Back
+admin_action_cancel;Cancel
+admin_action_save;Save
+admin_menu_settings;Settings
+admin_menu_modules;Modules
+admin_menu_widgets;Widgets
+admin_menu_roles;Roles
+admin_menu_rights;Rights
+login_box_head;Login

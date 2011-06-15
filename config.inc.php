@@ -12,6 +12,7 @@
 	
 	<misc>
 		<debug>true</debug>
+		<localization_mode>true</localization_mode>
 	</misc>
 	
 	<libs>

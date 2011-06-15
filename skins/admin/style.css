@@ -7,7 +7,7 @@ body {
 	background-repeat:repeat-x;
 	background-position:top;
 	background-color:#ebebeb;
-	font-family:Arial, Helvetica, sans-serif;
+	font-family:Ubuntu, Arial, Helvetica, sans-serif;
 }
 
 
@@ -43,7 +43,7 @@ body {
 	right:26px;
 	padding-bottom:4px;
 	font-size:12px;
-	
+	font-family:Ubuntu;
 }
 
 #welcome a {
@@ -80,6 +80,7 @@ body {
 	background-position:right;
 	position:absolute;
 	top:72px;
+	font-family:Ubuntu;
 
 }
 

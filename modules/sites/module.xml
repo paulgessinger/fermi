@@ -17,10 +17,15 @@
 	
 	<admin>
 		<menu>
-			<structure label="Structure" target="admin/structure/index">
-				<item label="Categories">admin/structure/categories</item>
+			<structure label="admin_menu_structure" target="admin/structure/index">
+				<item label="admin_menu_categories">admin/structure/categories</item>
 			</structure>
 		</menu>
 	</admin>
+	
+	<locales>
+		<en_US/>
+		<de_DE/>
+	</locales>
 	
 </module>

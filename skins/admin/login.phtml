@@ -1,3 +1,134 @@
-<?=$tpl->message?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<?=$tpl->form?>
+<link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
+
+<title><?=$tpl->exception?></title>
+
+<style type="text/css">
+
+body {
+	padding:0px;
+	margin:0px;
+	background-color:#EBEBEB;
+	background-image: url(<?=$tpl->skin?>/img/background.jpg);
+	background-repeat: repeat-x;
+	background-position: top;
+}
+
+#wrapper {
+	position:absolute;
+	top:50%;
+	left:0px;
+	right:0px;
+	max-width:500px;
+	height:300px;
+	margin:0px auto;
+	margin-top:-150px;
+
+}
+
+#head {
+	width:482px;
+	height:42px;
+	background-color:#464646;
+
+	color:#ffffff;
+	font-family:Ubuntu;
+	padding:22px 0px 0px 20px;
+	font-size:15px;
+}
+
+
+#body {
+	padding:20px;
+	font-size:12px;
+	text-align:center;
+	border:1px solid #464646;
+	border-top:0px;
+	width:460px;
+	background-color:#ffffff;
+}
+
+#logo {
+	font-family: Ubuntu;
+	text-decoration: none;
+	font-size: 43px;
+	color: #30A4B1;
+	position: absolute;
+	right:0px;
+	top:0px;
+	display: block;
+	margin-top:-55px;
+}
+
+#login_form table {
+	text-align:right;
+	width:280px;
+	margin:0px auto;
+}
+
+#login_form table tr td:last-child {
+	padding-left:0px;
+}
+
+#login_form input[type=text], #login_form input[type=password]
+{
+	width:200px;
+	border:1px solid #464646;
+	padding:2px;
+	font-size:18px;
+	font-family:Arial;
+	color:#464646;
+	background:none;
+}
+
+#login_form input[type=button], #login_form input[type=submit]
+{
+	border:0px;
+	background-color:#464646;
+	color:#ffffff;
+	padding:8px 15px 8px 15px;
+	font-size:12px;
+	cursor:pointer;
+}
+
+#login_form input[type=button]:hover, #login_form input[type=submit]:hover
+{
+	background-color:#34B4C2;
+}
+
+#login_form input[type=button]:active, #login_form input[type=submit]:active
+{
+	padding:7px 15px 9px 15px;
+}
+
+
+</style>
+
+
+
+</head>
+<body>
+
+<div id="wrapper">
+
+    <div id="head">
+    	<div id="logo">fermi</div>
+		<?=I18n::_('login_box_head')?>
+    </div>
+    
+    <div id="body">
+    
+     	<?=I18n::_($tpl->message)?>
+
+		<?=$tpl->form?>
+    </div>
+
+</div>
+
+</body>
+</html>
+

@@ -1,34 +1,128 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
+
 <title><?=$tpl->exception?></title>
+
+<style type="text/css">
+
+body {
+	padding:0px;
+	margin:0px;
+}
+
+#wrapper {
+	position:absolute;
+	left:40px;
+	right:40px;
+	top:40px;
+	min-width:600px;
+	max-width:1200px;
+	margin:0px auto;
+}
+
+#head {
+	width:100%;
+	height:42px;
+	background-color:#464646;
+
+	color:#ffffff;
+	font-family:Ubuntu;
+	padding:22px 0px 0px 20px;
+	font-size:15px;
+}
+
+
+#body {
+	padding:20px;
+	font-size:12px;
+
+}
+
+.trace_line {
+	width:100%;	
+	border-bottom:1px solid #464646;
+	padding:10px 0px 3px 0px;
+}
+
+#message {
+	margin-bottom:20px;
+	font-size:15px;
+}
+
+#trace_head {
+	font-weight:bold;
+	font-size:15px;
+}
+
+.depth {
+	font-size:30px;
+	color:#CCC;
+	float:left;
+	font-family:Ubuntu;
+	width:40px;
+	margin-right:10px;
+}
+	
+.trace_line:hover .depth {
+	color:#999;
+}
+
+</style>
+
+
+
 </head>
 <body>
-<div style="width:900px;margin:0px auto;">
 
-<strong><?=$tpl->exception?></strong><br/>
-<?=$tpl->message?>
-<br/><br/>
-<strong>Stacktrace:</strong>
-<br/>
+<div id="wrapper">
 
+    <div id="head"><?=$tpl->exception?></div>
+    
+    <div id="body">
+    
+        <div id="message">
+        	<?=$tpl->message?>
+        </div>
+        
+        
+        <div id="trace_head">Stacktrace:</div>
+        
+        
+        <div id="trace">
+			<?php
+            foreach($tpl->traces as $trace)
+            {
+				
+            ?>
+                <div class="trace_line">
+                
+                <div class="depth"><?php
+				
+                if((int)$trace['depth'] < 10)
+				{
+					$trace['depth'] = '0'.$trace['depth'] ;
+				}
+				
+				echo $trace['depth'] ;
+				
+				?></div>
+                
+                <strong><?=$trace['file']?></strong> in line <strong><?=$trace['line']?></strong><br/>
+                &nbsp;&nbsp;&rArr; <strong><?=$trace['function']?></strong>
+                    
+                </div>
+            <?php
+            }
+            ?>
+        </div>
+        
+    </div>
 
-<?php
-foreach($tpl->traces as $trace)
-{
-?>
-	<div style="font-size:12px;padding-bottom:2px;margin-bottom:10px;border-bottom:1px solid black;width:900px;">
-	
-	#<?=$trace['depth']?> - <strong><?=$trace['file']?></strong> in line <strong><?=$trace['line']?></strong><br/>
-	&nbsp;&nbsp;&rArr; <strong><?=$trace['function']?></strong>
-		
 </div>
-<?php
-}
-?>
 
-
-</div>
 </body>
 </html>

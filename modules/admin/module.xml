@@ -23,22 +23,27 @@
 	
 	<admin>
 		<menu>
-			<dashboard label="Dashboard" target="admin/dashboard/index" />
+			<dashboard label="admin_menu_dashboard" target="admin/dashboard/index" />
 			
-			<system label="System" target="admin/system/index">
-				<item label="Settings">admin/system/settings</item>
-				<item label="Modules">admin/system/settings</item>
-				<item label="Widgets">admin/system/widgets</item>
+			<system label="admin_menu_system" target="admin/system/index">
+				<item label="admin_menu_settings">admin/system/settings</item>
+				<item label="admin_menu_modules">admin/system/settings</item>
+				<item label="admin_menu_widgets">admin/system/widgets</item>
 			</system>
 			
-			<users label="Users" target="admin/users/index">
-				<item label="Roles">admin/users/roles</item>
-				<item label="Rights">admin/users/rights</item>
+			<users label="admin_menu_users" target="admin/users/index">
+				<item label="admin_menu_roles">admin/users/roles</item>
+				<item label="admin_menu_rights">admin/users/rights</item>
 			</users>
 			
-			<appearance label="appearance" target="admin/appearance/index" />
+			<appearance label="admin_menu_appearance" target="admin/appearance/index" />
 
 		</menu>
 	</admin>
+	
+	<locales>
+		<de_DE/>
+		<en_US/>
+	</locales>
 	
 </module>

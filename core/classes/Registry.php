@@ -318,6 +318,7 @@ class Registry
 		}
 		
 		$children = $node->children() ;
+		$attributes = $node->attributes() ;
 		
 		if(count($children) != 0) 
 		{
@@ -325,7 +326,14 @@ class Registry
 		}
 		else
 		{
-			return $node ;
+			if(count($attributes) == 0)
+			{
+				return (string)$node ;
+			}
+			else
+			{
+				return $node ;
+			}
 		}
 	}
 	

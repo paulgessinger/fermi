@@ -12,6 +12,21 @@ class Database extends FermiObject
 	protected $linkManager ;
 	protected $treeManager ;
 	var $_redbean ;
+	static $connection = false ;
+	var $error ;
+	
+	function __construct() 
+	{
+		Core::addListener('onRoute', array($this, 'testConnection')) ;
+	}
+	
+	function testConnection()
+	{
+		if(Database::$connection === false)
+		{
+			throw new DatabaseException('There has been an error establishing a Database connection:<br/>'.$this->error) ;
+		}
+	}
 	
 	/**
 	 * Initiates Database connection utilizing Redbean
@@ -38,23 +53,33 @@ class Database extends FermiObject
 			$mode = $explicit ;
 		}
 		
-
-		$this->redbean = RedBean_Setup::kickstart(
-			'mysql:host='.Registry::conf('db:host').';dbname='.Registry::conf('db:name').'', 
-			Registry::conf('db:user'), 
-			Registry::conf('db:pwd'), 
-			$mode) ;
-		
+		try
+		{
+			$this->redbean = RedBean_Setup::kickstart(
+				'mysql:host='.Registry::conf('db:host').';dbname='.Registry::conf('db:name').'', 
+				Registry::conf('db:user'), 
+				Registry::conf('db:pwd'), 
+				$mode) ;
 			
-		R::configureFacadeWithToolbox($this->redbean) ;
-		R::$writer->setBeanFormatter(new FermiBeanFormatter()) ;
-		RedBean_ModelHelper::setModelFormatter(new FermiModelFormatter());
-		//R::debug( true );
+			$dbo = $this->redbean->getDatabaseAdapter() ;
+			$dbo->exec("SET CHARACTER SET utf8") ; 
+				
+			R::configureFacadeWithToolbox($this->redbean) ;
+			R::$writer->setBeanFormatter(new FermiBeanFormatter()) ;
+			RedBean_ModelHelper::setModelFormatter(new FermiModelFormatter());
+			//R::debug( true );
+				
+			$this->linkManager = new RedBean_LinkManager($this->redbean);
+			$this->assocManager = new RedBean_AssociationManager($this->redbean);
+			$this->treeManager = new RedBean_TreeManager($this->redbean);
 			
-		$this->linkManager = new RedBean_LinkManager($this->redbean);
-		$this->assocManager = new RedBean_AssociationManager($this->redbean);
-		$this->treeManager = new RedBean_TreeManager($this->redbean);
-		
+			Database::$connection = true ;
+		}
+		catch(Exception $e)
+		{
+			Database::$connection = false ;
+			$this->error = $e->getMessage() ;
+ 		}
 	}
 	
 	/**
