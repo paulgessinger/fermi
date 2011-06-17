@@ -33,8 +33,21 @@ body {
 	font-family:Ubuntu;
 	padding:22px 0px 0px 20px;
 	font-size:15px;
+	border-radius:3px;
+	overflow:hidden;
 }
 
+
+#logo {
+	font-family: Ubuntu;
+	text-decoration: none;
+	font-size: 100px;
+	color: #ffffff;
+	display: block;
+	margin-top:-33px;
+	float:right;
+	opacity:0.3;
+}
 
 #body {
 	padding:20px;
@@ -80,7 +93,11 @@ body {
 
 <div id="wrapper">
 
-    <div id="head"><?=$tpl->exception?></div>
+    <div id="head">
+	
+    <div id="logo">fermi</div>
+	
+	<?=$tpl->exception?></div>
     
     <div id="body">
     

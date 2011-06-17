@@ -27,20 +27,20 @@ body {
 	
 	font-family:Ubuntu;
 	text-decoration:none;
-	font-size:43px;
-	color:#30a4b1;
-	position:absolute;
-	left:26px;
-	bottom:112px;
+	font-size:100px;
+	color:#ffffff;
+
 	display:block;
-	
+	margin-top:-5px;
+	float:right;
+	opacity:0.3;
 }
 
 #welcome {
 	
 	position:absolute;
 	bottom:112px;
-	right:26px;
+	right:5px;
 	padding-bottom:4px;
 	font-size:12px;
 	font-family:Ubuntu;
@@ -81,7 +81,8 @@ body {
 	position:absolute;
 	top:72px;
 	font-family:Ubuntu;
-
+	border-radius:4px;
+	overflow:hidden;
 }
 
 #nav span.nav {
@@ -98,7 +99,11 @@ body {
 	-moz-transition:0.05s linear;
 	-o-transition:0.05s linear;
 	cursor:pointer;
-	
+}
+
+#nav span.nav:nth-child(2) {
+	border-top-left-radius:3px;
+	border-bottom-left-radius:3px;
 }
 
 #nav span.nav:hover, #nav span.active {
@@ -106,6 +111,7 @@ body {
 	background-color:#30a4b1;	
 
 }
+
 
 #nav span.nav a.title {
 	
@@ -125,11 +131,18 @@ body {
 	left:0px;
 	margin-bottom:-31px;
 	display:none;
+		
+	border-bottom-left-radius:4px;
+	border-bottom-right-radius:4px;
 	
 }
 
 #nav span.nav:hover span.sub {
 	display:block;
+}
+
+span.sub a:first-child {
+	border-bottom-left-radius:4px;
 }
 
 span.sub a, span.sub a:active, span.sub a:visited {
@@ -161,6 +174,7 @@ span.sub a:hover {
 	top:180px;
 	right:0px;
 	height:32px;
+	border-radius:3px;
 	
 }
 
@@ -172,6 +186,7 @@ span.sub a:hover {
 	float:left;
 	font-size:11px;
 	padding:10px 10px 8px 10px;
+
 }
 
 #actions a:active {
@@ -183,6 +198,16 @@ span.sub a:hover {
 	
 	background-color:#34B4C2;
 	
+}
+
+#actions div a:first-child {
+	border-top-left-radius:3px;
+	border-bottom-left-radius:3px;
+}
+
+#actions div a:last-child {
+	border-top-right-radius:3px;
+	border-bottom-right-radius:3px;
 }
 
 .icon {
@@ -210,6 +235,8 @@ span.sub a:hover {
 	background-position:center;
 	background-color:#464646;
 	cursor:pointer;
+	
+	border-radius:3px;
 
 }
 

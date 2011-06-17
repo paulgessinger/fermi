@@ -173,8 +173,7 @@ class Registry
 							$raw = file_get_contents(SYSPATH.'modules/'.$module.'/module.xml') ;
 							$xml = new SimpleXMLElement($raw) ;
 							if($xml->active == 'true')
-							{
-								
+							{							
 								Registry::$_modules[(string)$module] = (string)$module ;
 								
 								$this->module_xml[(string)$module] = $xml ;

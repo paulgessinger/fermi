@@ -28,7 +28,7 @@
     
     	<div id="header">
         	
-            <a id="logo" href="<?=$tpl->link('admin/dashboard/index')?>">fermi</a>
+           
             
             <div id="welcome">
             
@@ -39,6 +39,8 @@
             </div>
             
             <div id="nav">
+            	 <a id="logo" href="<?=$tpl->link('admin/dashboard/index')?>">fermi</a>
+            
             	<?php
 					$current = strtolower(Request::get('agent').'/'.Request::get('controller')) ;
 				
@@ -75,24 +77,26 @@
         </div>
     
     	<div id="actions">
-        
         	<span class="up"></span>
+        	
+        	<div>
+                <a href="#">
+                    <span class="icon" style="background-image:url(<?=$tpl->skin?>/img/back.png);"></span>
+                    <?=I18n::_('admin_action_back')?>
+                </a>
+                
+                <a href="#">
+                    <span class="icon" style="background-image:url(<?=$tpl->skin?>/img/cancel.png);"></span>
+                     <?=I18n::_('admin_action_cancel')?>
+                </a>
+                
+                <a href="#">
+                    <span class="icon" style="background-image:url(<?=$tpl->skin?>/img/save.png);"></span>
+                     <?=I18n::_('admin_action_save')?>
+                </a>
+        	</div>
         
-        	<a href="#">
-            	<span class="icon" style="background-image:url(<?=$tpl->skin?>/img/back.png);"></span>
-                <?=I18n::_('admin_action_back')?>
-            </a>
-            
-            <a href="#">
-            	<span class="icon" style="background-image:url(<?=$tpl->skin?>/img/cancel.png);"></span>
-                 <?=I18n::_('admin_action_cancel')?>
-            </a>
-            
-            <a href="#">
-            	<span class="icon" style="background-image:url(<?=$tpl->skin?>/img/save.png);"></span>
-                 <?=I18n::_('admin_action_save')?>
-            </a>
-        
+        	
         </div>
     
     </div>

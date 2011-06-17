@@ -48,8 +48,7 @@ abstract class FermiModel extends FermiObject implements Model
 		}
 		
 		
-		$this->bean = R::load($this->type, $id) ;
-		//$id_format = FermiBeanFormatter::_formatBeanID($this->type) ;
+		$this->bean = R::load($this->type, $id) ; // use redbean facade to retrieve a bean from database.
 	
 		if($this->getId())
 		{
@@ -81,12 +80,12 @@ abstract class FermiModel extends FermiObject implements Model
 		}
 		
 
-		$this->bean = R::findOne($this->type, $sql, $values) ;
+		$this->bean = R::findOne($this->type, $sql, $values) ; // use redbean facade to retrieve a bean from database.
 
 		
 			
 		
-		if(!is_object($this->bean))
+		if(!is_object($this->bean)) // should not be the case
 		{
 			return false ;
 		}

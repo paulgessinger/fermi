@@ -1,8 +1,8 @@
 <?php
 
-class SiteModel extends FermiModel 
+class ArticleModel extends FermiModel 
 {
-	var $type = 'site' ;
+	var $type = 'article' ;
 	var $bean = false ;
 	
 	function __construct() 
@@ -27,11 +27,11 @@ class SiteModel extends FermiModel
 		
 		if($this->isNew())
 		{
-			$tester = Core::getModel('sites:Site') ;
+			$tester = Core::getModel('articles:Article') ;
 		
 			if($tester->find('name=?', array($this->name)))
 			{
-				$this->addError('A site with this identifier already exists.') ;
+				$this->addError('An article with this identifier already exists.') ;
 			}
 		}
 		

@@ -4,7 +4,7 @@
  * @author Paul Gessinger
  *
  */
-class Sites extends FermiController
+class Articles extends FermiController
 {
 	/**
 	 * register the task index
@@ -13,8 +13,8 @@ class Sites extends FermiController
 	{
 		parent::__construct();
 		
-		Response::bindTemplateFunction('site', function($site) { 
-			return HTML::sitelink('Index', 'Sites', 'index', $site) ;
+		Response::bindTemplateFunction('article', function($site) { 
+			return HTML::sitelink('Index', 'Articles', 'index', $site) ;
 		}) ;
 		
 		Response::bindTemplateFunction('link', function($agent, $controller, $task) { 
@@ -25,7 +25,7 @@ class Sites extends FermiController
 	function modelAction()
 	{
 		
-		$site = Core::getModel('sites:Site')->find('name=?', array('index')) ;
+		$site = Core::getModel('article:Article')->find('name=?', array('index')) ;
 		$user = Core::getModel('core:User')->find('name=?', array('paul')) ;
 		
 		$new_role = Core::getModel('core:Role') ;
@@ -44,49 +44,39 @@ class Sites extends FermiController
 	 */
 	function indexAction()
 	{
-		$site = 'index' ;
+		$article = 'index' ;
 		
 		if($param = Request::get('default'))
 		{
-			$site = $param ;
+			$article = $param ;
 		}
-		elseif($param = Request::get('site'))
+		elseif($param = Request::get('article'))
 		{
-			$site = $param ;
+			$article = $param ;
 		}
 		
-		Request::set('site', $site) ;
+		Request::set('article', $article) ;
+
 		
-		/*$index = Core::getModel('sites:Site') ;
-		$index->name = 'hans' ;
-		//$index->find('name=?', array('hans')) ;
-		$index->content =  'Serious business' ;
 		
-		if(($errors = $index->save()) !== true)
+
+		$this->article_content = Response::getTemplate('articles:page.phtml') ;
+
+
+		if($article_db = Core::getModel('articles:Article')->find('name=?', array($article)))
 		{
-			var_dump($errors) ;	
-		}*/
-		
-		
-		
-
-		$this->site_content = Response::getTemplate('sites:page.phtml') ;
-
-
-		if($site_db = Core::getModel('sites:Site')->find('name=?', array($site)))
-		{
-			$this->site_content->text = $site_db->content ;
+			$this->article_content->text = $article_db->content ;
 		}
 		else
 		{
-			$this->site_content->text = 'Whoops, looks like this site doesn\'t exist.' ;
+			$this->article_content->text = 'Whoops, looks like this site doesn\'t exist.' ;
 		}
 		
-		$site_tpl = Response::getTemplate('sites:page.phtml', array('text' => $this->site_content->text)) ;
+		$article_tpl = Response::getTemplate('articles:page.phtml', array('text' => $this->article_content->text)) ;
 		
 		
 		
-		Response::bind('main', $site_tpl) ;
+		Response::bind('main', $article_tpl) ;
 		Response::render() ;
 		
 		/*$contents = array(
