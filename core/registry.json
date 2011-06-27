@@ -1,0 +1,7 @@
+{
+	"default": {
+		"htaccess": true,
+		"default_agent": "Index",
+		"default_controller": "Articles"
+	}
+}

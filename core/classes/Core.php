@@ -165,7 +165,7 @@ class Core
 				
 			//print_r($request) ;
 				
-			$this->agent = Registry::get('default_agent') ;
+			$this->agent = Registry::get('default:default_agent') ;
 				
 			$rounds = array(
 				'action', 
@@ -219,8 +219,7 @@ class Core
 		}
 		catch(Exception $e)
 		{	
-			
-			$default_agent = Registry::get('default_agent').'Agent' ;
+			$default_agent = Registry::get('default:default_agent').'Agent' ;
 			if(get_class($this->agent_instance) != $default_agent)
 			{
 				include Core::$_registry->agents[$default_agent] ;

@@ -1,5 +1,4 @@
 <?php
-ob_start();
 try
 {
 	require 'core/classes/Core.php' ;
@@ -7,11 +6,9 @@ try
 
 	Core::_launch() ;
 	
-	Core::_route() ;
-	
+	Core::_route() ;	
 }
 catch(Exception $e)
 {
-	die('<strong>Uncatcheable error:</strong><br/> '.$e.'<br /> <strong>Shutdown.</strong>') ;
+	die('<strong>Uncatchable error:</strong><br/> <pre>'.$e.'</pre><br /> <strong>Shutdown.</strong>') ;
 }
-ob_end_flush();

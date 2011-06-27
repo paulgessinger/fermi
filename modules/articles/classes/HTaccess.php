@@ -14,7 +14,7 @@ class HTaccess extends FermiObject
 	 */
 	function _launch()
 	{
-		if(Registry::get('htaccess') == true)
+		if(Registry::get('default:htaccess') == true)
 		{
 			Core::get('Request')->setPathRenderer(function($agent, $controller, $action, $params)
 			{

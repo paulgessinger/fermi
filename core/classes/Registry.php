@@ -245,8 +245,24 @@ class Registry
 	 */
 	private function buildRegistry()
 	{		
-		Registry::$reg = include_once SYSPATH.'core/registry.inc.php' ;
+		$raw = json_decode(file_get_contents(SYSPATH.'core/registry.json')) ;
+		
+		Registry::$reg = Util::json_to_hash($raw) ;
+
 	}
+	
+	/**
+	 * rewrites registry.inc.php if anything was modified.
+	 */
+	function __destruct()
+	{
+		if($this->_modified === true)
+		{
+			file_put_contents(SYSPATH.'core/registry.json', Util::json_format(json_encode(Registry::$reg))) ;
+		}
+		
+	}
+	
 	
 	/**
 	 * assemble the configuration
@@ -350,52 +366,21 @@ class Registry
 	 * @param string $key The key to get, in form SECTION:KEY
 	 */
 	function _get($key)
-	{
+	{	
 		$key_arr = explode(':', $key) ;
-		if(count($key_arr) == 1)
-		{
-			if(array_key_exists($key_arr[0], Registry::$reg))
-			{
-				foreach($this->reg[$key_arr[0]] as $key => $value)
-				{
-					if(!isset($this->unserialized[$key_arr[0]][$key]))
-					{
-						$this->unserialized[$key_arr[0]][$key] = unserialize(Registry::$reg[$key_arr[0]][$key]) ;
-					}
-						
-					$return[$key] = $this->unserialized[$key_arr[0]][$key] ;
-				}
-					
-				return $return ;
-					
-			}
-			else 
-			{
-				$sec = 'default' ;
-				$item = $key_arr[0] ;
-			}
-				
-		}
-		else
-		{
-			$sec = $key_arr[0] ;
-			$item = $key_arr[1] ;
-		}
-			
-			
-		if(array_key_exists($sec, Registry::$reg))
-		{
-			if(array_key_exists($item, Registry::$reg[$sec]))
-			{	
-				if(!isset($this->unserialized[$sec][$item]))
-				{
-					$this->unserialized[$sec][$item] = unserialize(Registry::$reg[$sec][$item]) ;	
-				}
-				return $this->unserialized[$sec][$item] ;
-			}
-		}
-		return false ;
 
+		if(count($key_arr) != 2)
+		{
+			return false ;
+		}
+		
+		if(isset(Registry::$reg[$key_arr[0]][$key_arr[1]]))
+		{
+			return Registry::$reg[$key_arr[0]][$key_arr[1]] ;
+		}
+		
+		
+		return false ;
 	}
 	
 	/**
@@ -406,22 +391,13 @@ class Registry
 	function _set($key, $value)
 	{
 		$key_arr = explode(':', $key) ;
-		if(count($key_arr) == 1)
+		
+		if(count($key_arr) != 2)
 		{
-			$sec = 'default' ;
-			$item = $key_arr[0] ;
-		}
-		else
-		{
-			$sec = $key_arr[0] ;
-			$item = $key_arr[1] ;
+			return false ;
 		}
 			
-		$this->unserialized[$sec][$item] = $value ;
-			
-		$value = serialize($value) ;
-						
-		$this->reg[$sec][$item] = $value ;
+		Registry::$reg[$key_arr[0]][$key_arr[1]] = $value ;
 			
 		$this->modified = true ;
 	}
@@ -433,22 +409,16 @@ class Registry
 	function _remove($key)
 	{
 		$key_arr = explode(':', $key) ;
-		if(count($key_arr) == 1)
+		if(count($key_arr) != 2)
 		{
-		$sec = 'default' ;
-		$item = $key_arr[0] ;
-		}
-		else
-		{
-			$sec = $key_arr[0] ;
-			$item = $key_arr[1] ;
+			return false ;
 		}
 			
-		unset($this->reg[$sec][$item]) ;
+		unset(Registry::$reg[$key_arr[0]][$key_arr[1]]) ;
 			
-		if(count($this->reg[$sec]) == 0)
+		if(count(Registry::$reg[$key_arr[0]]) == 0)
 		{
-			unset($this->reg[$sec]) ;
+			unset(Registry::$reg[$key_arr[0]]) ;
 		}	
 			
 		$this->modified = true ;
@@ -475,30 +445,5 @@ class Registry
 			return $new_instance ;
 		}
 	}
-	
-	
-	/**
-	 * rewrites registry.inc.php if anything was modified.
-	 */
-	function __destruct()
-	{
-		if($this->_modified === true)
-		{
-			$data = '<?php
-' ;
-			foreach($this->reg as $section => $keys)
-			{
-				foreach($keys as $key => $value)
-				{
-					$data .= '$registry[\''.$section.'\'][\''.$key.'\'] = \''.$value.'\' ;
-' ;
-				}
-			}
-			
-		$data .= 'return $registry ;' ;
-		
-		file_put_contents(SYSPATH.'core/registry.inc.php', $data) ;
-		
-		}
-	}
+
 }
