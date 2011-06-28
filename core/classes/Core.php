@@ -368,7 +368,7 @@ class Core
 	 * @param string Event to be fired
 	 * @return unknown_type All the returns of functions registered to the Event
 	 */
-	function _fireEvent($event)
+	function _fireEvent($event, $arguments = array())
 	{
 		if(!array_key_exists($event, $this->events))
 		{
@@ -378,10 +378,15 @@ class Core
 		else
 		{
 			
-			$arg_arr = func_get_args() ;
-			unset($arg_arr[0]) ;
+			//$arg_arr = func_get_args() ;
+			//unset($arg_arr[0]) ;
 			
-			return call_user_func_array(array($this->events[$event], 'fire'), $arg_arr) ;
+			$this->events[$event]->setArguments($arguments) ;
+			$this->events[$event]->fire() ;
+			
+			return $this->events[$event] ;
+			
+			
 			//$this->events[$event]->fire($arg_arr) ;
 		}
 	}

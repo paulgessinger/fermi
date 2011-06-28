@@ -59,9 +59,9 @@ abstract class FermiAgent extends FermiObject implements Agent
 		}
 		
 		
-		Core::fireEvent('onAgentReady', $this->agent, $this->controller, $this->action) ;
+		Core::fireEvent('onAgentReady', array('agent' => $this->agent, 'controller' => $this->controller, 'action' => $this->action)) ;
 		Core::rechargeEvent('onAgentReady') ;
-		Core::fireEvent('on'.get_class($this).'Ready', $this->agent, $this->controller, $this->action) ;
+		Core::fireEvent('on'.get_class($this).'Ready', array('agent' => $this->agent, 'controller' => $this->controller, 'action' => $this->action)) ;
 		Core::rechargeEvent('on'.get_class($this).'Ready') ;
 	
 		

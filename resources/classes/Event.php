@@ -10,6 +10,8 @@ class Event extends FermiObject
 	var $fired = false ;
 	var $listeners = array();
 	var $sealed = false ;
+	var $arguments = array() ;
+	var $multiple = false ;
 	protected $return_val ;
 	
 	/**
@@ -20,6 +22,21 @@ class Event extends FermiObject
 	{
 		$this->multiple = $multiple ;
 		$this->event_name = $event_name ;
+	}
+	
+	function setArguments(array $arguments)
+	{
+		$this->arguments = $arguments ;
+	}
+	
+	function __get($key) 
+	{
+		return $this->arguments[$key] ;
+	}
+	
+	function __set($key, $value) 
+	{
+		return $this->arguments[$key] = $value ;
 	}
 	
 	/**
@@ -73,13 +90,10 @@ class Event extends FermiObject
 	
 		if(!$this->fired AND !$this->sealed)
 		{
-			$arg_arr = func_get_args() ;
-			
-			$return_val = null ;
-			
+
 			foreach($this->listeners as $listener)
 			{
-				$return_val .= call_user_func_array($listener, $arg_arr) ;
+				call_user_func_array($listener, array($this)) ;
 			}
 			
 			if($this->multiple === false)
@@ -87,7 +101,7 @@ class Event extends FermiObject
 				$this->fired = true ;
 			}
 			
-			return $return_val ;
+			return true ;
 		}
 		elseif(!$this->sealed AND $this->fired)
 		{

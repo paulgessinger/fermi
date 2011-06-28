@@ -32,7 +32,7 @@
             
             <div id="welcome">
             
-            	<span><?=I18n::_('admin_panel_top_welcome_back')?>, Paul</span>
+            	<span><?=I18n::_('admin_panel_top_welcome_back')?>, <?=Session::getUser()->name?></span>
                 <a href="<?=$tpl->link('admin/panel/logout')?>"><?=I18n::_('admin_panel_top_logout')?></a>
                  <a href="<?=SYSURI?>"><?=I18n::_('admin_panel_top_frontpage')?></a>
             

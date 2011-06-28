@@ -48,9 +48,10 @@ class Panel extends FermiController
 		$form->addElement('submit', 'submit', $options) ;
 		
 		
-		
 		if($post = Request::getPost())
 		{
+			Core::fireEvent('onBeforeLogin') ;
+			
 			if($user = Core::getModel('core:User')->find('name=?', array($post['username'])))
 			{	
 				if(Session::generateHash($user->salt.$post['password']) == $user->pass)
@@ -60,21 +61,27 @@ class Panel extends FermiController
 					{
 						Session::setUser($user) ;
 						
+						Core::fireEvent('onAfterLogin', array('user' => $user)) ;
+						
 						Core::redirect('admin', 'dashboard', 'index') ;
+						
 					}
 					else
 					{
 						Response::bind('message', 'access_denied') ;
+						Core::fireEvent('onAccessDenies') ;
 					}
 				}
 				else
 				{
 					Response::bind('message', 'username_password_wrong') ;
+					Core::fireEvent('onUnsuccessfullLogin') ;
 				}
 			}
 			else
 			{
 				Response::bind('message', 'username_password_wrong') ;
+				Core::fireEvent('onUnsuccessfullLogin') ;
 			}
 			
 			
