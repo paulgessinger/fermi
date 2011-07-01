@@ -71,13 +71,13 @@ class Core
 		}
 		
 		foreach($places as $place)
+		{
+			if(file_exists(SYSPATH.'resources/'.$place.'/'.$class.'.php'))
 			{
-				if(file_exists(SYSPATH.'resources/'.$place.'/'.$class.'.php'))
-				{
-					include SYSPATH.'resources/'.$place.'/'.$class.'.php' ;
-					return true ;
-				}
+				include SYSPATH.'resources/'.$place.'/'.$class.'.php' ;
+				return true ;
 			}
+		}
 		
 
 		throw new Exception('Class "'.$class.'" could not be found.') ;

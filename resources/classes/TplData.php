@@ -34,7 +34,7 @@ class TplData extends FermiObject
 			return false ;
 		}
 		
-		if(is_object($this->values[$name])) // AND get_class($this->values[$name]) == 'Template')
+		if(is_object($this->values[$name]) AND get_class($this->values[$name]) == 'Template')
 		{
 			return $this->values[$name]->render() ;
 		}

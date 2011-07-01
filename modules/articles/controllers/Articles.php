@@ -58,25 +58,38 @@ class Articles extends FermiController
 		Request::set('article', $article) ;
 
 		
-		
-
-		$this->article_content = Response::getTemplate('articles:page.phtml') ;
+		$widget_array = array() ;
 
 
 		if($article_db = Core::getModel('articles:Article')->find('name=?', array($article)))
 		{
-			$this->article_content->text = $article_db->content ;
+			$xml = new SimpleXMLElement($article_db->content) ;
+			foreach($xml->widgets->widget as $widget_node)
+			{
+				$widget = Widgets::getWidget((string)$widget_node['type']) ;
+				$widget->fromXML($widget_node) ;
+				
+				array_push($widget_array, $widget->getOutput()) ;
+			}
+			
 		}
 		else
 		{
-			$this->article_content->text = 'Whoops, looks like this site doesn\'t exist.' ;
+			$widget_array[0] ='Whoop\'s, looks like this site doesn\'t exist.' ;
 		}
+
+
 		
-		$article_tpl = Response::getTemplate('articles:page.phtml', array('text' => $this->article_content->text)) ;
+		
+
+		Response::bind('main', implode('', $widget_array)) ;
 		
 		
+
 		
-		Response::bind('main', $article_tpl) ;
+		
+		//$article_tpl = Response::getTemplate('articles:page.phtml', array('text' => $this->article_content->text)) ;
+		
 		Response::render() ;
 		
 		/*$contents = array(
