@@ -85,4 +85,15 @@ class Form extends FermiObject
 			}
 		}
 	}
+	
+	/**
+	 * Triggers the render method if the object is used as a string.
+	 *
+	 * @return string The output string.
+	 * @author Paul Gessinger
+	 */
+	function __toString()
+	{
+		return (string)$this->render() ;
+	}
 }
