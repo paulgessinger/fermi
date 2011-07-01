@@ -1,12 +1,11 @@
 <?php
 
 /**
- * This is Core, the frame of Charon. Core launches Registry and coordinates Events and render.
- * @author Paul Gessinger
+ * Core is the frame of the system.
  *
+ * @package Core
+ * @author Paul Gessinger
  */
-
-
 class Core
 {
 	static $_self ;
@@ -25,14 +24,15 @@ class Core
 	var $action = 'index' ;
 	var $params ;
 	
-	
 	protected $agent_instance ;
 	
 	protected $error_triggered = false ;
 	
 	
 	/**
-	 * registers error exception to have custom handling of all php errors
+	 * Registers error exception to have custom handling of all php errors
+	 *
+	 * @author Paul Gessinger
 	 */
 	function __construct()
 	{		
@@ -69,7 +69,7 @@ class Core
 				}
 			}
 		}
-		
+
 		foreach($places as $place)
 		{
 			if(file_exists(SYSPATH.'resources/'.$place.'/'.$class.'.php'))
@@ -85,7 +85,7 @@ class Core
 	
 	
 	/**
-	 * Convenience Method fr creating pseudo-static methods. Static calls to Core:: are now interpreted as calls to the singleton,
+	 * Convenience Method for creating pseudo-static methods. Static calls to Core:: are now interpreted as calls to the singleton,
 	 * and tried to map on corresponding methods.
 	 */
 	public static function __callStatic($function, $arguments)
@@ -150,8 +150,8 @@ class Core
 	 * determine the requested resource. It creates an Agent and dispatches the call of a specific
 	 * Controller to it.
 	 * 
-	 * Set $force to true to bypass overwriting of default or set values through uri
-	 * @param bool $force
+	 * 
+	 * @param bool $force Set to true to bypass overwriting of default or set values through uri
 	 */
 	public function __route($force = false)
 	{	
@@ -236,7 +236,10 @@ class Core
 	
 	
 	/**
-	 * returns an instance of Core, shortcut to Core::$_self
+	 * Returns an instance of Core, shortcut to Core::$_self
+	 *
+	 * @return object Core
+	 * @author Paul Gessinger
 	 */
 	static function _()
 	{
@@ -270,9 +273,10 @@ class Core
 	 * Model names use a pseudo namespace in the form of module:Model. Stock modules can be found in the "core" namespace.
 	 *
 	 * @param string $model The "path" to the model, format: module:Model
-	 * @return FermiModel An instance of the model that was requested.
+	 * @return object FermiModel An instance of the model that was requested.
 	 * @throws exception ErrorException
 	 */
+	
 	function _getModel($model)
 	{
 		$arr = explode(':', $model) ;

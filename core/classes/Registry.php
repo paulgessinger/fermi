@@ -1,9 +1,11 @@
 <?php
+
 /**
- * Registry provides a storage solution for configuration and installation specific values
+ * 	Registry provides a storage solution for configuration and installation specific values
  * without resorting to a DB. Registry also acts as a non compulsory Singleton.
- * @author Paul Gessinger
  *
+ * @package Core
+ * @author Paul Gessinger
  */
 class Registry
 {
@@ -22,6 +24,8 @@ class Registry
 	
 	/**
 	 * Calculates certain values and includes all necessary php files.
+	 *
+	 * @author Paul Gessinger
 	 */
 	function __construct()
 	{	
@@ -103,7 +107,12 @@ class Registry
 		}
 	}
 	
-	
+	/**
+	 * Perform includes.
+	 *
+	 * @return void
+	 * @author Paul Gessinger
+	 */
 	private function performIncludes()
 	{
 		foreach($this->includes as $path)
@@ -112,6 +121,12 @@ class Registry
 		}
 	}
 
+	/**
+	 * Perform auto instances
+	 *
+	 * @return void
+	 * @author Paul Gessinger
+	 */
 	private function performAutoInstances()
 	{
 		foreach($this->auto_instances as $class => $path)
@@ -125,6 +140,12 @@ class Registry
 		}
 	}
 	
+	/**
+	 * Initialize resources
+	 *
+	 * @return void
+	 * @author Paul Gessinger
+	 */
 	private function initializeResources()
 	{
 		$raw = file_get_contents(SYSPATH.'resources/resources.xml') ;
@@ -156,6 +177,12 @@ class Registry
 		
 	}
 	
+	/**
+	 * Initialize Modules
+	 *
+	 * @return void
+	 * @author Paul Gessinger
+	 */
 	private function initializeModules()
 	{
 		$errors = array() ;
@@ -241,7 +268,10 @@ class Registry
 	}
 	
 	/**
-	 * include registry file
+	 * Load registry file.
+	 *
+	 * @return void
+	 * @author Paul Gessinger
 	 */
 	private function buildRegistry()
 	{		
@@ -253,6 +283,9 @@ class Registry
 	
 	/**
 	 * rewrites registry.inc.php if anything was modified.
+	 *
+	 * @return void
+	 * @author Paul Gessinger
 	 */
 	function __destruct()
 	{
@@ -266,6 +299,9 @@ class Registry
 	
 	/**
 	 * assemble the configuration
+	 *
+	 * @return void
+	 * @author Paul Gessinger
 	 */
 	private function buildConfig()
 	{
@@ -276,6 +312,9 @@ class Registry
 	
 	/**
 	 * Includes all files mentioned in config section "libs"
+	 *
+	 * @return void
+	 * @author Paul Gessinger
 	 */
 	private function includeLibs()
 	{
@@ -305,8 +344,10 @@ class Registry
 	}
 	
 	/**
-	 * retrieves a value from the configuration. Due to the config being stored in XML : corresponds to a level down the dom
+	 * retrieves a value from the configuration. Due to the config being stored in XML : corresponds to a level down the dom	 
 	 * @param string $key The key to get
+	 * @return string Whatever was stored in config.
+	 * @author Paul Gessinger
 	 */
 	function _conf($key)
 	{
@@ -354,6 +395,9 @@ class Registry
 	
 	/**
 	 * returns an instance of Registry.
+	 *
+	 * @return void
+	 * @author Paul Gessinger
 	 */
 	static function _()
 	{
@@ -362,8 +406,10 @@ class Registry
 	
 	
 	/**
-	 * retrieves a value from the registry.
+	 * 	retrieves a value from the registry.
 	 * @param string $key The key to get, in form SECTION:KEY
+	 * @return mixed Whatever was stored in registry.
+	 * @author Paul Gessinger
 	 */
 	function _get($key)
 	{	
@@ -387,6 +433,8 @@ class Registry
 	 * Set a Registry value.
 	 * @param $key The Key in form of SECTION:KEY
 	 * @param $value The value.
+	 * @return void
+	 * @author Paul Gessinger
 	 */
 	function _set($key, $value)
 	{
@@ -405,6 +453,8 @@ class Registry
 	/**
 	 * permanently removes a key-value pair from the registry.
 	 * @param string $key The Key to remove.
+	 * @return void
+	 * @author Paul Gessinger
 	 */
 	function _remove($key)
 	{
@@ -429,6 +479,7 @@ class Registry
 	 * Retrieves a class and creates an instance if there is none.
 	 * USE Core::get()
 	 * @param string $class Class to get.
+	 * @author Paul Gessinger
 	 */
 	function getInstance($class)
 	{

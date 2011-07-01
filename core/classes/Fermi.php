@@ -1,7 +1,18 @@
 <?php
 
+/**
+ * Wrapper for the Core and Registry calls.
+ *
+ * @package Core
+ * @author Paul Gessinger
+ */
 class Fermi
 {
+	/**
+	 * Includes Core and Registry and tells Core to launch.
+	 *
+	 * @author Paul Gessinger
+	 */
 	function __construct() 
 	{
 		

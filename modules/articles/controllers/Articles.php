@@ -1,8 +1,10 @@
 <?php
+
 /**
  * The Site controller shows the site specified.
- * @author Paul Gessinger
  *
+ * @package Articles
+ * @author Paul Gessinger
  */
 class Articles extends FermiController
 {
@@ -31,16 +33,15 @@ class Articles extends FermiController
 		$new_role = Core::getModel('core:Role') ;
 		$new_role->name = 'super' ;
 		$new_role->save() ;
-		
-		
-		
-		
+
 		Response::render() ;
 	}
 	
-
 	/**
-	 * retrieves the data belonging to the site requested and forwards it to the template
+	 * Retrieves the data belonging to the site requested and forwards it to the template
+	 *
+	 * @return void
+	 * @author Paul Gessinger
 	 */
 	function indexAction()
 	{
