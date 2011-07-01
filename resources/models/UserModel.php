@@ -1,30 +1,60 @@
 <?php
 
+/**
+ * Model for User.
+ *
+ * @package Core
+ * @author Paul Gessinger
+ */
 class UserModel extends FermiModel 
 {
 	var $type = 'user' ;
 	var $test = 'leer' ;
 	var $rights = array() ;
 	
-	function __construct() 
-	{
-	}
+	function __construct() {}
 	
+	/**
+	 * Adds a role to the user.
+	 *
+	 * @param RoleModel $role The role that is to be assigned to this user.
+	 * @return boolean True on success.
+	 * @author Paul Gessinger
+	 */
 	function addRole(RoleModel $role)
 	{
 		return R::associate($this->bean, $role->bean) ;
 	}
 	
+	/**
+	 * Removes a role from this user
+	 *
+	 * @param RoleModel $role The role that is to be removed
+	 * @return boolean True on success.
+	 * @author Paul Gessinger
+	 */
 	function removeRole(RoleModel $role)
 	{
 		return R::unassociate($this->bean, $role->bean) ;
 	}
 	
+	/**
+	 * Returns a FermiCollection of all roles that are assigned to this user
+	 *
+	 * @return object FermiCollection The collection containing all the roles.
+	 * @author Paul Gessinger
+	 */
 	function getRoles()
 	{
 		return new FermiCollection(Core::getModel('core:Role'), R::related($this->bean, 'role')) ;
 	}
 	
+	/**
+	 * Iterates over all the roles and retrieves rights that are assigned to them.
+	 *
+	 * @return void
+	 * @author Paul Gessinger
+	 */
 	function loadRights()
 	{
 		$roles = $this->getRoles() ;
@@ -45,6 +75,13 @@ class UserModel extends FermiModel
 		$this->rights = $right_hierarchy ;
 	}
 	
+	/**
+	 * Internal recursive method for traversing up the role hierarchy in order to implement right inheritance.
+	 *
+	 * @param RoleModel $role The role whose ancestors are to be traversed over.
+	 * @return object FermiCollection A collection containing all the rights.
+	 * @author Paul Gessinger
+	 */
 	private function extractRights(RoleModel $role) 
 	{
 		$rights = $role->getRights();
@@ -56,6 +93,13 @@ class UserModel extends FermiModel
 		return $rights ;
 	}
 	
+	/**
+	 * Authorizes an ACL against this user.
+	 *
+	 * @param string $path The ACL path that is to be tested.
+	 * @return boolean True on right exists, false if not.
+	 * @author Paul Gessinger
+	 */
 	function authorize($path)
 	{
 		$path_array = explode('/', $path) ;
@@ -87,6 +131,12 @@ class UserModel extends FermiModel
 		return false ;
 	}
 	
+	/**
+	 * Validator for the role model data record.
+	 *
+	 * @return void
+	 * @author Paul Gessinger
+	 */
 	function validate() 
 	{	
 			

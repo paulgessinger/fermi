@@ -3,6 +3,7 @@
 /**
  * Loads translations from all the modules and translates strings according to the locale specified.
  *
+ * @package Core
  * @author Paul Gessinger
  */
 class I18n extends FermiObject

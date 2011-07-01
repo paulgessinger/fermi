@@ -1,8 +1,10 @@
 <?php
+
 /**
- * Request handles all Request variables that are available to php.
- * @author Paul Gessinger
+ * Request handles all Request variables that are available to PHP.
  *
+ * @package Core
+ * @author Paul Gessinger
  */
 class Request extends FermiObject
 {

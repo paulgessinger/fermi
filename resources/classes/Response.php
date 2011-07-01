@@ -1,8 +1,10 @@
 <?php
+
 /**
- * Central manager of everything sent to the client. Provides abstraction for Twig.
- * @author Paul Gessinger
+ * Central manager of everything sent to the client.
  *
+ * @package Core
+ * @author Paul Gessinger
  */
 class Response extends FermiObject
 {

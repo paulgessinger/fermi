@@ -2,6 +2,8 @@
 
 /**
  * Prototype Model. All models should inherit from this.
+ *
+ * @package Core
  * @author Paul Gessinger
  */
 abstract class FermiModel extends FermiObject implements Model

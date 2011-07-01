@@ -3,6 +3,7 @@
 /**
  * Database class. Utilises Redbean to persist data.
  *
+ * @package Core
  * @author Paul Gessinger
  */
 class Database extends FermiObject

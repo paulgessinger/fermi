@@ -1,8 +1,10 @@
 <?php
+
 /**
  * Interface for Model.
- * @author Paul Gessinger
  *
+ * @package Core
+ * @author Paul Gessinger
  */
 interface Model
 {

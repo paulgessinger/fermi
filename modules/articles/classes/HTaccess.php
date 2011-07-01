@@ -1,4 +1,11 @@
 <?php
+
+/**
+ * HTaccess registers path parser and renderer
+ *
+ * @package Articles
+ * @author Paul Gessinger
+ */
 class HTaccess extends FermiObject
 {
 	static $_autoInstance = true ;

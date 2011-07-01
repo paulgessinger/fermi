@@ -3,6 +3,7 @@
 /**
  * Model for Roles.
  *
+ * @package Core
  * @author Paul Gessinger
  */
 class RoleModel extends FermiModel 

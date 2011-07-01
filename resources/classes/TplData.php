@@ -1,8 +1,10 @@
 <?php
+
 /**
- * @author Paul Gessinger
- *
  * Template Wrapper class that encapsulates the .php templates. Exposes all relevant variables and functions to the template under $tpl.
+ *
+ * @package Core
+ * @author Paul Gessinger
  */
 class TplData extends FermiObject
 {

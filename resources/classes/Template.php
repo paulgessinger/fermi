@@ -1,8 +1,10 @@
 <?php
+
 /**
- * Wrapper class for the Twig_Template
- * @author Paul Gessinger
+ * Wrapper class for templates.
  *
+ * @package Core
+ * @author Paul Gessinger
  */
 class Template extends FermiObject
 {

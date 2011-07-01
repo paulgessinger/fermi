@@ -1,8 +1,10 @@
 <?php
+
 /**
  * Interface for Controller.
- * @author Paul Gessinger
  *
+ * @package Core
+ * @author Paul Gessinger
  */
 interface Controller
 {

@@ -2,6 +2,9 @@
 
 /**
  * Forms singleton that is used to register Element types for forms.
+ *
+ * @package Forms
+ * @author Paul Gessinger
  */
 class Forms extends FermiObject
 {

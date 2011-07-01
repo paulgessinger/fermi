@@ -3,6 +3,7 @@
 /**
  * Abstraction for the PHP session. This is a singleton.
  *
+ * @package Core
  * @author Paul Gessinger
  */
 class Session extends FermiObject

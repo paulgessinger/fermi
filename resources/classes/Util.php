@@ -1,8 +1,10 @@
 <?php
+
 /**
  * Provides general and static helper methods.
- * @author Paul Gessinger
  *
+ * @package Core
+ * @author Paul Gessinger
  */
 abstract class Util
 {

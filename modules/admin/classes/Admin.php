@@ -3,6 +3,7 @@
 /**
  * Admin Singleton helper.
  *
+ * @package Admin
  * @author Paul Gessinger
  */
 class Admin extends FermiObject 

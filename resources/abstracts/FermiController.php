@@ -2,8 +2,9 @@
 
 /**
  * This is the prototype for Controllers. It implements standard Controller behaviour.
- * @author Paul Gessinger
  *
+ * @package Core
+ * @author Paul Gessinger
  */
 abstract class FermiController extends FermiObject implements Controller
 {

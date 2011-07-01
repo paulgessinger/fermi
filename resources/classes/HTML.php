@@ -1,8 +1,10 @@
 <?php
+
 /**
  * This is an extendable Helper method provider for common HTML constructions.
- * @author Paul Gessinger
  *
+ * @package Core
+ * @author Paul Gessinger
  */
 class HTML extends FermiObject
 {

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Model for Settings.
+ *
+ * @package Core
+ * @author Paul Gessinger
+ */
 class SettingModel extends FermiModel 
 {
 	var $type = 'setting' ;

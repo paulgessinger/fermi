@@ -1,7 +1,9 @@
 <?php
+
 /**
  * Serves as a wrapper for Events.
- * 
+ *
+ * @package Core
  * @author Paul Gessinger
  */
 class Event extends FermiObject

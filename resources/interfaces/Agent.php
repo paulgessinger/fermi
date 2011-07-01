@@ -2,8 +2,9 @@
 
 /**
  * Interface for Agent.
- * @author Paul Gessinger
  *
+ * @package Core
+ * @author Paul Gessinger
  */
 interface Agent
 {

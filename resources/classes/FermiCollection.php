@@ -1,7 +1,9 @@
 <?php
+
 /**
  * FermiCollection is a set of FermiModels that are populated from the database.
  *
+ * @package Core
  * @author Paul Gessinger
  */
 class FermiCollection extends FermiObject implements Iterator

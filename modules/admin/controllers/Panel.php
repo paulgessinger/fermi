@@ -3,9 +3,9 @@
 /**
  * Default Controller of AdminAgent. Handles login, logout.
  *
+ * @package Admin
  * @author Paul Gessinger
  */
-
 class Panel extends FermiController 
 {
 

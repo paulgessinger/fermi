@@ -2,8 +2,9 @@
 
 /**
  * Prototype Agent class. This one implements standard behaviour of an Agent.
- * @author Paul Gessinger
  *
+ * @package Core
+ * @author Paul Gessinger
  */
 abstract class FermiAgent extends FermiObject implements Agent
 {

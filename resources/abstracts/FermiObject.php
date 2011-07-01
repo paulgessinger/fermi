@@ -3,6 +3,7 @@
 /**
  * The base class that all classes should inherit from. Is used to give all objects pseudo-static method support.
  *
+ * @package Core
  * @author Paul Gessinger
  */
 class FermiObject

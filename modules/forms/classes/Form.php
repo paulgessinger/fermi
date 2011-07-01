@@ -3,6 +3,7 @@
 /**
  * Form class, that renders a form based on templates and fields that are given.
  *
+ * @package Forms
  * @author Paul Gessinger
  */
 class Form extends FermiObject

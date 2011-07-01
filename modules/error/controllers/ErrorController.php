@@ -1,8 +1,10 @@
 <?php
+
 /**
  * This Controller manages the output of Exceptions
- * @author Paul Gessinger
  *
+ * @package Error
+ * @author Paul Gessinger
  */
 class ErrorController extends FermiController
 {
