@@ -1,9 +1,9 @@
 <?php
 
-
 /**
  * This is the AdminAgent. It does ACL checks and handles loading of the Admin panel.
  *
+ * @package Admin
  * @author Paul Gessinger
  */
 class AdminAgent extends FermiAgent
