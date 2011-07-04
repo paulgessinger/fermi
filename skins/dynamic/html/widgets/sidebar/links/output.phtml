@@ -1,0 +1,14 @@
+<li>
+	<h4><?=$tpl->title?></h4>
+
+	<ul>
+	<?php
+		
+		foreach(explode(',', $tpl->linklist) as $link)
+		{
+			echo '<li>'.$link.'</li>' ;
+		}
+	
+	?>
+	</ul>
+</li>

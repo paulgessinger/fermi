@@ -267,6 +267,27 @@ class Response extends FermiObject
 		}   
 	}
 	
+	/**
+	 * undocumented function
+	 *
+	 * @param string $tpl 
+	 * @return void
+	 * @author Paul Gessinger
+	 */
+	function _templateExists($tpl)
+	{
+		try
+		{
+			$this->findTemplate($tpl) ;
+			
+			return true ;
+		}
+		catch(ResponseException $e)
+		{
+			return false ;
+		}
+	}
+	
 	
 	/**
 	 * Registers a function for calling from templates.

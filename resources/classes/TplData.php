@@ -58,7 +58,7 @@ class TplData extends FermiObject
 		}
 		else
 		{
-			return false ;
+			throw new ErrorException('Call to undefined function "'.$function.'"') ;
 		}
 	}
 	

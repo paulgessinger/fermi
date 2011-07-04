@@ -73,14 +73,29 @@ class Articles extends FermiController
 				array_push($widget_array, $widget->getOutput()) ;
 			}
 			
+			if(isset($xml->areas))
+			{
+				foreach($xml->areas->area as $area)
+				{
+					$area_widget_array = array() ;
+				
+					foreach($area->widget as $area_widget_node)
+					{
+						$area_widget = Widgets::getWidget((string)$area_widget_node['type']) ;
+						$area_widget->fromXML($area_widget_node) ;
+						array_push($area_widget_array, $area_widget) ;
+					}
+				
+					Widgets::addWidgetsToArea((string)$area['name'], $area_widget_array) ;		
+				}
+			}
+			
 		}
 		else
 		{
 			$widget_array[0] ='Whoop\'s, looks like this site doesn\'t exist.' ;
 		}
 
-
-		
 		
 
 		Response::bind('main', implode('', $widget_array)) ;

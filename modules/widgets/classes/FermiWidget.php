@@ -13,6 +13,7 @@ class FermiWidget
 	protected $input ;
 	protected $output ;
 	protected $values = array() ;
+	protected $context = '' ;
 	
 	/**
 	 * Constructs the Object.
@@ -23,11 +24,13 @@ class FermiWidget
 	 * @param string $values An array of key -> values that are assigned to this widget right away
 	 * @author Paul Gessinger
 	 */
-	function __construct($name, $input, $output, $values = null)
+	function __construct($name, $input, $output, $options = array())
 	{
-		if(is_array($values))
+		$this->options = $options ;
+		
+		if(isset($this->options['values']))
 		{
-			$this->values = $values ;
+			$this->values = $this->options['values'] ;
 		}
 		
 		$this->values['widget'] = $this ;
@@ -35,6 +38,27 @@ class FermiWidget
 		$this->name = $name ;
 		$this->input = $input ;
 		$this->output = $output ;
+		
+		
+		
+		if(isset($this->options['context']))
+		{
+			$this->context = $this->options['context'] ;
+		}
+	}
+	
+	/**
+	 * undocumented function
+	 *
+	 * @param string $context 
+	 * @return void
+	 * @author Paul Gessinger
+	 */
+	function setContext($context)
+	{
+		$this->context = $context ;
+		
+		return $this ;
 	}
 	
 	/**
@@ -47,6 +71,7 @@ class FermiWidget
 	function setValues(Array $values) 
 	{
 		$this->values = array_merge($this->values, $values) ;
+		return $this ;
 	}
 	
 	/**
@@ -67,6 +92,8 @@ class FermiWidget
 		{
 			$this->values[(string)$value['name']] = $value ;
 		}
+		
+		return $this ;
 	}
 	
 	/**
@@ -77,7 +104,7 @@ class FermiWidget
 	 */
 	function getInput()
 	{
-		$tpl = Response::getTemplate($this->input, $this->values) ;
+		$tpl = $this->getTemplate($this->input) ;
 		
 		return $tpl ;
 	}
@@ -90,8 +117,31 @@ class FermiWidget
 	 */
 	function getOutput()
 	{
-		$tpl = Response::getTemplate($this->output, $this->values) ;
+		$tpl = $this->getTemplate($this->output) ;
 		
 		return $tpl ;
+	}
+	
+	/**
+	 * undocumented function
+	 *
+	 * @param string $tpl 
+	 * @return void
+	 * @author Paul Gessinger
+	 */
+	private function getTemplate($tpl)
+	{
+		$array = explode(':', $tpl) ;
+		$array[1] = $this->context.'/'.$array[1] ; 		
+		
+		$new_tpl = $array[0].':'.$array[1] ;
+		if(Response::templateExists($new_tpl))
+		{
+			return Response::getTemplate($new_tpl, $this->values) ;
+		}
+		else
+		{
+			return Response::getTemplate($tpl, $this->values) ;
+		}
 	}
 }

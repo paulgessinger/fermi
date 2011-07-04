@@ -10,6 +10,7 @@ class Widgets extends FermiObject
 {
 	protected $widgets = array() ;
 	protected $loaded_widgets = array() ;
+	protected $appended_area_widgets = array() ;
 	
 	/**
 	 * Registers default widgets.
@@ -19,8 +20,68 @@ class Widgets extends FermiObject
 	 */
 	function launch()
 	{
-		$this->_registerWidget('Text', 'widgets:widgets/text/input.phtml', 'widgets:widgets/text/output.phtml') ;
-		$this->_registerWidget('Headline', 'widgets:widgets/headline/input.phtml', 'widgets:widgets/headline/output.phtml') ;	
+		$this->_registerWidget('Text', 'widgets:text/input.phtml', 'widgets:text/output.phtml') ;
+		$this->_registerWidget('Headline', 'widgets:headline/input.phtml', 'widgets:headline/output.phtml') ;
+		$this->_registerWidget('Links', 'widgets:links/input.phtml', 'widgets:links/output.phtml') ;	
+		
+		Response::bindTemplateFunction('getWidgetArea', array($this, 'getWidgetArea')) ;
+	}
+	
+	/**
+	 * undocumented function
+	 *
+	 * @param string $area 
+	 * @return void
+	 * @author Paul Gessinger
+	 */
+	function _getWidgetArea($area) 
+	{
+		$widget_area = Core::getModel('widgets:WidgetArea') ;
+		
+		if(!$widget_area->find('name=?', array($area)))
+		{
+			throw new ErrorException('Cannot load widget area "'.$area.'"') ;
+		}
+		
+		$xml = new SimpleXMLElement((string)$widget_area->content) ;
+		
+		$widget_array = array() ;
+		
+		foreach($xml->widgets->widget as $widget_node)
+		{
+			$widget = Widgets::getWidget((string)$widget_node['type'], array('context' => $area)) ;
+			$widget->fromXML($widget_node) ;
+			
+			array_push($widget_array, $widget->getOutput()) ;
+		}
+		
+		if(isset($this->appended_area_widgets[$area]))
+		{
+			foreach($this->appended_area_widgets[$area] as $appended_widget)
+			{
+				array_push($widget_array, $appended_widget->setContext($area)->getOutput()) ;
+			}
+		}
+		
+		return implode('', $widget_array) ;
+	}
+	
+	/**
+	 * undocumented function
+	 *
+	 * @param string $area 
+	 * @param Array $widgets 
+	 * @return void
+	 * @author Paul Gessinger
+	 */
+	function _addWidgetsToArea($area, Array $widgets)
+	{
+		if(!isset($this->appended_area_widgets[$area]))
+		{
+			$this->appended_area_widgets[$area] = array() ;
+		}
+		
+		$this->appended_area_widgets[$area] = array_merge($this->appended_area_widgets[$area], $widgets) ;
 	}
 	
 	/**
@@ -48,7 +109,7 @@ class Widgets extends FermiObject
 	 * @return FermiWidget $widget An instance of the Widget you requested, already filled with the values provided.
 	 * @author Paul Gessinger
 	 */
-	function _getWidget($name, $values = null) 
+	function _getWidget($name, $options = array()) 
 	{
 		if(!isset($this->widgets[$name]))
 		{
@@ -56,7 +117,7 @@ class Widgets extends FermiObject
 		}
 		
 		
-		$widget = new FermiWidget($name, $this->widgets[$name]['input'], $this->widgets[$name]['output'], $values) ;
+		$widget = new FermiWidget($name, $this->widgets[$name]['input'], $this->widgets[$name]['output'], $options) ;
 		
 		return $widget ;
 	}
