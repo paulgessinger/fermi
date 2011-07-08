@@ -8,7 +8,6 @@
  */
 class TplData extends FermiObject
 {
-	static $_autoInstance = false ;
 	protected $functions ;
 	
 	/**

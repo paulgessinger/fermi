@@ -8,7 +8,6 @@
  */
 class Response extends FermiObject
 {
-	static $_autoInstance = true ;
 	var $template_dir ;
 	var $compile_dir ;
 	protected $root_template = false ;

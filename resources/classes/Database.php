@@ -8,7 +8,6 @@
  */
 class Database extends FermiObject
 {
-	static $_autoInstance = true ;
 	protected $assocManager ;
 	protected $linkManager ;
 	protected $treeManager ;

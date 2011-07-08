@@ -8,7 +8,6 @@
  */
 class Request extends FermiObject
 {
-	static $_autoInstance = true ;
 	protected $pathParser ;
 	protected $pathRenderer ;
 	

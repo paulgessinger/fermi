@@ -8,7 +8,6 @@
  */
 class Template extends FermiObject
 {
-	static $_autoInstance = false ;	
 	protected $template_resource ;
 	var $bind_array = array() ;
 	protected $functions ;

@@ -276,7 +276,6 @@ class Core
 	 * @return object FermiModel An instance of the model that was requested.
 	 * @throws exception ErrorException
 	 */
-	
 	function _getModel($model)
 	{
 		$arr = explode(':', $model) ;

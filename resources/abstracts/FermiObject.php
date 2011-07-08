@@ -24,7 +24,7 @@ class FermiObject
 	}
 	
 	/**
-	 * Convenience Methods allowing pseude-static methods to be calles normally as well.
+	 * Convenience Methods allowing pseudo-static methods to be called normally as well.
 	 */
 	public function __call($function, $arguments)
 	{		
