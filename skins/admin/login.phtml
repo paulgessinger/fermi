@@ -67,6 +67,7 @@ body {
 	margin-top:-33px;
 	float:right;
 	opacity:0.3;
+	filter:alpha(opacity=30);
 }
 
 #login_form table {
@@ -133,7 +134,18 @@ body {
     
      	<?=I18n::_($tpl->message)?>
 
-		<?=$tpl->form?>
+		<?php
+		
+			if(Util::is_ie6())
+			{
+				echo I18n::_('browser_not_capable') ;
+			}
+			else
+			{
+				echo $tpl->form ;
+			}
+
+		?>
     </div>
 
 </div>

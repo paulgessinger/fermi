@@ -9,6 +9,20 @@
 abstract class Util
 {
 	
+	static function is_ie6()
+	{
+		$ie6 = false;
+		$ua = strtolower($_SERVER['HTTP_USER_AGENT']);
+		if(strpos($ua,'msie') !== FALSE) {
+		    if(strpos($ua,'opera') == FALSE) {
+		        if(preg_match('/(?i)msie [1-6]/',$ua)) $ie6 = true;
+		    }
+		}
+		
+		return $ie6 ;
+	}
+	
+	
 	static function array_to_ini($array)
 	{
 		$secs_to_write = array() ;

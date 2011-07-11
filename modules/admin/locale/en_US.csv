@@ -18,3 +18,4 @@ admin_menu_widgets;Widgets
 admin_menu_roles;Roles
 admin_menu_rights;Rights
 login_box_head;Login
+browser_not_capable;Looks like your browser is not compatible with fermi. Please use a modern browser like <a target="blank" href="http://www.google.com/chrome/">Google Chrome</a>.

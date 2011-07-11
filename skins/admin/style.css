@@ -18,9 +18,8 @@ body {
 	right:40px;
 	min-width:800px;
 	max-width:1600px;
-	
-	height:2000px;
-	
+	padding-top:160px;
+	padding-bottom:150px;
 }
 
 #logo {
@@ -34,6 +33,7 @@ body {
 	margin-top:-5px;
 	float:right;
 	opacity:0.3;
+	filter:alpha(opacity=30);
 	height:69px;
 	overflow:hidden;
 }
@@ -73,6 +73,7 @@ body {
 	position:absolute;
 	left:0px;
 	right:0px;
+	top:0px;
 	height:167px;
 }
 
@@ -172,14 +173,33 @@ span.sub a:hover {
 }
 
 
+
+#content {
+
+	width:100%;
+	height:1500px;
+	background-color:#ffffff;
+	z-index:1000;
+	
+	border:1px solid #464646;
+	border-radius:2px;
+}
+
+
+
+
+
+/* ACTIONS */
+
 #actions {
 	
 	background-color:#464646;
 	position:absolute;
 	top:180px;
-	right:0px;
+	right:20px;
 	height:32px;
 	border-radius:3px;
+	z-index:2000;
 	
 }
 

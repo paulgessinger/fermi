@@ -34,7 +34,7 @@ $(document).ready(function() {
 				
 				//alert($('#wrapper').offset().left) ;
 				
-				$('#actions').css({position: 'fixed', top: 0, right: $('#wrapper').offset().left}) ;
+				$('#actions').css({position: 'fixed', top: 0, right: ($('#wrapper').offset().left)+20}) ;
 				
 				
 				$('.up').css({display: 'block'}) 
@@ -50,7 +50,7 @@ $(document).ready(function() {
 			{
 				switched = false ;
 				
-				$('#actions').css({position: 'absolute', top: offset.top, right: 0}) ;
+				$('#actions').css({position: 'absolute', top: offset.top, right: 20}) ;
 
 				$('.up').stop(true).animate({opacity: 0}).queue(function() {
 					
