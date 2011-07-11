@@ -17,12 +17,12 @@ class Template extends FermiObject
 	 * @param Template $template_resource The template resource that is to be used as a base.
 	 * @param array $global_binds Array of values that are to be assigned to this template.
 	 */
-	function __construct($template_resource, Array $global_binds, Array $functions)
+	function __construct($template_resource, Array $bulk_vars, Array $functions)
 	{
 		
 		
 	 	$this->template_resource = $template_resource ;
-	 	$this->bind_array = $global_binds ;
+	 	$this->bind_array = $bulk_vars ;
 	 	$this->functions = $functions ;
 	 	
 	}
@@ -89,6 +89,9 @@ class Template extends FermiObject
 	 */
 	function render()
 	{
+		$globals = Response::getBinds() ;
+		$this->bind_array = array_merge($globals, $this->bind_array) ;
+		
 		$tpl = new TplData($this->bind_array, $this->functions) ;
 		
 		

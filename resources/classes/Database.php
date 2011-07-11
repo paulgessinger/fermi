@@ -74,6 +74,8 @@ class Database extends FermiObject
 			$this->treeManager = new RedBean_TreeManager($this->redbean);
 			
 			Database::$connection = true ;
+			
+			Core::fireEvent('onDatabaseReady', array('database' => $this)) ;
 		}
 		catch(Exception $e)
 		{

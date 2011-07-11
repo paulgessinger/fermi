@@ -5,7 +5,7 @@ class Debug
 	
 	function __construct()
 	{
-		if(Registry::conf('misc:debug') == true)
+		if(Registry::conf('misc:debug') === 'true')
 		{
 			Core::addListener('onRender', array($this, 'debugInit')) ;
 		}

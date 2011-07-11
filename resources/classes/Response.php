@@ -21,21 +21,37 @@ class Response extends FermiObject
 	 */
 	function __construct()
 	{
-		if(!$this->skin)
-		{
-			/**
-			 * get default skin
-			 * @todo implement fetching from DB, as soon as we have DB
-			 */
-			$this->skin = 'dynamic' ;
-		}
+		Core::addListener('onDatabaseReady', function() {
+			
+			if(!Response::getSkin())
+			{
+				/**
+				 * get default skin
+				 * @todo implement fetching from DB, as soon as we have DB
+				 */
+				$skin = Core::getModel('core:Setting')->find('name=?', array('skin')) ;
+				Response::setSkin($skin->value) ;
+			}
+			
+		}) ;
+		
 		
 		
 		$this->bindTemplateFunction('link', function ($target, $params = array()) {
 			
 			$array = explode('/', $target) ;
+			if(count($array) != 3)
+			{
+				throw new Exception('Invalid path format') ;
+			}
 			
 			return HTML::link($array[0], $array[1], $array[2], $params) ;
+			
+		})	;
+		
+		$this->bindTemplateFunction('subtemplate', function ($tpl) {
+			
+			return Response::getTemplate($tpl) ;
 			
 		})	;
 	}	
@@ -60,7 +76,10 @@ class Response extends FermiObject
 				
 		$this->bind_array['syspath'] = SYSPATH ;
 		$this->bind_array['sysuri'] = SYSURI ;
-		$this->bind_array['skin'] = SYSURI.'skins/'.$this->skin.'' ;
+		$this->bind_array['skin'] = SYSURI.'skins/'.$this->skin.'/' ;
+		$this->bind_array['jquery'] = '<script type="text/javascript" src="'.SYSURI.'core/libs/js/jquery/jquery.js"></script>' ;
+		$this->bind_array['aux_js'] = '' ;
+		$this->bind_array['aux_head'] = '' ;
 				
 		if(!isset($this->bind_array['title']))
 		{
@@ -185,9 +204,19 @@ class Response extends FermiObject
 	 */
 	function _getTemplate($template, $bulk_vars = array())
 	{
-		$var_array = array_merge($this->bind_array, $bulk_vars) ;
 			
-		return new Template($this->findTemplate($template), $var_array, $this->functions) ;
+		return new Template($this->findTemplate($template), $bulk_vars, $this->functions) ;
+	}
+	
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author Paul Gessinger
+	 */
+	function _getBinds()
+	{
+		return $this->bind_array ;
 	}
 	
 
@@ -310,10 +339,12 @@ class Response extends FermiObject
 	 */
 	function _render()
 	{
-		Core::fireEvent('onRender') ;
+		
 		//var_dump($this->bind_array) ;
 			
 		$this->_prepareResponse() ;
+		
+		Core::fireEvent('onRender') ;
 			
 		$this->_doAux();
 	
@@ -340,14 +371,17 @@ class Response extends FermiObject
 
 	private function  _doAux()
 	{
-			$this->bind('aux_js', '<script type="text/javascript">
+		if(Registry::conf('misc:debug') === 'true')
+		{
+			$this->bind('aux_js', '
+<script type="text/javascript">
 '.$this->bind_array['aux_js'].'
 </script>') ;
 			
 			$this->bind('aux_head', '
 <link rel="stylesheet" href="'.SYSURI.'core/libs/js/jquery/flick/jquery-ui.css" type="text/css" />
-<script type="text/javascript" src="'.SYSURI.'core/libs/js/jquery/jquery.js"></script>
 <script type="text/javascript" src="'.SYSURI.'core/libs/js/jquery/jquery-ui.js"></script>') ;
+		}
 	}
 	
 	/**

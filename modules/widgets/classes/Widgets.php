@@ -25,6 +25,8 @@ class Widgets extends FermiObject
 		$this->_registerWidget('Links', 'widgets:links/input.phtml', 'widgets:links/output.phtml') ;	
 		
 		Response::bindTemplateFunction('getWidgetArea', array($this, 'getWidgetArea')) ;
+		
+		Core::fireEvent('onWidgetsReady') ;
 	}
 	
 	/**
