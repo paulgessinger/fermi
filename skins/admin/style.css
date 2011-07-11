@@ -176,13 +176,14 @@ span.sub a:hover {
 
 #content {
 
-	width:100%;
 	height:1500px;
 	background-color:#ffffff;
 	z-index:1000;
 	
 	border:1px solid #464646;
 	border-radius:2px;
+	
+	padding:20px;
 }
 
 
