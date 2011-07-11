@@ -31,10 +31,11 @@ abstract class FermiAgent extends FermiObject implements Agent
 		$this->controller = $controller ;
 		
 		$this->preDispatch() ;
-		
+
+
 		if($this->controller === false)
 		{
-			return false ;
+			$this->controller = Request::get('controller') ;
 		}
 		
 		if(is_string($this->controller))

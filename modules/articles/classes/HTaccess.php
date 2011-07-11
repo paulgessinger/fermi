@@ -125,12 +125,14 @@ class HTaccess extends FermiObject
 			}) ;
 			
 			
-			HTML::registerHelper('sitelink', function($agent, $controller, $task, $site)
-			{
-				
+			HTML::registerHelper('sitelink', function($agent, $controller, $action, $site) {
 				return SYSURI.''.$site.'.html' ;
 			}) ;
 			
+			
+			Response::bindTemplateFunction('article', function($site) { 
+				return HTML::sitelink('Index', 'Articles', 'index', $site) ;
+			}) ;
 			
 		}
 	

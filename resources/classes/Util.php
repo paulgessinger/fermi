@@ -8,6 +8,33 @@
  */
 abstract class Util
 {
+	static function sanitize_url($str, array $replace=array(), $delimiter='-')
+	{
+		if( !empty($replace) )
+		{
+				$str = str_replace((array)$replace, ' ', $str);
+		}
+		
+		
+		$clean = str_replace('ü', 'ue', $str);
+		$clean = str_replace('Ü', 'ue', $clean);
+		
+		$clean = str_replace('ö', 'oe', $clean);
+		$clean = str_replace('Ö', 'oe', $clean);
+		
+		$clean = str_replace('ä', 'ae', $clean);
+		$clean = str_replace('Ä', 'ae', $clean);
+		
+		$clean = str_replace('ß', 'ss', $clean);
+		
+		$clean = iconv('ISO-8859-1', 'ASCII//TRANSLIT', $clean);
+		$clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $clean);
+		$clean = strtolower(trim($clean, '-'));
+		$clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
+
+		return $clean;
+	}
+	
 	
 	static function is_ie6()
 	{
