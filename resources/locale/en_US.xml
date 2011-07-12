@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locale>
+	<name>en_US</name>
+	<months>
+		<month no="1" long="January" short="Jan" />
+		<month no="2" long="February" short="Feb" />
+		<month no="3" long="March" short="Mar" />
+		<month no="4" long="April" short="Apr" />
+		<month no="5" long="May" short="May" />
+		<month no="6" long="June" short="Jun" />
+		<month no="7" long="July" short="Jul" />
+		<month no="8" long="August" short="August" />
+		<month no="9" long="September" short="Sep" />
+		<month no="10" long="October" short="Oct" />
+		<month no="11" long="November" short="Nov" />
+		<month no="12" long="December" short="Dec" />
+	</months>
+	<date_format>m.d.Y</date_format>
+</locale>

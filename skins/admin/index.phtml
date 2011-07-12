@@ -10,9 +10,11 @@
 <link rel="stylesheet" href="<?=$tpl->skin?>/reset.css" type="text/css" />
 <link rel="stylesheet" href="<?=$tpl->skin?>/style.css" type="text/css" />
 
+<?=$tpl->jquery?>
 <?=$tpl->aux_head?>
 
 <script type="text/javascript" src="<?=$tpl->skin?>/easing.js"></script>
+<script type="text/javascript" src="<?=$tpl->skin?>/validate.js"></script>
 
 <script type="text/javascript" src="<?=$tpl->skin?>/jquery.scrollTo-min.js"></script> 
 <script type="text/javascript" src="<?=$tpl->skin?>/init.js"></script> 
@@ -80,7 +82,19 @@
         	<span class="up"></span>
         	
         	<div>
-                <a href="#">
+                <?php
+                
+					$actions = Admin::getActions() ;
+					foreach($actions as $action)
+					{
+						echo '<a href="'.$action['href'].'" onclick="'.$action['onclick'].'">
+		                    <span class="icon side" style="background-image:url('.$action['img'].');"></span>
+		                    '.I18n::_($action['label']).'
+		                </a>' ;
+					}
+
+                ?>
+				<!--<a href="#">
                     <span class="icon" style="background-image:url(<?=$tpl->skin?>/img/back.png);"></span>
                     <?=I18n::_('admin_action_back')?>
                 </a>
@@ -93,13 +107,14 @@
                 <a href="#">
                     <span class="icon" style="background-image:url(<?=$tpl->skin?>/img/save.png);"></span>
                      <?=I18n::_('admin_action_save')?>
-                </a>
+                </a>-->
         	</div>
         
         	
         </div>
 
 		<div id="content">
+			<?=$tpl->main?>
 		</div>
     
     </div>

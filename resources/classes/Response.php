@@ -126,6 +126,17 @@ class Response extends FermiObject
 	}
 	
 	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author Paul Gessinger
+	 */
+	function _getSkinPath()
+	{
+		return 'skins/'.$this->_getSkin().'/' ;
+	}
+	
+	/**
 	 * Binds a Key-value pair to the GLOBAL template vars. Use this only if you want all templates to be
 	 * able to access your data.
 	 * @param string $key

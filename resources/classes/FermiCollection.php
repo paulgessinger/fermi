@@ -36,6 +36,7 @@ class FermiCollection extends FermiObject implements Iterator
 		if($this->_beans === false)
 		{
 			$this->_beans = R::find($this->_model->type, $where, $data) ;
+			return $this ;
 		}
 		else
 		{

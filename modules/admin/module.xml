@@ -24,7 +24,7 @@
 	<admin>
 		<menu>
 			<dashboard label="admin_menu_dashboard" target="admin/dashboard/index" />
-			
+		<!--	
 			<system label="admin_menu_system" target="admin/system/index">
 				<item label="admin_menu_settings">admin/system/settings</item>
 				<item label="admin_menu_modules">admin/system/settings</item>
@@ -37,6 +37,7 @@
 			</users>
 			
 			<appearance label="admin_menu_appearance" target="admin/appearance/index" />
+		-->
 
 		</menu>
 	</admin>

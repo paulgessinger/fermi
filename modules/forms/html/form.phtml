@@ -1,4 +1,4 @@
-<form name="<?=$tpl->name?>" id="<?=$tpl->name?>" action="<?=$tpl->action?>" method="<?=$tpl->method?>">
+<form name="<?=$tpl->name?>" id="<?=$tpl->name?>" action="<?=$tpl->action?>" method="<?=$tpl->method?>" enctype="multipart/form-data">
 	<table cellpadding="0" cellspacing="0" border="0">	
 		<?php
 	
@@ -10,3 +10,12 @@
 	?>
 	</table>
 </form>
+
+
+
+
+<script type="text/javascript">
+	$('form').validate({
+		messages: <?=Util::json_format(json_encode($tpl->validation))?>	
+	}) ;
+</script>

@@ -9,6 +9,44 @@
 class Admin extends FermiObject 
 {
 	var $menu_xml ;
+	var $actions = array() ;
+	
+	function launch()
+	{
+		HTML::registerHelper('icon_link', function($params) {
+			
+			$proto = array(
+				'label' => '',
+				'img' => '',
+				'target' => '#'
+			) ;
+			
+			$params = array_merge($proto, $params) ;
+			
+			return '<a href="'.$params['target'].'" title="'.I18n::_($params['label']).'" class="icon black" style="background-image:url('.$params['img'].')"></a>' ;
+			
+		}) ;
+		
+		Response::bindTemplateFunction('icon_link', array('HTML', 'icon_link')) ;
+	}
+	
+	function _addAction(array $params)
+	{
+		$proto = array(
+			'label' => 'action',
+			'href' => '#',
+			'onclick' => '',
+			'img' => ''
+		) ;
+		
+		$this->actions[] = array_merge($proto, $params) ;
+	}
+	
+	function _getActions() 
+	{
+		return $this->actions ;
+	}
+	
 	
 	/**
 	 * Loads the Menu from all the XML of the modules.

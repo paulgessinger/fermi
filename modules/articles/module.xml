@@ -15,13 +15,13 @@
 		</index>
 	</controllers>
 	
-	<admin>
+	<!--<admin>
 		<menu>
 			<structure label="admin_menu_structure" target="admin/structure/index">
 				<item label="admin_menu_categories">admin/structure/categories</item>
 			</structure>
 		</menu>
-	</admin>
+	</admin>-->
 	
 	<locales>
 		<en_US/>

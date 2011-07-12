@@ -9,6 +9,7 @@
 class I18n extends FermiObject
 {
 	var $locales = array() ;
+	var $locale_details = array() ;
 	protected $locale = 'en_US' ;
 	protected $localization_mode = false ;
 	
@@ -17,6 +18,32 @@ class I18n extends FermiObject
 	 * @todo Implement caching mechanism so we don't have to parse everything each and every time.
 	 */
 	function launch()
+	{
+		$this->loadLocalesFromModules() ;
+		$this->loadLocaleDetails() ;
+	}
+	
+	private function loadLocaleDetails()
+	{
+		foreach($this->locales as $locale => $content)
+		{
+			if(file_exists(SYSPATH.'resources/locale/'.$locale.'.xml'))
+			{
+				$xml = new SimpleXMLElement(file_get_contents(SYSPATH.'resources/locale/'.$locale.'.xml')) ;
+				$this->locale_details[$locale]['xml'] = $xml ;
+			
+				// months 
+				
+				foreach($xml->months->month as $month)
+				{
+					$this->locale_details[$locale]['months'][(int)$month['no']]['long'] = (string)$month['long'] ;
+					$this->locale_details[$locale]['months'][(int)$month['no']]['short'] = (string)$month['short'] ;
+				}
+			}
+		}
+	}
+	
+	private function loadLocalesFromModules()
 	{
 		$localization_mode = Registry::conf('misc:localization_mode') ;
 		if($localization_mode === 'true')
@@ -60,7 +87,38 @@ class I18n extends FermiObject
 				}
 			}
 		}
-
+	}
+	
+	
+	function _getMonthLong($month_no) 
+	{
+		if($month_no < 1 OR $month_no > 12)
+		{
+			throw new ErrorException('Invalid month number. 1 < x < 12');
+		}
+		
+		if(isset($this->locale_details[$this->locale]['months'][$month_no]))
+		{
+			return $this->locale_details[$this->locale]['months'][$month_no]['long'] ;
+		}
+	}
+	
+	function _getMonthShort($month_no) 
+	{
+		if($month_no < 1 OR $month_no > 12)
+		{
+			throw new ErrorException('Invalid month number. 1 < x < 12');
+		}
+		
+		if(isset($this->locale_details[$this->locale]['months'][$month_no]))
+		{
+			return $this->locale_details[$this->locale]['months'][$month_no]['short'] ;
+		}
+	}
+	
+	function _getDate()
+	{
+		return $this->locale_details[$this->locale]['xml']->date_format ;
 	}
 	
 	/**
@@ -99,7 +157,7 @@ class I18n extends FermiObject
 		{	
 			if($this->localization_mode)
 			{
-				return '<input type="text" style="padding:0px;margin:0px;border:0px;width:auto;" onclick="return false;" value="'.$string.'"></input>' ;
+				return "<input type='text' style='padding:0px;margin:0px;border:1px solid red;width:auto;background-color:white;color:black;' onclick='return false;' value='".$string."'></input>" ;
 			}
 			
 			

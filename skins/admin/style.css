@@ -125,6 +125,7 @@ body {
 	padding:25px 30px 0px 30px;
 	color:#ffffff;
 	text-decoration:none;
+	height:39px;
 	
 }
 
@@ -183,7 +184,7 @@ span.sub a:hover {
 	border:1px solid #464646;
 	border-radius:2px;
 	
-	padding:20px;
+	padding:80px 20px 20px 20px;
 }
 
 
@@ -243,8 +244,19 @@ span.sub a:hover {
 	height:16px;
 	background-position:top;
 	float:left;
-	margin-top:-2px;
-	margin-right:5px;
+	
+}
+
+.icon.side {
+
+margin-top:-2px;
+margin-right:5px;
+
+}
+
+
+.icon.black {
+	background-position:bottom;
 }
 
 .up {
@@ -266,4 +278,80 @@ span.sub a:hover {
 
 }
 
+/* ELEMENTS */
 
+table.item_table {
+	width:100%;
+	text-align:left;
+}
+
+table.item_table tr.item_table_head {
+	background-color:#464646;
+	color:#ffffff;
+}
+
+table.item_table tr.item_table_head th {
+	padding:10px 10px 10px 10px;
+	font-size:13px;
+}
+
+table.item_table tr td {
+	padding:5px 10px 5px 10px;
+	font-size:12px;
+}
+
+/* table */ 
+
+input[type=text]
+{
+	width:200px;
+	border:1px solid #464646;
+	padding:2px;
+	font-size:18px;
+	font-family:Arial;
+	color:#464646;
+	background:none;
+	border-radius:2px;
+	margin-bottom:5px;
+}
+
+textarea {
+	width:200px;
+	border:1px solid #464646;
+	padding:2px;
+	font-family:Arial;
+	color:#464646;
+	background:none;
+	border-radius:2px;
+	margin-bottom:5px;
+}
+
+.form_comment {
+	display:block;
+	font-size:12px;
+	color:#8e8e8e;
+}
+
+.form_label {
+	display:block;
+	font-size:14px;
+}
+
+form table tr td {
+	padding:10px;
+	vertical-align:top;
+}
+
+label.error {
+	display:block;
+	font-size:12px;
+	color:#30a4b1;	
+	background-image:url(img/arrow_up.png);
+	background-repeat:no-repeat;
+	background-position:left center;
+	padding:5px 5px 5px 17px;
+}
+
+em.required {
+	color:#30a4b1;
+}

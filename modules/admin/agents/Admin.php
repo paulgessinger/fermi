@@ -24,6 +24,9 @@ class AdminAgent extends FermiAgent
 	 */ 
 	function dispatch($action)
 	{	
+		Response::bind('title', 'fermi - Admin') ;
+		
+		
 		$user = Session::getUser() ;
 		
 		if(!$user->getId()) // no user is logged in, show login page

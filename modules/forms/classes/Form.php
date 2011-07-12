@@ -9,6 +9,7 @@
 class Form extends FermiObject
 {
 	var $elements = array() ;
+	var $validation = array() ;
 	
 	/**
 	 * Create a new form.
@@ -34,6 +35,26 @@ class Form extends FermiObject
 	 */
 	function addElement($element, $name, $options = array())
 	{	
+		if(!isset($options['class']))
+		{
+			$options['class'] = '' ;
+		}
+		
+		if(isset($options['validate']))
+		{
+			foreach($options['validate'] as $rule => $msg)
+			{
+				$options['class'] .= ' '.$rule ;
+				$this->validation[$name][$rule] = I18n::_($msg) ;
+				
+				if($rule == 'required')
+				{
+					$options['required'] = '<em class="required">*</em>' ;
+				}
+			}
+		}
+		
+		
 		$array = array(
 			'element' => $element,
 			'options' => $options
@@ -55,6 +76,7 @@ class Form extends FermiObject
 		$form_template->bind('name', $this->name) ;
 		$form_template->bind('action', $this->action) ;
 		$form_template->bind('method', $this->method) ;
+		$form_template->bind('validation', (object)$this->validation) ;
 		
 		$element_array = array() ;
 		

@@ -1,17 +1,21 @@
 <tr>
-	<td><?php
+	<td>
+	<label for="<?=$tpl->name?>">
+	<?php
 	
 	if(isset($tpl->label))
 	{
-		echo '<span class="form_label">'.I18n::_($tpl->label).':</span>' ;
+		echo '<span class="form_label">'.I18n::_($tpl->label).''.$tpl->required.'</span>' ;
 	}
 	
 	if(isset($tpl->comment))
 	{
-		echo '<span class="form_comment">'.I18n::_($tpl->label).'</span>' ;
+		echo '<span class="form_comment">'.I18n::_($tpl->comment).'</span>' ;
 	}
 	
 	
-	?></td>
-	<td><input type="text" name="<?=$tpl->name?>" value="<?=$tpl->value?>" class="<?=$tpl->class?>"></input></td>
+	?>
+	</label>
+	</td>
+	<td><input type="text" id="<?=$tpl->name?>" name="<?=$tpl->name?>" value="<?=$tpl->value?>" class="<?=$tpl->class?>" style="<?=$tpl->style?>"></input></td>
 </tr>

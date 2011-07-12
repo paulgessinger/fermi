@@ -1,0 +1,23 @@
+<tr>
+	<td>
+	<label for="<?=$tpl->name?>">
+	<?php
+	
+	if(isset($tpl->label))
+	{
+		echo '<span class="form_label">'.I18n::_($tpl->label).''.$tpl->required.'</span>' ;
+	}
+	
+	if(isset($tpl->comment))
+	{
+		echo '<span class="form_comment">'.I18n::_($tpl->comment).'</span>' ;
+	}
+	
+	
+	?>
+	</label>
+	</td>
+	<td>
+		<textarea id="<?=$tpl->name?>" name="<?=$tpl->name?>" class="<?=$tpl->class?>" style="<?=$tpl->style?>"><?=$tpl->value?></textarea>
+	</td>
+</tr>

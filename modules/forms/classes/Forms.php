@@ -64,6 +64,52 @@ class Forms extends FermiObject
 			
 		}) ;
 		
+		// textarea
+		
+		$this->_registerFormElement('textarea', function($name, $options) {
+			
+			$template = Response::getTemplate('forms:textarea.phtml') ;
+			
+			foreach($options as $key => $value)
+			{
+				$template->bind($key, $value) ;
+			}
+			$template->bind('name', $name) ;
+			
+			return $template ;
+			
+		}) ;
+		
+		// hidden
+		
+		$this->_registerFormElement('hidden', function($name, $options) {
+			
+			$proto = array(
+				'value' => ''
+			) ;
+			
+			$options = array_merge($proto, $options) ;
+			
+			return '<input type="hidden" name="'.$name.'" value="'.$options['value'].'" />' ;
+			
+		}) ;
+		
+		// file
+		
+		$this->_registerFormElement('file', function($name, $options) {
+			
+			$template = Response::getTemplate('forms:file.phtml') ;
+			
+			foreach($options as $key => $value)
+			{
+				$template->bind($key, $value) ;
+			}
+			$template->bind('name', $name) ;
+			
+			return $template ;
+			
+		}) ;
+		
 		
 	}
 	

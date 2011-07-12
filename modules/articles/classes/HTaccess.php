@@ -23,14 +23,26 @@ class HTaccess extends FermiObject
 	{
 		if(Registry::get('default:htaccess') == true)
 		{
-			Core::get('Request')->setPathRenderer(function($agent, $controller, $action, $params)
-			{
-				if(count($params) > 1)
+			Core::get('Request')->setPathRenderer(function($agent, $controller, $action, array $params = array()) {
+				
+				//if(count($params) > 1)
 				{
-					return $agent.'/'.$controller.'/'.$action.'/'.implode('/', $params) ;
+					$return = $agent.'/'.$controller.'/'.$action.'/' ;
+					
+					$proto = array() ;
+					
+					foreach($params as $key => $value)
+					{
+						$proto[] = $key ;
+						$proto[] = $value ;
+					}
+					
+					$return .= implode('/', $proto) ;
+					
+					return $return ;
 				}
 				
-				if(count($params) == 0)
+				/*if(count($params) == 0)
 				{
 					return $agent.'/'.$controller.'/'.$action ;
 				}
@@ -38,14 +50,14 @@ class HTaccess extends FermiObject
 				if(count($params) == 1)
 				{
 					return $agent.'/'.$controller.'/'.$action.'/'.implode('', $params).'.html' ;
-				}
+				}*/
 				
 			}) ;
 			
 			
 			
-			Core::get('Request')->setPathParser(function($query)
-			{
+			Core::get('Request')->setPathParser(function($query) {
+				
 				$path['agent'] = false ;
 				$path['controller'] = false ;
 				$path['action'] = false ;
@@ -103,6 +115,8 @@ class HTaccess extends FermiObject
 							$path['agent'] = ucfirst($query_array[0]) ;
 							$path['controller'] = ucfirst($query_array[1]) ;
 							$path['action'] = $query_array[2] ;
+								
+							$tokens = count($query_array) ;
 
 							if((($tokens-3)%2) == 0)
 							{
