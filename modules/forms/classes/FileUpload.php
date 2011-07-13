@@ -11,21 +11,21 @@ class FileUpload extends FermiObject
 	protected $name ;
 	protected $errors = array() ;
 	protected $valid = true ;
+	protected $file ;
 	
 	function __construct($name)
 	{
 		$this->name = $name ;
 		
 		$request = Core::get('Request') ;
-		if(!isset($request->vars['files'][$name]))
+		if($request->vars['files'][$name]['error'] !== 0)
 		{
+			
 			throw new ErrorException('File specified is not available.') ;
 			
 		}
 		
 		$this->file = $request->vars['files'][$name] ;
-		
-		print_r($this->file) ;
 	}
 	
 	function isExt($ext_array = array())
@@ -99,8 +99,9 @@ class FileUpload extends FermiObject
 					{
 						$name = $ori_name.'-'.$i ;
 					}
-					else
+					else // this is a working path
 					{
+						$this->file['name'] = $name.$ext ;
 						break;
 					}
 				
@@ -109,7 +110,10 @@ class FileUpload extends FermiObject
 			}
 			else
 			{
-				unlink($path.$name.$ext) ;
+				if(file_exists($path.$name.$ext))
+				{
+					unlink($path.$name.$ext) ;
+				}
 			}
 			
 			copy($this->file['tmp_name'], $path.$name.$ext) ;
@@ -119,5 +123,10 @@ class FileUpload extends FermiObject
 		{
 			return false ;
 		}
+	}
+	
+	function getName()
+	{
+		return $this->file['name'] ;
 	}
 }

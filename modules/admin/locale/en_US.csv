@@ -12,6 +12,7 @@ admin_menu_appearance;Appearance
 admin_action_back;Back
 admin_action_cancel;Cancel
 admin_action_save;Save
+admin_action_add;Add
 admin_menu_settings;Settings
 admin_menu_modules;Modules
 admin_menu_widgets;Widgets

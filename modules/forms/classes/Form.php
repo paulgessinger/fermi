@@ -97,7 +97,7 @@ class Form extends FermiObject
 	 * Uses an associative array to fill the form with values.
 	 * @param array $array An associative array with key value pairs.
 	 */
-	function importPost($array = array())
+	function import($array = array())
 	{
 		foreach($array as $key => $value)
 		{

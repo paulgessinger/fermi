@@ -18,12 +18,13 @@ class Admin extends FermiObject
 			$proto = array(
 				'label' => '',
 				'img' => '',
-				'target' => '#'
+				'target' => '#',
+				'class' => ''
 			) ;
 			
 			$params = array_merge($proto, $params) ;
 			
-			return '<a href="'.$params['target'].'" title="'.I18n::_($params['label']).'" class="icon black" style="background-image:url('.$params['img'].')"></a>' ;
+			return '<a href="'.$params['target'].'" title="'.I18n::_($params['label']).'" class="icon black '.$params['class'].'" style="background-image:url('.$params['img'].')"></a>' ;
 			
 		}) ;
 		

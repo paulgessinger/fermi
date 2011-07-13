@@ -6,7 +6,7 @@
  * @package Core
  * @author Paul Gessinger
  */
-abstract class FermiModel extends FermiObject implements Model
+abstract class FermiModel extends FermiObject implements Model, IteratorAggregate
 {
 	var $bean = false ;
 	var $values = array() ;
@@ -100,6 +100,16 @@ abstract class FermiModel extends FermiObject implements Model
 		{
 			return false ; //object with this id does not exist
 		}
+	}
+	
+	function delete()
+	{
+		if(!$this->bean)
+		{
+			throw new OrmException('Model "'.get_class($this).'" cannot be deleted without it being loaded with a data record.') ;
+		}
+		
+		R::trash($this->bean) ;
 	}
 	
 	/**
@@ -239,4 +249,9 @@ abstract class FermiModel extends FermiObject implements Model
 	 * Is called before saving, can be extended to validate Model data.
 	 */
 	function validate() {}
+	
+	public function getIterator()
+	{
+	        return $this->bean->getIterator() ;
+	}
 }

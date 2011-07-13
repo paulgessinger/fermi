@@ -10,7 +10,7 @@ class I18n extends FermiObject
 {
 	var $locales = array() ;
 	var $locale_details = array() ;
-	protected $locale = 'en_US' ;
+	protected $locale = '' ;
 	protected $localization_mode = false ;
 	
 	/**
@@ -21,6 +21,9 @@ class I18n extends FermiObject
 	{
 		$this->loadLocalesFromModules() ;
 		$this->loadLocaleDetails() ;
+		$this->setLocale('de_DE') ;
+		
+		date_default_timezone_set(Registry::conf('misc:timezone')) ;
 	}
 	
 	private function loadLocaleDetails()

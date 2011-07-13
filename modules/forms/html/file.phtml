@@ -19,5 +19,13 @@
 	</td>
 	<td>
 		<input type="file" name="<?=$tpl->name?>" id="<?=$tpl->name?>" class="<?=$tpl->class?>" style="<?=$tpl->style?>" />
+		<?php
+		
+		if(isset($tpl->value) AND !empty($tpl->value))
+		{
+			echo '<br/><img src="'.$tpl->sysuri.'media/'.$tpl->value.'" style="width:100px" />' ;
+		}
+		
+		?>
 	</td>
 </tr>

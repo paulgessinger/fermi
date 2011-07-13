@@ -16,4 +16,5 @@
 		<month no="12" long="Dezember" short="Dez" />
 	</months>
 	<date_format>d.m.Y</date_format>
+	<timezone>Europe/Berlin</timezone>
 </locale>

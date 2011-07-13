@@ -12,6 +12,7 @@ admin_menu_appearance;Aussehen
 admin_action_back;Zurück
 admin_action_cancel;Abbrechen
 admin_action_save;Speichern
+admin_action_add;Hinzufügen
 admin_menu_settings;Einstellungen
 admin_menu_modules;Module
 admin_menu_widgets;Widgets
@@ -19,3 +20,4 @@ admin_menu_roles;Rollen
 admin_menu_rights;Rechte
 login_box_head;Anmelden
 browser_not_capable;Ihr Browser ist leider inkompatibel mit fermi. Bitte benutzen Sie einen aktuellen Browser wie <a target="blank" href="http://www.google.com/chrome/">Google Chrome</a>.
+field_required;Dieses Feld ist ein Pflichtfeld.
