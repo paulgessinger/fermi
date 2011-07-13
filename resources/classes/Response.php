@@ -352,6 +352,11 @@ class Response extends FermiObject
 			}
 			$this->functions[$name] = $closure ;	
 	}
+	
+	function _send404()
+	{
+		header("HTTP/1.0 404 Not Found") ;
+	}
 
 
 
@@ -361,7 +366,7 @@ class Response extends FermiObject
 	 */
 	function _render()
 	{
-		
+		ob_start() ;
 		//var_dump($this->bind_array) ;
 			
 		$this->_prepareResponse() ;
@@ -388,21 +393,24 @@ class Response extends FermiObject
 		}
 			
 		echo $this->accumulated ;
+		ob_end_flush() ;
 	}
 
 
 	private function  _doAux()
 	{
-		if(Registry::conf('misc:debug') === 'true')
-		{
-			$this->bind('aux_js', '
+		$this->bind('aux_js', '
 <script type="text/javascript">
 '.$this->bind_array['aux_js'].'
 </script>') ;
+		
+		if(Registry::conf('misc:debug') === 'true' OR Admin::isAdmin())
+		{
 			
 			$this->append('aux_head', '
 <link rel="stylesheet" href="'.SYSURI.'core/libs/js/jquery/flick/jquery-ui.css" type="text/css" />
 <script type="text/javascript" src="'.SYSURI.'core/libs/js/jquery/jquery-ui.js"></script>') ;
+
 		}
 	}
 	

@@ -10,6 +10,7 @@ class Admin extends FermiObject
 {
 	var $menu_xml ;
 	var $actions = array() ;
+	protected $isAdmin = false ;
 	
 	function launch()
 	{
@@ -151,5 +152,15 @@ class Admin extends FermiObject
 		}
 				
 		return $return ;
+	}
+	
+	function _setIsAdmin()
+	{
+		$this->isAdmin = true ;
+	}
+	
+	function _isAdmin()
+	{
+		return $this->isAdmin ;
 	}
 }

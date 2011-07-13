@@ -25,7 +25,7 @@ class AdminAgent extends FermiAgent
 	function dispatch($action)
 	{	
 		Response::bind('title', 'fermi - Admin') ;
-		
+		Admin::setIsAdmin() ;
 		
 		$user = Session::getUser() ;
 		

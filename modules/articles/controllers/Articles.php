@@ -90,7 +90,9 @@ class Articles extends FermiController
 		}
 		else
 		{
-			$widget_array[0] ='Whoop\'s, looks like this site doesn\'t exist.' ;
+			Response::send404() ;
+			Response::setRootTemplate('404.phtml') ;
+			//$widget_array[0] ='Whoop\'s, looks like this site doesn\'t exist.' ;
 		}
 
 		
