@@ -78,8 +78,19 @@ class Response extends FermiObject
 		$this->bind_array['sysuri'] = SYSURI ;
 		$this->bind_array['skin'] = SYSURI.'skins/'.$this->skin.'/' ;
 		$this->bind_array['jquery'] = '<script type="text/javascript" src="'.SYSURI.'core/libs/js/jquery/jquery.js"></script>' ;
-		$this->bind_array['aux_js'] = '' ;
-		$this->bind_array['aux_head'] = '' ;
+		
+		
+		if(!isset($this->bind_array['aux_js']))
+		{
+			$this->bind_array['aux_js'] = '' ;
+		}
+		
+		if(!isset($this->bind_array['aux_head']))
+		{
+			$this->bind_array['aux_head'] = '' ;
+		}
+
+		//echo $this->bind_array['aux_head'] ;
 				
 		if(!isset($this->bind_array['title']))
 		{
@@ -389,7 +400,7 @@ class Response extends FermiObject
 '.$this->bind_array['aux_js'].'
 </script>') ;
 			
-			$this->bind('aux_head', '
+			$this->append('aux_head', '
 <link rel="stylesheet" href="'.SYSURI.'core/libs/js/jquery/flick/jquery-ui.css" type="text/css" />
 <script type="text/javascript" src="'.SYSURI.'core/libs/js/jquery/jquery-ui.js"></script>') ;
 		}

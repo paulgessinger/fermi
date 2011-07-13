@@ -63,7 +63,6 @@ class HTaccess extends FermiObject
 				$path['action'] = false ;
 				$path['params'] = array() ;
 				
-				
 				if(substr($query, strrpos($query, '.')) == '.html')
 				{
 					

@@ -99,7 +99,7 @@ class Registry
 	{
 		if(array_key_exists($module, Registry::$_modules))
 		{
-			return SYSPATH.'modules/'.$module.'/' ;
+			return 'modules/'.$module.'/' ;
 		}
 		else
 		{

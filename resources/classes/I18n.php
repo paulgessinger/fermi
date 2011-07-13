@@ -64,14 +64,14 @@ class I18n extends FermiObject
 			{
 				foreach($xml->locales->children() as $locale => $empty)
 				{
-					if(!file_exists(Registry::getModule($module).'/locale/'.$locale.'.csv'))
+					if(!file_exists(SYSPATH.Registry::getModule($module).'/locale/'.$locale.'.csv'))
 					{
 						throw new ErrorException('Could not find locale "'.$locale.'" in module "'.$module.'"') ;
 					}
 					
 					$locale_data = array() ;
 					
-					$file = file(Registry::getModule($module).'/locale/'.$locale.'.csv') ;
+					$file = file(SYSPATH.Registry::getModule($module).'/locale/'.$locale.'.csv') ;
 					
 					foreach($file as $row)
 					{
