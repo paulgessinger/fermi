@@ -4,4 +4,6 @@ RewriteEngine On
 #RewriteRule ([^/]*).html$ index.php?site=$1 [L]
 #RewriteRule ^admin([^/]*)$ index.php?agent=admin [L]
 
+RewriteCond %{REQUEST_FILENAME} !-f
+
 RewriteRule !\.(js|ico|gif|jpg|png|css)$ index.php
