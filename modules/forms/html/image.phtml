@@ -1,0 +1,63 @@
+<tr>
+	<td>
+	<label for="<?=$tpl->name?>">
+	<?php
+	
+	if(isset($tpl->label))
+	{
+		echo '<span class="form_label">'.I18n::_($tpl->label).''.$tpl->required.'</span>' ;
+	}
+	
+	if(isset($tpl->comment))
+	{
+		echo '<span class="form_comment">'.I18n::_($tpl->comment).'</span>' ;
+	}
+	
+	
+	?>
+	</label>
+	</td>
+	<td>
+		<input type="file" name="<?=$tpl->name?>" id="<?=$tpl->name?>" class="<?=$tpl->class?>" style="<?=$tpl->style?>" />
+		<?php
+		
+		if(isset($tpl->value) AND !empty($tpl->value))
+		{
+			echo '<br/>
+			<a href="'.$tpl->sysuri.'image.php?image=/media/'.$tpl->value.'&amp;width=" class="lightbox_'.$tpl->name.'">
+				<img src="'.$tpl->sysuri.'image.php?image=/media/'.$tpl->value.'&amp;width=100" style="width:100px" />
+			</a>' ;
+		}
+		
+		?>
+		
+		<div id="window-lightbox_<?=$tpl->name?>" style="text-align:center;" title="<?=I18n::_('window_lightbox_title')?>">
+			<img style="display:block;margin:0px auto;margin-top:20px;margin-bottom:20px;" src="" />
+		</div>
+
+		<script type="text/javascript">
+		$(document).ready(function() { 
+			
+			var width = $(window).width() - 400 ;
+
+			$("#window-lightbox_<?=$tpl->name?>" ).dialog({
+					position: ['center', 100],
+					resizable: false,
+					draggable: true,
+					width: width+50,
+					modal: true,
+					autoOpen: false,
+					open: function() {
+						$(this).children('img').attr('src', $(this).data('image').attr('href')+width) ;
+					}
+			});
+
+			$('a.lightbox_<?=$tpl->name?>').click(function() {
+				$('#window-lightbox_<?=$tpl->name?>').data('image', $(this)).dialog('open') ;
+				return false ;
+			}) ;
+
+		});
+		</script>
+	</td>
+</tr>

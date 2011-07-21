@@ -16,7 +16,7 @@ body {
 	position:absolute;
 	left:40px;
 	right:40px;
-	min-width:800px;
+	min-width:930px;
 	max-width:1600px;
 	padding-top:160px;
 	padding-bottom:150px;
@@ -200,7 +200,7 @@ span.sub a:hover {
 	right:20px;
 	height:32px;
 	border-radius:3px;
-	z-index:2000;
+	z-index:500;
 	
 }
 

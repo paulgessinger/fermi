@@ -96,9 +96,9 @@ class Forms extends FermiObject
 		
 		// file
 		
-		$this->_registerFormElement('file', function($name, $options) {
+		$this->_registerFormElement('image', function($name, $options) {
 			
-			$template = Response::getTemplate('forms:file.phtml') ;
+			$template = Response::getTemplate('forms:image.phtml') ;
 			
 			foreach($options as $key => $value)
 			{

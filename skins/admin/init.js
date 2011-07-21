@@ -85,7 +85,7 @@ $(document).ready(function() {
 		if(switched === true)
 		{
 			//alert($(window).width()-$('#wrapper').outerWidth()-40) ;
-			$('#actions').css({right: $('#wrapper').offset().left}) ;
+			$('#actions').css({right: $('#wrapper').offset().left+20}) ;
 		}
 		
 		var header_width = $('#header').outerWidth() ;
