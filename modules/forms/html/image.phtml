@@ -24,38 +24,32 @@
 		if(isset($tpl->value) AND !empty($tpl->value))
 		{
 			echo '<br/>
-			<a href="'.$tpl->sysuri.'image.php?image=/media/'.$tpl->value.'&amp;width=" class="lightbox_'.$tpl->name.'">
+			<a href="#" onclick="$(\'#window-lightbox_'.$tpl->name.'\').dialog(\'open\') ; return false ;">
 				<img src="'.$tpl->sysuri.'image.php?image=/media/'.$tpl->value.'&amp;width=100" style="width:100px" />
 			</a>' ;
 		}
 		
 		?>
 		
-		<div id="window-lightbox_<?=$tpl->name?>" style="text-align:center;" title="<?=I18n::_('window_lightbox_title')?>">
-			<img style="display:block;margin:0px auto;margin-top:20px;margin-bottom:20px;" src="" />
+		<div id="window-lightbox_<?=$tpl->name?>" style="text-align:center;" title="<?=htmlentities($tpl->value)?>">
+			<img style="display:block;width:96%;margin:0px auto;margin-top:20px;margin-bottom:20px;" src="" />
 		</div>
 
 		<script type="text/javascript">
 		$(document).ready(function() { 
-			
-			var width = $(window).width() - 400 ;
 
 			$("#window-lightbox_<?=$tpl->name?>" ).dialog({
-					position: ['center', 100],
-					resizable: false,
+					position: ['center', 200],
+					resizable: true,
 					draggable: true,
-					width: width+50,
-					modal: true,
+					width: 1000,
+					modal: false,
 					autoOpen: false,
 					open: function() {
-						$(this).children('img').attr('src', $(this).data('image').attr('href')+width) ;
+						$(this).children('img').attr('src', '<?=$tpl->sysuri?>media/<?=$tpl->value?>') ;
 					}
 			});
 
-			$('a.lightbox_<?=$tpl->name?>').click(function() {
-				$('#window-lightbox_<?=$tpl->name?>').data('image', $(this)).dialog('open') ;
-				return false ;
-			}) ;
 
 		});
 		</script>
