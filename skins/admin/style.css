@@ -2,11 +2,9 @@
 
 
 body {
-	
-	background-image:url(img/background.jpg);
 	background-repeat:repeat-x;
 	background-position:top;
-	background-color:#ebebeb;
+	background-color:#ffffff;
 	font-family:Ubuntu, Arial, Helvetica, sans-serif;
 }
 
@@ -54,7 +52,7 @@ body {
 }
 
 #welcome a {
-	color:#30a4b1;
+	color:#4d90fe;
 	text-decoration:none;
 	border-left: 1px solid #000000;
 	padding-left:10px;
@@ -82,8 +80,7 @@ body {
 
 	width:100%;
 	height:64px;
-	background-color:#464646;
-	background-image:url(img/nav_bg.jpg);
+	background-color:#2D2D2D;
 	background-repeat:no-repeat;
 	background-position:right;
 	position:absolute;
@@ -112,10 +109,13 @@ body {
 	border-bottom-left-radius:3px;
 }
 
-#nav span.nav:hover, #nav span.active {
-
-	background-color:#30a4b1;	
-
+#nav span.active, #nav span.nav:hover {
+	background-color: #357AE8;
+	background-image: -webkit-linear-gradient(top,#4d90fe,#357AE8);
+	background-image: -moz-linear-gradient(top,#4d90fe,#357AE8);
+	background-image: -ms-linear-gradient(top,#4d90fe,#357AE8);
+	background-image: -o-linear-gradient(top,#4d90fe,#357AE8);
+	background-image: linear-gradient(top,#4d90fe,#357AE8);
 }
 
 
@@ -131,7 +131,13 @@ body {
 
 #nav span.nav span.sub {
 	
-	background-color:#34b4c2;
+	background-color: #4D90FE;
+	background-image: -webkit-linear-gradient(top,#4d90fe,#4787ed);
+	background-image: -moz-linear-gradient(top,#4d90fe,#4787ed);
+	background-image: -ms-linear-gradient(top,#4d90fe,#4787ed);
+	background-image: -o-linear-gradient(top,#4d90fe,#4787ed);
+	background-image: linear-gradient(top,#4d90fe,#4787ed);
+	
 	height:31px;
 	position:absolute;
 	bottom:0px;
@@ -140,8 +146,8 @@ body {
 	display:none;
 	font-size:12px;
 		
-	border-bottom-left-radius:4px;
-	border-bottom-right-radius:4px;
+	border-bottom-left-radius:2px;
+	border-bottom-right-radius:2px;
 	
 }
 
@@ -161,15 +167,20 @@ span.sub a, span.sub a:active, span.sub a:visited {
 	color:#ffffff;
 	display:block;
 	float:left;
-	
-	-webkit-transition:0.05s linear;
-	-moz-transition:0.05s linear;
 
 }
 
 span.sub a:hover {
 	
-	background-color:#30a4b1;
+	background-color: #357AE8;
+	border:1px solid #3079ED;
+	border-width:0px 1px 0px 1px;
+	padding:9px 29px 0px 29px;
+	background-image: -webkit-linear-gradient(top,#4d90fe,#357AE8);
+	background-image: -moz-linear-gradient(top,#4d90fe,#357AE8);
+	background-image: -ms-linear-gradient(top,#4d90fe,#357AE8);
+	background-image: -o-linear-gradient(top,#4d90fe,#357AE8);
+	background-image: linear-gradient(top,#4d90fe,#357AE8);
 	
 }
 
@@ -177,10 +188,10 @@ span.sub a:hover {
 
 #content {
 
-	background-color:#ffffff;
+	background-color:#F1F1F1;
 	z-index:1000;
 	
-	border:1px solid #464646;
+	border:1px solid #D2D2D2;
 	border-radius:2px;
 	
 	padding:80px 20px 80px 20px;
