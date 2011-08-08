@@ -7,11 +7,11 @@
 
 <link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
 
-<link rel="stylesheet" href="<?=$tpl->skin?>/reset.css" type="text/css" />
-<link rel="stylesheet" href="<?=$tpl->skin?>/style.css" type="text/css" />
-
 <?=$tpl->jquery?>
 <?=$tpl->aux_head?>
+
+<link rel="stylesheet" href="<?=$tpl->skin?>reset.css" type="text/css" />
+<link rel="stylesheet" href="<?=$tpl->skin?>style.css" type="text/css" />
 
 <script type="text/javascript" src="<?=$tpl->skin?>easing.js"></script>
 <script type="text/javascript" src="<?=$tpl->skin?>validate.js"></script>
@@ -36,8 +36,10 @@
             <div id="welcome">
             
             	<span><?=I18n::_('admin_panel_top_welcome_back')?>, <?=Session::getUser()->name?></span>
+				<span class="seperate"></span>
                 <a href="<?=$tpl->link('admin/panel/logout')?>"><?=I18n::_('admin_panel_top_logout')?></a>
-                 <a href="<?=SYSURI?>"><?=I18n::_('admin_panel_top_frontpage')?></a>
+				<span class="seperate"></span>
+                <a href="<?=SYSURI?>"><?=I18n::_('admin_panel_top_frontpage')?></a>
             
             </div>
             
@@ -80,7 +82,7 @@
         </div>
     
     	<div id="actions">
-        	<span class="up"></span>
+        	<span class="up"><img src="<?=$tpl->skin?>img/up.png"></span>
         	
         	<div>
                 <?php

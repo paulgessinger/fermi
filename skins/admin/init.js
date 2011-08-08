@@ -9,11 +9,14 @@ $(document).ready(function() {
 	$('.up').css({opacity: 0, display: 'none'}) ;
 	$('.up').click(function() {
 		
+		$(this).addClass('active') ;
+		
 		$(window).scrollTo('#wrapper', 500, {easing: 'easeOutExpo'}) ;
 		
 		$('.up').stop(true).animate({opacity: 0}, 500, 'easeOutExpo').queue(function() {
 					
-			$('.up').css({display: 'none'}) 
+			$('.up').css({display: 'none'}) ;
+			$(this).removeClass('active') ;
 					
 		}) ;
 		
@@ -88,7 +91,7 @@ $(document).ready(function() {
 			$('#actions').css({right: $('#wrapper').offset().left+20}) ;
 		}
 		
-		var header_width = $('#header').outerWidth() ;
+		var header_width = $('#header').outerWidth()+2 ;
 		
 		$('span.sub').each(function() {
 		
