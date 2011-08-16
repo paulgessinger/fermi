@@ -42,7 +42,7 @@ class Response extends FermiObject
 		$this->bindTemplateFunction('link', function ($target, $params = array()) {
 			
 			$array = explode('/', $target) ;
-			if(count($array) != 3)
+			if(count($array) !== 3)
 			{
 				throw new Exception('Invalid path format') ;
 			}
@@ -368,6 +368,7 @@ class Response extends FermiObject
 	 */
 	function _render()
 	{
+		ob_end_flush() ;
 		ob_start() ;
 		//var_dump($this->bind_array) ;
 			

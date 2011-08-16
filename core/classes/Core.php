@@ -279,6 +279,11 @@ class Core
 	function _getModel($model)
 	{
 		$arr = explode(':', $model) ;
+		
+		if(count($arr) !== 2)
+		{
+			throw new ErrorException('Invalid model format.') ;
+		}
 			
 		if(array_key_exists($arr[1], $this->_models))
 		{

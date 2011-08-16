@@ -25,6 +25,41 @@ class ArticleModel extends FermiModel
 		//return Database::link($this->bean, $author->bean) ;
 		
 		$this->author_id = $author->getId() ;
+		
+		return $this ;
+	}
+	
+	function setCategory(ArticleCategoryModel $category)
+	{
+		$this->category_id = $category->getId() ;
+		
+		return $this ;
+	}
+	
+	function unsetCategory()
+	{
+		$this->category_id = null ;
+		
+		return $this ;
+	}
+	
+	function getCategory()
+	{
+		$category = Core::getModel('articles:ArticleCategory')->load($this->category_id) ;
+		
+		return $category ;
+	}
+	
+	function getSiblings()
+	{
+		$articles = Core::getModel('articles:Article')->getCollection()->find('category_id=?', array($this->category_id)) ;
+		
+		return $articles ;
+	}
+	
+	function getRootArticles() 
+	{
+		return $this->getCollection()->find('category_id IS NULL') ;
 	}
 	
 	/**

@@ -6,7 +6,7 @@
  * @package Widgets
  * @author Paul Gessinger
  */
-class FermiWidget 
+class FermiWidget extends FermiObject
 {
 	protected $template ;
 	protected $name ;

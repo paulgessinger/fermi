@@ -15,9 +15,10 @@ class Fermi
 	 */
 	function __construct() 
 	{
-		
 		try
 		{
+			ob_start() ;
+			
 			require 'core/classes/Core.php' ;
 			require 'core/classes/Registry.php' ;
 

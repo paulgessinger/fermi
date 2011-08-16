@@ -45,43 +45,93 @@ class Request extends FermiObject
 		
 		$this->query = str_replace(PATH, '', $_SERVER['REQUEST_URI']) ;
 		
+		if(substr($this->query, 0, 10) === 'index.php/')
+		{
+			$this->query = substr($this->query, 10) ;
+		}
+		
 		Core::addListener('onAfterClassesReady', array($this, 'getPath')) ;
-		
-		//$this->var_merged = array_merge($this->vars['server'], $this->vars['get'], $this->vars['post'], $this->vars['files'],
-		//$this->vars['cookie'], /*$this->vars['session'],*/ $this->vars['request'], $this->vars['env']) ;	
-	
-		
 		
 		
 		
 		$this->setPathParser(function($query){
 		
-			$get_vars = Core::get('Request')->vars['get'] ;
+			$path['agent'] = false ;
+			$path['controller'] = false ;
+			$path['action'] = false ;
+			$path['params'] = array() ;
 			
-			$values = array(
-				'agent',
-				'controller',
-				'action'
-			) ;
-			
-			foreach($values as $value)
+			if(substr($query, strrpos($query, '.')) == '.html')
 			{
-				if(isset($get_vars[$value]))
+				
+				$query_array = explode('/', substr($query, 0, strrpos($query, '.'))) ;
+				
+				switch(count($query_array))
 				{
-					$path[$value] = $get_vars[$value] ;
-					unset($get_vars[$value]) ;
-					
-					if($value != 'action')
-					{
-						$path[$value] = ucfirst($path[$value]) ;
-					}
-					
+					case 1:
+						$path['params']['default'] = $query_array[0] ;
+					break;
+					case 2:
+						$path['action'] = $query_array[0] ;
+						$path['params']['default'] = $query_array[1] ;
+					break;
+					case 3:
+						$path['controller'] = ucfirst($query_array[0]) ;
+						$path['action'] = $query_array[1] ;
+						$path['params']['default'] = $query_array[2] ;
+					break;
+					case 4:
+						$path['agent'] = ucfirst($query_array[0]) ;
+						$path['controller'] = ucfirst($query_array[1]) ;
+						$path['action'] = $query_array[2] ;
+						$path['params']['default'] = $query_array[3] ;
+					break;
 				}
+				
+			}
+			else
+			{
+				$query_array = explode('/', $query) ;
+				
+				switch(count($query_array))
+				{
+					case 1:
+						$path['agent'] = ucfirst($query_array[0]) ;
+					break;
+					case 2:
+						$path['agent'] = ucfirst($query_array[0]) ;
+						$path['controller'] = ucfirst($query_array[1]) ;
+					break;
+					case 3:
+						$path['agent'] = ucfirst($query_array[0]) ;
+						$path['controller'] = ucfirst($query_array[1]) ;
+						$path['action'] = $query_array[2] ;
+					break;
+					default:
+
+						$path['agent'] = ucfirst($query_array[0]) ;
+						$path['controller'] = ucfirst($query_array[1]) ;
+						$path['action'] = $query_array[2] ;
+							
+						$tokens = count($query_array) ;
+
+						if((($tokens-3)%2) == 0)
+						{
+							for($i=3; $i<$tokens; $i++)
+							{
+								$path['params'][$query_array[$i]] = $query_array[$i+1] ;			
+								$i = $i+2 ;	
+							}
+						}
+
+					break;
+				}	
 			}
 			
-			$path['params'] = $get_vars ;
 
-						
+			
+			
+			
 			return $path ;
 				
 		}) ;
@@ -89,12 +139,19 @@ class Request extends FermiObject
 		
 		$this->setPathRenderer(function($agent, $controller, $action, $params) {
 			
-			$par = '' ;
-			foreach($params as $param => $value)
+			$return = 'index.php/'.$agent.'/'.$controller.'/'.$action.'/' ;
+			
+			$proto = array() ;
+			
+			foreach($params as $key => $value)
 			{
-				$par .= '&'.$param.'='.$value ;
+				$proto[] = $key ;
+				$proto[] = $value ;
 			}
-			return 'index.php?agent='.$agent.'&controller='.$controller.'&action='.$action.''.$par ;
+			
+			$return .= implode('/', $proto) ;
+			
+			return $return ;
 				
 		}) ;
 
