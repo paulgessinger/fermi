@@ -22,36 +22,71 @@ body {
 	min-width:600px;
 	max-width:1200px;
 	margin:0px auto;
+	margin-top:32px;
 }
 
 #head {
-	width:100%;
 	height:42px;
-	background-color:#464646;
+	background-color:#2D2D2D;
 
 	color:#ffffff;
 	font-family:Ubuntu;
 	padding:22px 0px 0px 20px;
 	font-size:15px;
-	border-radius:3px;
 	overflow:hidden;
+	
+	border-top-left-radius:3px;
+	border-top-right-radius:3px;
 }
 
 
 #logo {
-	font-family: Ubuntu;
-	text-decoration: none;
-	font-size: 100px;
-	color: #ffffff;
-	display: block;
-	margin-top:-33px;
+	
+	font-family:Ubuntu;
+	text-decoration:none;
+	font-size:50px;
+	color:#ffffff;
+
+	display:block;
+	margin-top:-22px;
+	margin-right:-1px;
 	float:right;
-	opacity:0.3;
+	/*opacity:0.3;
+	filter:alpha(opacity=30);*/
+	overflow:hidden;
+	
+	height:52px;
+	border-radius:3px;
+	
+	
+	padding:6px 21px 5px 20px;
 }
 
+#logo:hover {
+	background-color: #357AE8;
+	background-image: -webkit-linear-gradient(top,#4d90fe,#357AE8);
+	background-image: -moz-linear-gradient(top,#4d90fe,#357AE8);
+	background-image: -ms-linear-gradient(top,#4d90fe,#357AE8);
+	background-image: -o-linear-gradient(top,#4d90fe,#357AE8);
+	background-image: linear-gradient(top,#4d90fe,#357AE8);
+	border:1px solid #3079ED;
+	color:#ffffff;
+	padding:5px 20px 5px 20px;
+}
+
+
+
 #body {
-	padding:20px;
+	padding:20px 20px 20px 20px;
 	font-size:12px;
+	
+	background-color:#F1F1F1;
+	border:1px solid #D2D2D2;
+
+	border-top:0px;
+
+	border-bottom-left-radius:3px;
+	border-bottom-right-radius:3px;
 
 }
 

@@ -81,22 +81,34 @@
 
         </div>
     
-    	<div id="actions">
+		<?php
+        
+			$actions = Admin::getActions() ;
+			$output = array() ;
+			$hide = '' ;
+			foreach($actions as $action)
+			{
+				$output[] = '<a href="'.$action['href'].'" onclick="'.$action['onclick'].'">
+                    <span class="icon side" style="background-image:url('.$action['img'].');"></span>
+                    '.I18n::_($action['label']).'
+                </a>' ;
+		
+			}
+			
+			if(count($hide) != 0)
+			{
+				$hide = ' style="border:0px;"' ;
+			}
+
+        ?>
+
+    	<div id="actions"<?=$hide?>>
         	<span class="up"><img src="<?=$tpl->skin?>img/up.png"></span>
         	
         	<div>
-                <?php
                 
-					$actions = Admin::getActions() ;
-					foreach($actions as $action)
-					{
-						echo '<a href="'.$action['href'].'" onclick="'.$action['onclick'].'">
-		                    <span class="icon side" style="background-image:url('.$action['img'].');"></span>
-		                    '.I18n::_($action['label']).'
-		                </a>' ;
-					}
+				<?=implode('', $output)?>
 
-                ?>
 				<!--<a href="#">
                     <span class="icon" style="background-image:url(<?=$tpl->skin?>/img/back.png);"></span>
                     <?=I18n::_('admin_action_back')?>
