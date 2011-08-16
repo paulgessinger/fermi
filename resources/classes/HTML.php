@@ -24,13 +24,6 @@ class HTML extends FermiObject
 			// bla bla bla get url format
 			return SYSURI.Request::renderPath($agent, $controller, $task, $params) ;
 		}) ;
-
-		HTML::registerHelper('sitelink', function($agent, $controller, $task, $site)
-		{
-			// bla bla bla get url format
-			return SYSURI.Request::renderPath($agent, $controller, $task, array('site' => $site)) ;
-		}) ;
-		
 		
 		HTML::registerHelper('dialog', function($dialog_content, $dialog_id, $dialog_title, $trigger_id = true, $height = 100, $width = 300)
 		{

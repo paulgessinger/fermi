@@ -81,6 +81,7 @@ class Database extends FermiObject
 		{
 			Database::$connection = false ;
 			$this->error = $e->getMessage() ;
+			throw $e ;
  		}
 	}
 	

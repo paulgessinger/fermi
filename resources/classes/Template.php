@@ -13,7 +13,7 @@ class Template extends FermiObject
 	protected $functions ;
 	
 	/**
-	 * Takes the Template and copies global template binds to it.
+	 * Constructs the Template and assigns a group of variables to it.
 	 * @param Template $template_resource The template resource that is to be used as a base.
 	 * @param array $global_binds Array of values that are to be assigned to this template.
 	 */

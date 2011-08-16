@@ -25,12 +25,14 @@ class Response extends FermiObject
 			
 			if(!Response::getSkin())
 			{
-				/**
-				 * get default skin
-				 * @todo implement fetching from DB, as soon as we have DB
-				 */
-				$skin = Core::getModel('core:Setting')->find('name=?', array('skin')) ;
-				Response::setSkin($skin->value) ;
+				if($skin = Core::getModel('core:Setting')->find('name=?', array('skin')))
+				{
+					Response::setSkin($skin->value) ;
+				}
+				else
+				{
+					throw new ErrorException('Cannot set default skin.') ;
+				}
 			}
 			
 		}) ;

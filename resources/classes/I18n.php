@@ -23,7 +23,15 @@ class I18n extends FermiObject
 		$this->loadLocaleDetails() ;
 		$this->setLocale('de_DE') ;
 		
-		date_default_timezone_set(Registry::conf('misc:timezone')) ;
+		try
+		{
+			date_default_timezone_set(Registry::conf('misc:timezone')) ;
+		}
+		catch(Exception $e)
+		{
+			throw new ErrorException('Unable to set timezone from config file, timezone is "'.Registry::conf('misc:timezone').'"') ;
+		}
+		
 	}
 	
 	private function loadLocaleDetails()
