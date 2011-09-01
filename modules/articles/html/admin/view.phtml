@@ -1,16 +1,111 @@
+<div class="breadcrumb_structure">
+	<span class="breadcrump_title"><?=I18n::_('breadcrump_title')?></span>
+	<?php 
+	
+	$root = I18n::_('structure_category_root') ;
+	
+	if($category_id = Request::get('id'))
+	{
+		$root = '<a href="'.$tpl->link('admin/structure/view').'">'.$root.'</a>' ;
+	}
+	else
+	{
+		$root = '<strong>'.$root.'</strong>' ;
+	}
+	
+	echo $root ;
+	if(count($tpl->breadcrump) > 0)
+	{
+		$separator = '<span class="breadcrump_separate">/</span>' ;
+		
+		echo $separator ;
+		
+		$elements = array() ;
+
+		foreach($tpl->breadcrump as $level)
+		{
+			if($level->getId() === $category_id)
+			{
+				$elements[] = '<strong>'.$level->name.'</strong>' ;
+			}
+			else
+			{
+				$elements[] = '<a href="'.$tpl->link('admin/structure/view', array('id' => $level->getId())).'">'.$level->name.'</a>' ;
+			}
+			
+		}
+		
+		
+		echo implode($separator, $elements) ;
+		
+	}
+	
+	
+	
+	?>
+</div>
+
+
 
 <?php
 
+
+
+
 foreach($tpl->categories as $category)
 {
-	echo $category->name ;
+	echo '<a href="'.$tpl->link('admin/structure/view', array('id' => $category->getId())).'">'.$category->name.'</a><br/>' ;
 }
-
-foreach($tpl->articles as $articles)
-{
-	echo $articles->name ;
-}
-
-
 
 ?>
+
+<br/>
+
+<div class="item_head">
+		<div style="width:48%;"><?=I18n::_('article_title')?></div>
+		<div style="width:10%;"><?=I18n::_('article_url_name')?></div>
+		<div style="width:10%;"><?=I18n::_('article_author')?></div>
+		<div style="width:10%;"><?=I18n::_('article_created_at')?></div>
+		<div style="width:10%;"><?=I18n::_('article_modified_at')?></div>
+		<div style="width:10%;"><?=I18n::_('article_actions')?></div>
+</div>
+
+
+<?php
+foreach($tpl->articles as $article)
+{
+	echo '<div class="item_row">
+	
+	<div style="width:48%;">'.$article->title.'</div>
+	<div style="width:10%;">'.$article->name.'</div>
+	<div style="width:10%;">'.$article->created_at.'</div>
+	<div style="width:10%;">'.$article->modified_at.'</div>
+	<div style="width:10%;">'.$article->getAuthor()->name.'</div>
+	<div style="width:10%;"></div>
+	
+	</div>' ;
+}
+?>
+
+
+
+<?php
+/*
+foreach($tpl->articles as $article)
+{
+	echo '<tr>
+			<td>'.$article->title.'</td>
+			<td>'.$article->name.'</td>
+			<td>'.$article->created_at.'</td>
+			<td>'.$article->modified_at.'</td>
+			<td>'.$article->getAuthor()->name.'</td>
+			<td>
+				<a href="http://localhost/clients/weinklein_start/admin/newsadmin/edit/id/5" title="edit_news" class="icon black " style="background-image:url(http://localhost/clients/weinklein_start/skins/admin/img/edit.png)"></a>			
+				<a href="http://localhost/clients/weinklein_start/admin/newsadmin/delete/id/5" title="delete_news" class="icon black confirm" style="background-image:url(http://localhost/clients/weinklein_start/skins/admin/img/cancel.png)"></a>		
+			</td>
+		</tr>' ;
+}*/
+?>
+
+	</tbody>
+</table>

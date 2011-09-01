@@ -6,7 +6,7 @@
  * @package Core
  * @author Paul Gessinger
  */
-class FermiCollection extends FermiObject implements Iterator
+class FermiCollection extends FermiObject implements Iterator, Countable
 {
 	protected $_model ;
 	protected $_beans = false ;
@@ -73,7 +73,10 @@ class FermiCollection extends FermiObject implements Iterator
 	
 	
 	
-	
+	public function count()
+	{
+		return count($this->_beans) ;
+	}
 	
 	public function rewind()
 	{

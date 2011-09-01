@@ -29,6 +29,11 @@ class ArticleModel extends FermiModel
 		return $this ;
 	}
 	
+	function getAuthor()
+	{
+		return Core::getModel('core:User')->load($this->author_id) ;
+	}
+	
 	function setCategory(ArticleCategoryModel $category)
 	{
 		$this->category_id = $category->getId() ;

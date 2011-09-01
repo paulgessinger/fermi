@@ -96,6 +96,11 @@ class ArticleCategoryModel extends FermiModel
 	 */
 	function getParent()
 	{
+		if($this->parent_id === null)
+		{
+			return false ;
+		}
+		
 		$parent = Core::getModel('articles:ArticleCategory')->load($this->parent_id) ;
 		
 		return $parent ;

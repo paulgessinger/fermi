@@ -12,7 +12,7 @@
 	
 	<misc>
 		<debug>true</debug>
-		<localization_mode>true</localization_mode>
+		<localization_mode>false</localization_mode>
 		<timezone>Europe/Berlin</timezone>
 	</misc>
 	
