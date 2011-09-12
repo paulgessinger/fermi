@@ -68,10 +68,6 @@ class Database extends FermiObject
 			R::$writer->setBeanFormatter(new FermiBeanFormatter()) ;
 			RedBean_ModelHelper::setModelFormatter(new FermiModelFormatter());
 			//R::debug( true );
-				
-			$this->linkManager = new RedBean_LinkManager($this->redbean);
-			$this->assocManager = new RedBean_AssociationManager($this->redbean);
-			$this->treeManager = new RedBean_TreeManager($this->redbean);
 			
 			Database::$connection = true ;
 			
@@ -84,34 +80,6 @@ class Database extends FermiObject
 			throw $e ;
  		}
 	}
-	
-	/**
-	 * Using Magic getters and setters to route calls through to specific redbean objects.
-	 */
-	public static function __callStatic($function, $arguments)
-	{	
-		$database = Core::get('Database') ;
-
-		if(is_callable(array($database->linkManager, $function)))
-		{
-			return call_user_func_array(array($database->linkManager, $function), $arguments) ;
-		}
-		
-		if(is_callable(array($database->assocManager, $function)))
-		{
-			return call_user_func_array(array($database->assocManager, $function), $arguments) ;
-		}
-		
-		if(is_callable(array($database->treeManager, $function)))
-		{
-			return call_user_func_array(array($database->treeManager, $function), $arguments) ;
-		}
-		
-		
-		throw new ErrorException('Call to undefined method "'.$function.'" in class "'.get_class($this).'"') ;
-		
-	}
-	
 
 }
 
@@ -130,6 +98,11 @@ class FermiBeanFormatter implements RedBean_IBeanFormatter
 	static function _formatBeanId($table)
 	{
 		 return $table.'_id';
+	}
+	
+	public function getAlias($type)
+	{
+		return parent::getAlias($type) ;
 	}
 	
 }
