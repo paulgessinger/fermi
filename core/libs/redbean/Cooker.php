@@ -15,8 +15,6 @@
  * with this source code in the file license.txt.
  */
 class RedBean_Cooker {
-
-
 	/**
 	 * This method will inspect the array provided and load/dispense the
 	 * desired beans. To dispense a new bean, the array must contain:
@@ -48,6 +46,7 @@ class RedBean_Cooker {
 	 * array(
 	 * 	"can" => an array with beans, either loaded or dispensed and populated
 	 *  "pairs" => an array with pairs of beans to be associated
+	 *  "sorted" => sorted by type
 	 * );
 	 *
 	 * Note that this function actually does not store or associate anything at all,
@@ -65,10 +64,8 @@ class RedBean_Cooker {
 			$associations = $post["associations"];
 			unset($post["associations"]);
 		}
-
 		//We store beans here
-		$can = $pairs = array();
-
+		$can = $pairs = $sorted = array();
 		foreach($post as $key => $rawBean) {
 			if (is_array($rawBean) && isset($rawBean["type"])) {
 				//get type and remove it from array
@@ -93,9 +90,10 @@ class RedBean_Cooker {
 					if (!empty($value)) $bean->$field = $value;
 				}
 				$can[$key]=$bean;
+				if (!isset($sorted[$type]))  $sorted[$type]=array();
+				$sorted[$type][]=$bean;
 			}
 		}
-
 		if (isset($associations) && is_array($associations)) {
 			foreach($associations as $assoc) {
 				foreach($assoc as $info) {
@@ -111,9 +109,63 @@ class RedBean_Cooker {
 				}
 			}
 		}
-
-		return array("can"=>$can, "pairs"=>$pairs);
-
+		return array(
+			"can"=>$can, //contains the beans
+			"pairs"=>$pairs, //contains pairs of beans
+			"sorted"=>$sorted //contains beans sorted by type
+		);
 	}
 
+	/**
+	 * Sets the toolbox to be used by graph()
+	 * 
+	 * @param RedBean_Toolbox $toolbox toolbox
+	 * @return void
+	 */
+	public function setToolbox(RedBean_Toolbox $toolbox) {
+		$this->toolbox = $toolbox;
+		$this->redbean = $this->toolbox->getRedbean();
+	}
+
+	/**
+	 * Turns a request array into a collection of beans
+	 *
+	 * @param  $array array
+	 *
+	 * @return array $beans beans
+	 */
+	public function graph( $array ) {
+		$beans = array();
+		if (is_array($array) && isset($array["type"])) {
+			$type = $array["type"];
+			unset($array["type"]);
+			//Do we need to load the bean?
+			if (isset($array["id"])) {
+				$id = (int) $array["id"];
+				$bean = $this->redbean->load($type,$id);
+			}
+			else {
+				$bean = $this->redbean->dispense($type);
+			}
+			foreach($array as $property=>$value) {
+				if (is_array($value)) {
+					$bean->$property = $this->graph($value);
+				}
+				else {
+					$bean->$property = $value;
+				}
+			}
+			return $bean;
+		}
+		elseif (is_array($array)) {
+			foreach($array as $key=>$value) {
+				$beans[$key] = $this->graph($value);
+			}
+			return $beans;
+		}
+		else {
+			return $array;
+		}
+		return $beans;
+	}
 }

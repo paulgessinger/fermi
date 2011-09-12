@@ -18,6 +18,11 @@
 class R {
 
 	/**
+	 * Collection of toolboxes
+	 * @var array
+	 */
+	public static $toolboxes = array();
+	/**
 	 *
 	 * Constains an instance of the RedBean Toolbox
 	 * @var RedBean_ToolBox
@@ -44,11 +49,6 @@ class R {
 	 */
 	public static $adapter;
 
-	/**
-	 * Contains an instance of the Tree Manager
-	 * @var RedBean_TreeManager
-	 */
-	public static $treeManager;
 
 	/**
 	 * Contains an instance of the Association Manager
@@ -63,13 +63,18 @@ class R {
 	 */
 	public static $extAssocManager;
 
+
 	/**
-	 *
-	 * Constains an instance of the RedBean Link Manager
-	 * @var RedBean_LinkManager
-	 *
+	 * Holds an instance of Bean Exporter
+	 * @var RedBean_Plugin_BeanExport
 	 */
-	public static $linkManager;
+	public static $exporter;
+
+	/**
+	 * Holds the Key of the current database.
+	 * @var string
+	 */
+	public static $currentDB = "";
 
 	/**
 	 * Returns version ID string
@@ -78,7 +83,7 @@ class R {
 	 * @return string $version Version ID
 	 */
 	public static function getVersion() {
-		return "1.3";
+		return "2.0";
 	}
 
 	/**
@@ -91,15 +96,71 @@ class R {
 
 
 	/**
-	 * Kickstarts redbean for you.
-	 * @param string $dsn
-	 * @param string $username
-	 * @param string $password
+	 * Kickstarts redbean for you. This method should be called before you start using
+	 * RedBean. The Setup() method can be called without any arguments, in this case it will
+	 * try to create a SQLite database in /tmp called red.db (this only works on UNIX-like systems).
+	 *
+	 * @param string $dsn      Database connection string
+	 * @param string $username Username for database
+	 * @param string $password Password for database
+	 *
+	 * @return void
 	 */
 	public static function setup( $dsn="sqlite:/tmp/red.db", $username=NULL, $password=NULL ) {
-		RedBean_Setup::kickstart( $dsn, $username, $password );
-		$toolbox = RedBean_Setup::getToolBox();
-		self::configureFacadeWithToolbox($toolbox);
+		$facadeInstances = self::setupMultiple( array("default"=>array("dsn"=>$dsn,"username"=>$username,"password"=>$password,"frozen"=>false)));
+		$facadeInstance = $facadeInstances["default"];
+		self::configureFacadeWithToolbox(self::$toolboxes["default"]);
+		return $facadeInstance;
+	}
+
+	/**
+	 * Configures RedBean to work with multiple database and multiple instances of the facade.
+	 * This method accepts an array with format:
+	 * array( $key =>array('dsn'=>$dsn,'username'=>$username,'password'=>$password,'frozen'=>$trueFalse) )
+	 * 
+	 * @static
+	 * @param  array $databases  array with database connection information
+	 * @return array $rinstances array with R-instances
+	 */
+	public static function setupMultiple( $databases ) {
+		$objects = array();
+		foreach($databases as $key=>$database) {
+			self::$toolboxes[$key] = RedBean_Setup::kickstart($database["dsn"],$database["username"],$database["password"],$database["frozen"]);
+			$objects[$key] = new RedBean_FacadeHelper($key);
+		}
+		return $objects;
+	}
+
+	/**
+	 * Adds a database to the facade, afterwards you can select the database using
+	 * selectDatabase($key).
+	 *
+	 * @static
+	 * @param string      $key    ID for the database
+	 * @param string      $dsn    DSN for the database
+	 * @param string      $user   User for connection
+	 * @param null|string $pass   Password for connection
+	 * @param bool        $frozen Whether this database is frozen or not
+	 *
+	 * @return void
+	 */
+	public static function addDatabase( $key, $dsn, $user, $pass=null, $frozen=false ) {
+		self::$toolboxes[$key] = RedBean_Setup::kickstart($dsn,$user,$pass,$frozen);
+	}
+
+
+	/**
+	 * Selects a different database for the Facade to work with.
+	 *
+	 * @static
+	 * @param  string $key Key of the database to select
+	 * @return int 1
+	 */
+	public static function selectDatabase($key) {
+		if (self::$currentDB===$key) return false;
+		self::configureFacadeWithToolbox(self::$toolboxes[$key]);
+		self::$currentDB = $key;
+		return true;
 	}
 
 
@@ -171,8 +232,15 @@ class R {
 	 *
 	 * @return RedBean_OODBBean $bean a new bean
 	 */
-	public static function dispense( $type ) {
-		return self::$redbean->dispense( $type );
+	public static function dispense( $type, $num = 1 ) {
+		if ($num==1) {
+			return self::$redbean->dispense( $type );
+		}
+		else {
+			$beans = array();
+			for($v=0; $v<$num; $v++) $beans[] = self::$redbean->dispense( $type );
+			return $beans;
+		}
 	}
 
 	/**
@@ -252,8 +320,8 @@ class R {
 	 *
 	 * @return mixed
 	 */
-	public static function unassociate( RedBean_OODBBean $bean1, RedBean_OODBBean $bean2 ) {
-		return self::$associationManager->unassociate( $bean1, $bean2 );
+	public static function unassociate( RedBean_OODBBean $bean1, RedBean_OODBBean $bean2 , $fast=false) {
+		return self::$associationManager->unassociate( $bean1, $bean2, $fast );
 	}
 
 	/**
@@ -265,36 +333,40 @@ class R {
 	 * values for that SQL to filter your results after fetching the
 	 * related beans.
 	 *
-	 * If 'fearless' mode is on, this method will try to take a shortcut and
-	 * use a subquery instead.
+	 * Dont try to make use of subqueries, a subquery using IN() seems to
+	 * be slower than two queries!
+	 *
 	 *
 	 * @param RedBean_OODBBean $bean the bean you have
-	 * @param string				$type the type of beans you want
-	 * @param string				$sql  SQL snippet for extra filtering
-	 * @param array				$val  values to be inserted in SQL slots
+	 * @param string           $type the type of beans you want
+	 * @param string           $sql  SQL snippet for extra filtering
+	 * @param array            $val  values to be inserted in SQL slots
 	 *
 	 * @return array $beans	beans yielded by your query.
 	 */
 	public static function related( RedBean_OODBBean $bean, $type, $sql=null, $values=array()) {
-		if (empty($values) && $sql && method_exists(self::$writer,"__fastSelectCritRelated") && !isset($noFearlessCode)) {
-			//yes? go for the shortcut!
-			$idfield = self::$writer->getIDField( $type );
-			$table = self::$writer->getFormattedTableName($type);
-			$rows = self::$associationManager->related($bean,$type, false, self::$writer->__fastSelectCritRelated($table, $idfield, $sql));
-			if (count($rows)==0) return array();
-			return self::convertToBeans($type,$rows);
-		}
-
 		$keys = self::$associationManager->related( $bean, $type );
 		if (count($keys)==0) return array();
 		if (!$sql) return self::batch($type, $keys);
 		$idfield = self::$writer->getIDField( $type );
-		$sqlSnippet = self::$writer->getSQLSnippetFilter($idfield, $keys, $sql);
-		return self::find( $type, $sqlSnippet, $values );
-
-		
+		$rows = self::$writer->selectRecord( $type, array($idfield=>$keys),array($sql,$values),false );
+		return self::$redbean->convertToBeans($type,$rows);
 	}
 
+
+	/**
+	 * Checks whether a pair of beans is related N-M. This function does not
+	 * check whether the beans are related in N:1 way.
+	 *
+	 * @static
+	 * @param RedBean_OODBBean $bean1 first bean
+	 * @param RedBean_OODBBean $bean2 second bean
+	 *
+	 * @return bool $yesNo whether they are related
+	 */
+	public static function areRelated( RedBean_OODBBean $bean1, RedBean_OODBBean $bean2) {
+		return self::$associationManager->areRelated($bean1,$bean2);
+	}
 	
 
 	/**
@@ -309,12 +381,11 @@ class R {
 	 * @return array $beans beans 
 	 */
 	public static function unrelated(RedBean_OODBBean $bean, $type, $sql=null, $values=array()) {
-		
-		$keys = self::$associationManager->related( $bean, $type );
 		$idfield = self::$writer->getIDField( $type );
-		$sqlSnippet = self::$writer->getSQLSnippetFilter($idfield, $keys, $sql, true);
-		return self::find( $type, $sqlSnippet, $values );
-
+		$keys = self::$associationManager->related( $bean, $type );
+		$rows = self::$writer->selectRecord( $type, array($idfield=>$keys), array($sql,$values), false, true );
+		return self::$redbean->convertToBeans($type,$rows);
+	
 	}
 
 
@@ -338,8 +409,10 @@ class R {
 
 	/**
 	 * Clears all associated beans.
+	 *
 	 * @param RedBean_OODBBean $bean
-	 * @param string $type
+	 * @param string $type type
+	 * 
 	 * @return mixed
 	 */
 	public static function clearRelations( RedBean_OODBBean $bean, $type, RedBean_OODBBean $bean2 = null, $extra = null ) {
@@ -348,84 +421,9 @@ class R {
 			self::associate($bean, $bean2, $extra);
 		}
 		return $r;
-
 	}
 
-	/**
-	 * Attaches $child bean to $parent bean.
-	 *
-	 * @param RedBean_OODBBean $parent parent
-	 * @param RedBean_OODBBean $child  child
-	 * @return mixed
-	 */
-	public static function attach( RedBean_OODBBean $parent, RedBean_OODBBean $child ) {
-		return self::$treeManager->attach( $parent, $child );
-	}
 
-	/**
-	 * @deprecated
-	 * Links two beans using a foreign key field, 1-N Assoc only.
-	 *
-	 * @param RedBean_OODBBean $bean1 bean1
-	 * @param RedBean_OODBBean $bean2 bean2
-	 *
-	 * @return mixed
-	 */
-	public static function link( RedBean_OODBBean $bean1, RedBean_OODBBean $bean2, $name = null ) {
-		return self::$linkManager->link( $bean1, $bean2, $name );
-	}
-	/**
-	 *
-	 * @deprecated
-	 * @param RedBean_OODBBean $bean     bean
-	 * @param string				$typeName type
-	 *
-	 * @return mixed
-	 */
-	public static function getBean( RedBean_OODBBean $bean, $typeName, $name = null ) {
-		return self::$linkManager->getBean($bean, $typeName, $name );
-	}
-	/**
-	 *	@deprecated
-	 * @param RedBean_OODBBean $bean		 bean
-	 * @param string				$typeName type
-	 *
-	 * @return mixed
-	 */
-	public static function getKey( RedBean_OODBBean $bean, $typeName, $name = null ) {
-		return self::$linkManager->getKey($bean, $typeName, $name );
-	}
-	/**
-	 * @deprecated
-	 *
-	 * @param RedBean_OODBBean $bean		 bean
-	 * @param string				$typeName type
-	 */
-	public static function breakLink( RedBean_OODBBean $bean, $typeName, $name = null ) {
-		return self::$linkManager->breakLink( $bean, $typeName, $name );
-	}
-
-	/**
-	 * Returns all children beans under parent bean $parent
-	 *
-	 * @param RedBean_OODBBean $parent parent
-	 *
-	 * @return array $childBeans child beans
-	 */
-	public static function children( RedBean_OODBBean $parent ) {
-		return self::$treeManager->children( $parent );
-	}
-
-	/**
-	 * Returns the parent of a bean.
-	 *
-	 * @param RedBean_OODBBean $bean bean
-	 *
-	 * @return RedBean_OODBBean $bean bean
-	 */
-	public static function getParent( RedBean_OODBBean $bean ) {
-		return self::$treeManager->getParent( $bean );
-	}
 
 	/**
 	 * Finds a bean using a type and a where clause (SQL).
@@ -441,49 +439,10 @@ class R {
 	 * @return array $beans  beans
 	 */
 	public static function find( $type, $sql="1", $values=array() ) {
-		return RedBean_Plugin_Finder::where( $type, $sql, $values );
+		return self::$redbean->find($type,array(),array($sql,$values));
 	}
 
 
-	/**
-	 * @deprecated
-	 *
-	 * Use related() instead.
-	 *
-	 * Convenience Method
-	 *
-	 * @param RedBean_OODBBean $bean   bean
-	 * @param string				$type   type
-	 * @param string				$sql    sql
-	 * @param array				$values values
-	 *
-	 * @return array $beans
-	 */
-	public static function findRelated( RedBean_OODBBean $bean, $type, $sql=" id IN (:keys) ", $values=array()  ) {
-		$keys = self::$associationManager->related($bean,$type);
-		$sql=str_replace(":keys",implode(",",$keys),$sql);
-		return self::find($type,$sql,$values);
-	}
-
-	/**
-	 * @deprecated
-	 *
-	 * Use related() instead.
-	 *
-	 * Convenience Method
-	 *
-	 * @param RedBean_OODBBean $bean   bean
-	 * @param string				$type   type
-	 * @param string				$sql    sql
-	 * @param array				$values values
-	 *
-	 * @return array $beans
-	 */
-	public static function findLinks( RedBean_OODBBean $bean, $type, $sql=" id IN (:keys) ", $values=array() ) {
-		$keys = self::$linkManager->getKeys($bean,$type);
-		$sql=str_replace(":keys",implode(",",$keys),$sql);
-		return self::find($type,$sql,$values);
-	}
 
 	/**
 	 * Finds a bean using a type and a where clause (SQL).
@@ -500,7 +459,7 @@ class R {
 	 * @return array $arrays arrays
 	 */
 	public static function findAndExport($type, $sql="1", $values=array()) {
-		$items = RedBean_Plugin_Finder::where( $type, $sql, $values );
+		$items = self::find( $type, $sql, $values );
 		$arr = array();
 		foreach($items as $key=>$item) {
 			$arr[$key]=$item->export();
@@ -523,7 +482,7 @@ class R {
 	 * @return RedBean_OODBBean $bean
 	 */
 	public static function findOne( $type, $sql="1", $values=array()) {
-		$items = R::find($type,$sql,$values);
+		$items = self::find($type,$sql,$values);
 		return reset($items);
 	}
 
@@ -541,9 +500,8 @@ class R {
 	 *
 	 * @return RedBean_OODBBean $bean
 	 */
-	public static function findLast( $type, $sql="1", $values=array() )
-	{
-		$items = R::find( $type, $sql, $values );
+	public static function findLast( $type, $sql="1", $values=array() ) {
+		$items = self::find( $type, $sql, $values );
 		return end( $items );
 	}
 
@@ -561,25 +519,6 @@ class R {
 	}
 
 	/**
-	 * Returns a simple list instead of beans, based
-	 * on a type, property and an SQL where clause.
-	 *
-	 * @param string $type  type
-	 * @param string $prop  property
-	 * @param string $where SQL
-	 *
-	 * @return array $list array items
-	 */
-	public static function lst( $type,$prop,$sql=" 1 " ) {
-		$list = self::find($type,$sql);
-		$listItems = array();
-		foreach($list as $id=>$item) {
-			$listItems[] = $item->$prop;
-		}
-		return $listItems;
-	}
-
-	/**
 	 * Convenience function to execute Queries directly.
 	 * Executes SQL.
 	 *
@@ -589,9 +528,27 @@ class R {
 	 * @return array $results
 	 */
 	public static function exec( $sql, $values=array() ) {
-		return self::secureExec(function($sql, $values) {
+		if (!self::$redbean->isFrozen()) {
+			try {
+				$rs = R::$adapter->exec( $sql, $values );
+			}catch(RedBean_Exception_SQL $e) {
+				if(self::$writer->sqlStateIn($e->getSQLState(),
+				array(
+				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
+				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+				)) {
+					return NULL;
+				}
+				else {
+					throw $e;
+				}
+
+			}
+			return $rs;
+		}
+		else {
 			return R::$adapter->exec( $sql, $values );
-		}, NULL,$sql, $values );
+		}
 	}
 
 	/**
@@ -604,9 +561,28 @@ class R {
 	 * @return array $results
 	 */
 	public static function getAll( $sql, $values=array() ) {
-		return self::secureExec(function($sql, $values) {
+
+		if (!self::$redbean->isFrozen()) {
+			try {
+				$rs = R::$adapter->get( $sql, $values );
+			}catch(RedBean_Exception_SQL $e) {
+				if(self::$writer->sqlStateIn($e->getSQLState(),
+				array(
+				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
+				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+				)) {
+					return array();
+				}
+				else {
+					throw $e;
+				}
+
+			}
+			return $rs;
+		}
+		else {
 			return R::$adapter->get( $sql, $values );
-		}, array(), $sql, $values);
+		}
 	}
 
 	/**
@@ -619,9 +595,28 @@ class R {
 	 * @return string $result scalar
 	 */
 	public static function getCell( $sql, $values=array() ) {
-		return self::secureExec(function($sql, $values) {
+
+		if (!self::$redbean->isFrozen()) {
+			try {
+				$rs = R::$adapter->getCell( $sql, $values );
+			}catch(RedBean_Exception_SQL $e) {
+				if(self::$writer->sqlStateIn($e->getSQLState(),
+				array(
+				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
+				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+				)) {
+					return NULL;
+				}
+				else {
+					throw $e;
+				}
+
+			}
+			return $rs;
+		}
+		else {
 			return R::$adapter->getCell( $sql, $values );
-		}, NULL, $sql, $values);
+		}
 	}
 
 	/**
@@ -634,9 +629,29 @@ class R {
 	 * @return array $results
 	 */
 	public static function getRow( $sql, $values=array() ) {
-		return self::secureExec(function($sql, $values) {
+
+		if (!self::$redbean->isFrozen()) {
+			try {
+				$rs = R::$adapter->getRow( $sql, $values );
+			}catch(RedBean_Exception_SQL $e) {
+				if(self::$writer->sqlStateIn($e->getSQLState(),
+				array(
+				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
+				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+				)) {
+					return array();
+				}
+				else {
+					throw $e;
+				}
+
+			}
+			return $rs;
+		}
+		else {
 			return R::$adapter->getRow( $sql, $values );
-		}, array(),$sql, $values);
+		}
+
 	}
 
 	/**
@@ -649,32 +664,17 @@ class R {
 	 * @return array $results
 	 */
 	public static function getCol( $sql, $values=array() ) {
-		return self::secureExec(function($sql, $values) {
-			return R::$adapter->getCol( $sql, $values );
-		}, array(),$sql, $values);
-	}
 
-	/**
-	 * Executes SQL function but corrects for SQL states.
-	 *
-	 * @param closure $func		closure
-	 * @param mixed   $default default value to return
-	 * @param string  $sql		SQL
-	 * @param array   $values  values for slots
-	 *
-	 * @return mixed $results
-	 */
-	private static function secureExec( $func, $default=NULL, $sql, $values ) {
 		if (!self::$redbean->isFrozen()) {
 			try {
-				$rs = $func($sql,$values);
-			}catch(RedBean_Exception_SQL $e) { //die($e);
+				$rs = R::$adapter->getCol( $sql, $values );
+			}catch(RedBean_Exception_SQL $e) {
 				if(self::$writer->sqlStateIn($e->getSQLState(),
 				array(
 				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
 				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
 				)) {
-					return $default;
+					return array();
 				}
 				else {
 					throw $e;
@@ -684,9 +684,10 @@ class R {
 			return $rs;
 		}
 		else {
-			return $func($sql,$values);
+			return R::$adapter->getCol( $sql, $values );
 		}
 	}
+
 
 	/**
 	 * Makes a copy of a bean. This method copies the bean and
@@ -719,7 +720,6 @@ class R {
 				R::associate($copy,$assocBean);
 			}
 		}
-
 		$copy->setMeta("original",$bean);
 		return $copy;
 	}
@@ -754,8 +754,61 @@ class R {
 	public static function convertToBeans($type,$rows) {
 		return self::$redbean->convertToBeans($type,$rows);
 	}
-	
-	
+
+	/**
+	 * This static property can be set to force the system to return
+	 * comma separated lists as in legacy versions.
+	 * 
+	 * @var boolean
+	 */
+	public static $flagUseLegacyTaggingAPI = false;
+
+	/**
+	 * Tests whether a bean has been associated with one ore more
+	 * of the listed tags. If the third parameter is TRUE this method
+	 * will return TRUE only if all tags that have been specified are indeed
+	 * associated with the given bean, otherwise FALSE.
+	 * If the third parameter is FALSE this
+	 * method will return TRUE if one of the tags matches, FALSE if none
+	 * match.
+	 *
+	 * @static
+	 * @param  RedBean_OODBBean $bean bean to check for tags
+	 * @param  array            $tags list of tags
+	 * @param  boolean          $all  whether they must all match or just some
+	 *
+	 * @return boolean $didMatch Whether the bean has been assoc. with the tags
+	 */
+	public static function hasTag($bean, $tags, $all=false) {
+		$foundtags = R::tag($bean);
+		if (is_string($foundtags)) $foundtags = explode(",",$tags);
+		$same = array_intersect($tags,$foundtags);
+		if ($all) {
+			return (implode(",",$same)===implode(",",$tags));
+		}
+		return (bool) (count($same)>0);
+	}
+
+	/**
+	 * Removes all sepcified tags from the bean. The tags specified in
+	 * the second parameter will no longer be associated with the bean.
+	 *
+	 * @static
+	 * @param  RedBean_OODBBean $bean    tagged bean
+	 * @param  array            $tagList list of tags (names)
+	 *
+	 * @return void
+	 */
+	public static function untag($bean,$tagList) {
+		if ($tagList!==false && !is_array($tagList)) $tags = explode( ",", (string)$tagList); else $tags=$tagList;
+		foreach($tags as $tag) {
+			$t = R::findOne("tag"," title = ? ",array($tag));
+			if ($t) {
+				R::unassociate( $bean, $t );
+			}
+		}
+	}
+
 	/**
 	 * Tags a bean or returns tags associated with a bean.
 	 * If $tagList is null or omitted this method will return a 
@@ -770,31 +823,22 @@ class R {
 	 * @return string $commaSepListTags
 	 */
 	public static function tag( RedBean_OODBBean $bean, $tagList = null ) {
-
 		if (is_null($tagList)) {
 			$tags = R::related( $bean, "tag");
 			$foundTags = array();
 			foreach($tags as $tag) {
 				$foundTags[] = $tag->title;
 			}
-			return implode(",",$foundTags);
+			if (self::$flagUseLegacyTaggingAPI) return implode(",",$foundTags);
+			return $foundTags;
 		}
-	
-		
-		if ($tagList!==false && !is_array($tagList)) $tags = explode( ",", (string)$tagList); else $tags=$tagList;
 
-		if (is_array($tags)) {
-		foreach($tags as $tag) {
-			if (preg_match("/\W/",$tag)) throw new RedBean_Exception("Invalid Tag. Tags may only contain alpha-numeric characters");
-		}
-		}
-		
+		if ($tagList!==false && !is_array($tagList)) $tags = explode( ",", (string)$tagList); else $tags=$tagList;
 
 		R::clearRelations( $bean, "tag" );
 		if ($tagList===false) return;
 		
 		foreach($tags as $tag) {
-			
 			$t = R::findOne("tag"," title = ? ",array($tag));
 			if (!$t) {
 				$t = R::dispense("tag");
@@ -803,7 +847,6 @@ class R {
 			}
 			R::associate( $bean, $t ); 
 		}
-
 	}
 
 	/**
@@ -860,27 +903,25 @@ class R {
 	 * @return RedBean_ToolBox $tb old, rusty, previously used toolbox
 	 */
 	public static function configureFacadeWithToolbox( RedBean_ToolBox $tb ) {
-
 		$oldTools = self::$toolbox;
-
 		self::$toolbox = $tb;
 		self::$writer = self::$toolbox->getWriter();
 		self::$adapter = self::$toolbox->getDatabaseAdapter();
 		self::$redbean = self::$toolbox->getRedBean();
 		self::$associationManager = new RedBean_AssociationManager( self::$toolbox );
-		self::$treeManager = new RedBean_TreeManager( self::$toolbox );
-		self::$linkManager = new RedBean_LinkManager( self::$toolbox );
+		self::$redbean->setAssociationManager(self::$associationManager);
 		self::$extAssocManager = new RedBean_ExtAssociationManager( self::$toolbox );
 		$helper = new RedBean_ModelHelper();
 		self::$redbean->addEventListener("update", $helper );
 		self::$redbean->addEventListener("open", $helper );
 		self::$redbean->addEventListener("delete", $helper );
+		self::$associationManager->addEventListener("delete", $helper );
 		self::$redbean->addEventListener("after_delete", $helper );
 		self::$redbean->addEventListener("after_update", $helper );
 		self::$redbean->addEventListener("dispense", $helper );
-
 		return $oldTools;
 	}
+
 
 	/**
 	 * facade method for Cooker.
@@ -893,5 +934,115 @@ class R {
 		return RedBean_Cooker::load($arr, R::$toolbox);
 	}
 
+	/**
+	 * Creates a view called $viewID by joining types specified in $types.
+	 * This function only works in fluid mode, in frozen mode it immediately
+	 * returns boolean false.
+	 *
+	 * @static
+	 * @throws RedBean_Exception_Security
+	 *
+	 * @param  string $viewID  name of the view you want to create
+	 * @param  string $types   comma separated list of types
+	 *
+	 * @return bool	  $success whether the view has been created or not
+	 */
+	public static function view($viewID, $types) {
+		if (self::$redbean->isFrozen()) return false;
+		$types = explode(",",$types);
+		if (count($types)<2) throw new RedBean_Exception_Security("Creating useless view for just one type? Provide at least two types!");
+		$refType = array_shift($types);
+		$viewManager = new RedBean_ViewManager( self::$toolbox );
+		return $viewManager->createView($viewID,$refType,$types);
+
+	}
+
+	/**
+	 * Mass Bean Export function.
+	 * Exports all beans specified in the first argument.
+	 *
+	 * @static
+	 * @param  array $beans collection of beans to be exported
+	 *
+	 * @return array Array containing sub-arrays representing beans
+	 */
+	public static function exportAll($beans,$recursively=false) {
+
+		if ($recursively) {
+			if (!self::$exporter) {
+				self::$exporter = new RedBean_Plugin_BeanExport(self::$toolbox);
+				self::$exporter->loadSchema();
+			}
+			return self::$exporter->export($beans);
+		}
+		else {
+
+			$array = array();
+			foreach($beans as $bean) {
+				if ($bean instanceof RedBean_OODBBean) {
+					$array[] = $bean->export();
+				}
+			}
+			return $array;
+		}
+	}
+
+	/**
+	 * Facade Convience method for adapter transaction system.
+	 * Begins a transaction.
+	 *
+	 * @static
+	 * @return void
+	 */
+	public static function begin() {
+		self::$adapter->startTransaction();
+	}
+
+	/**
+	 * Facade Convience method for adapter transaction system.
+	 * Commits a transaction.
+	 *
+	 * @static
+	 * @return void
+	 */
+	public static function commit() {
+		self::$adapter->commit();
+	}
+
+	/**
+	 * Facade Convience method for adapter transaction system.
+	 * Rolls back a transaction.
+	 *
+	 * @static
+	 * @return void
+	 */
+	public static function rollback() {
+		self::$adapter->rollback();
+	}
+
+	/**
+	 * Returns a list of columns. Format of this array:
+	 * array( fieldname => type )
+	 * Note that this method only works in fluid mode because it might be
+	 * quite heavy on production servers!
+	 *
+	 * @static
+	 * @param  string $table   name of the table (not type) you want to get columns of
+	 *
+	 * @return array  $columns list of columns and their types
+	 */
+	public static function getColumns($table) {
+		return self::$writer->getColumns($table);
+	}
+
+	/**
+	 * Returns a SQL formatted date string (i.e. 1980-01-01 10:00:00)
+	 *
+	 * @static
+	 * @return string $SQLTimeString SQL Formatted time string
+	 */
+	public static function now() {
+		return date('Y-m-d H:i:s');
+	}
 
 }
