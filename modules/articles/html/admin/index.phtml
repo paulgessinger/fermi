@@ -1,86 +1,57 @@
 <?php
 
-$extract = function($category) use (&$extract) {
-	
-	echo '<li class="structure_category"><span class="structure_category_handle">'.$category->name.'</span>' ;
-	
+$extract = function($category, $indent) use (&$extract) {
+		
 	$children = $category->getChildren() ;
 	$articles = $category->getArticles() ;
 	
-	if(count($children) !== 0 OR count($articles) !== 0)
-	{
-		
+	echo '<div class="structure_category_container" style="margin-left:'.($indent).'px">
+	<span class="structure_category_label">'.$category->name.'</span>' ;
 	
-	echo '<ol>' ;
+	$indent = $indent + 20 ;
+	
 	foreach($children as $child)
 	{
 		
-		$extract($child) ;
+		$extract($child, $indent) ;
 		
 	}
 	
-	echo '</li>' ;
-	
+	echo '<ul class="structure_category">' ;
 	
 	foreach($articles as $article)
 	{
-		echo '<li class="structure_article"><span>'.$article->name.'</span></li>' ;
+		echo '<li class="structure_article"><span class="structure_article_label">'.$article->name.'</span></li>' ;
 	}
-	echo '</ol>' ;
-	
-	
-	}
-	
+
+	echo '</ul></div>' ;
 } ;
 
 ?>
+<script type="text/javascript" src="<?=Registry::getModuleUri('articles')?>index.js"></script>
 
-<script>
-$(document).ready(function(){
- 
-		$('ol.sortable').nestedSortable({
-			disableNesting: 'structure_article',
-			forcePlaceholderSize: true,
-			handle: 'span',
-			helper:	'clone',
-			items: 'li',
-			maxLevels: 3,
-			opacity: .6,
-			placeholder: 'placeholder',
-			revert: 250,
-			tabSize: 25,
-			tolerance: 'pointer',
-			toleranceElement: '> span'
-		});
-		
-		$('.structure_category_handle').bind('mousedown', function() {
-			
-			//alert('down') ;
-			return false ;
-			
-		}) ;
-		
-}) ;
-</script>
 <div class="structure_base_container">
 	
-<ol class="structure_base sortable">
+
 
 <?php
 
 foreach($tpl->categories as $category)
 {
-	$extract($category) ;
+	$extract($category, 0) ;
 }
+?>
+
+<ul class="structure_base">
+<?php
 
 foreach($tpl->articles as $article)
 {
-	echo '<li class="structure_article"><span>'.$article->name.'</span></li>' ;
+	echo '<li class="structure_article"><span class="structure_article_label">'.$article->name.'</span></li>' ;
 }
 
 
 ?>
-
-</ol>
+</ul>
 
 </div>

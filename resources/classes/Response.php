@@ -15,6 +15,7 @@ class Response extends FermiObject
 	var $skin = false ;
 	protected $accumulated ;
 	protected $functions = array() ;
+	protected $head = array() ;
 	
 	/**
 	 * Registers a listener to onAgentDispatch.
@@ -399,6 +400,17 @@ class Response extends FermiObject
 		ob_end_flush() ;
 	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @param string $target 
+	 * @return void
+	 * @author Paul Gessinger
+	 */
+	function _addStylesheet($target) 
+	{
+		$this->head[] = '<link rel="stylesheet" href="'.$target.'" type="text/css" />' ;
+	}
 
 	private function  _doAux()
 	{
@@ -415,6 +427,11 @@ class Response extends FermiObject
 <script type="text/javascript" src="'.SYSURI.'core/libs/js/jquery/jquery-ui.js"></script>') ;
 
 		}
+		
+		
+		$this->append('aux_head', implode($this->head, '
+')) ;
+		
 	}
 	
 	/**

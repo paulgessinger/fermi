@@ -9,8 +9,20 @@
 class Structure extends FermiController
 {
 	
+	function __construct() 
+	{
+		Response::addStylesheet(Registry::getModuleUri('articles').'structure.css') ;
+	}
+	
 	function indexAction()
 	{
+		$user = Session::getUser() ;
+		$prop = Core::getModel('core:Property')->find('name=?', array('structure_open_categories')) ;
+		
+		
+		R::associate($user->bean, $prop->bean, array('value' => 'biatch')) ;
+
+		
 		$tpl = Response::getTemplate('articles:admin/index.phtml') ;
 		
 		$categories = Core::getModel('articles:ArticleCategory')->getRootCategories() ;
@@ -18,71 +30,6 @@ class Structure extends FermiController
 		
 		$tpl->bind('categories', $categories) ;
 		$tpl->bind('articles', $articles) ;
-		
-		Response::bind('main', $tpl) ;
-		Response::render() ;
-	}
-	
-	function viewAction()
-	{
-		
-		$tpl = Response::getTemplate('articles:admin/view.phtml') ;
-		
-		if($category_id = Request::get('id'))
-		{
-			$category = Core::getModel('articles:ArticleCategory')->load($category_id) ;
-			$categories = $category->getChildren() ;
-			$articles = $category->getArticles() ;
-			
-			// build breadcrump
-			$i = 0 ;
-			$current = $category ;
-			$breadcrump = array() ;
-			
-			
-			while($i <= 50)
-			{
-				$breadcrump[] = $current ;
-				
-				if(!($current = $current->getParent()))
-				{
-					break;
-				}
-				
-				
-				$i++ ;
-			}
-			
-			$tpl->bind('breadcrump', array_reverse($breadcrump)) ;
-			
-			if(count($breadcrump) > 1)
-			{
-				$target = Core::getUrl('admin', 'structure', 'view', array('id' => $category->getParent()->getId())) ;
-			}
-			else
-			{
-				$target = Core::getUrl('admin', 'structure', 'view') ;
-			}
-			
-			Admin::addAction(array(
-				'label' => 'admin_action_back',
-				'img' => SYSURI.Response::getSkinPath().'img/back.png',
-				'href' => $target
-			)) ;
-			
-			
-		}
-		else
-		{
-			
-			$categories = Core::getModel('articles:ArticleCategory')->getRootCategories() ;
-			$articles = Core::getModel('articles:Article')->getRootArticles() ;
-			
-		}
-		
-		$tpl->bind('categories', $categories) ;
-		$tpl->bind('articles', $articles) ;
-		
 		
 		Response::bind('main', $tpl) ;
 		Response::render() ;
