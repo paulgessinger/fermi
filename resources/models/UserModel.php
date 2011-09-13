@@ -14,6 +14,40 @@ class UserModel extends FermiModel
 	
 	function __construct() {}
 	
+	function getProperty($property)
+	{
+		/*if(!($property instanceof PropertyModel))
+		{
+			$property = Core::getModel('core:Property')->loadByName($property) ;
+		}*/
+	}
+	
+	function setProperty($property, $value)
+	{
+		if(!($prop = Core::getModel('core:Property')->loadByName($property)))
+		{
+			throw new ErrorException('Property "'.$property.'" does not exist.') ;
+		}
+		
+		$relation = R::findOrDispense('user_property', 'user_id=? AND property_id=?', array($this->getId(), $prop->getId())) ;
+		$relation = array_shift($relation) ;
+		
+		/*echo '<pre>' ;
+		print_r($relation) ;*/
+		
+		
+		
+		$relation->value = $value ;
+		$relation->user_id = $this->getId() ;
+		$relation->property_id = $prop->getId() ;
+		
+		
+		
+		
+		R::store($relation) ;
+	}
+	
+	
 	/**
 	 * Adds a role to the user.
 	 *

@@ -398,6 +398,8 @@ class Response extends FermiObject
 			
 		echo $this->accumulated ;
 		ob_end_flush() ;
+		
+		Core::fireEvent('onAfterRender') ;
 	}
 
 	/**

@@ -12,6 +12,12 @@ class PropertyModel extends FermiModel
 
 	function __construct() {}
 	
+	function loadByName($name)
+	{
+		$this->find('name=?', array($name)) ;
+		return $this ;
+	}
+	
 	/**
 	 * Validator for the Property data record.
 	 *

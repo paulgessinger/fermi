@@ -56,15 +56,9 @@ class RoleModel extends FermiModel
 			return false ;
 		}
 		
-		
-		if(Database::attach($parent->bean, $this->bean))
-		{
-			return $this ;
-		}
-		else
-		{
-			return false ;
-		}
+		$this->bean->parent_id = $parent->getId() ;
+
+		return $this ;
 	}
 	
 	/**
@@ -89,8 +83,8 @@ class RoleModel extends FermiModel
 	 */
 	function getChildren() 
 	{
-		$children = Database::children($this->bean) ;
-		return new FermiCollection(Core::getModel('core:Role'), $children) ;
+		$collection = Core::getModel('core:Role')->getCollection()->find('parent_id=?', array($this->getId())) ;
+		return $collection ;
 	}
 	
 	/**

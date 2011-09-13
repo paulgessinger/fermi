@@ -13,9 +13,16 @@
 
 
 
+<?php
+if(isset($tpl->validation))
+{
+?>
 
 <script type="text/javascript">
 	$('form').validate({	
 		messages: <?=Util::json_format(json_encode($tpl->validation))?>	
 	}) ;
 </script>
+
+<?php
+}

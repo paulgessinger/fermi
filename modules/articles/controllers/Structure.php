@@ -17,10 +17,12 @@ class Structure extends FermiController
 	function indexAction()
 	{
 		$user = Session::getUser() ;
-		$prop = Core::getModel('core:Property')->find('name=?', array('structure_open_categories')) ;
+		/*$prop = Core::getModel('core:Property')->find('name=?', array('zeugs')) ;
+		
+		$user->setProperty('structure_open_categories', 'test') ;*/
 		
 		
-		R::associate($user->bean, $prop->bean, array('value' => 'biatch')) ;
+		//$user->getProperty('structure_open_categories') ;
 
 		
 		$tpl = Response::getTemplate('articles:admin/index.phtml') ;
