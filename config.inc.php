@@ -7,7 +7,7 @@
 		<pwd></pwd>
 		<name>fermi</name>
 		<prefix>fermi</prefix>
-		<mode>fluid</mode>
+		<frozen>false</frozen>
 	</db>
 	
 	<misc>

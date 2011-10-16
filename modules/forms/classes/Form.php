@@ -68,7 +68,7 @@ class Form extends FermiObject
 	 * Instructs the form to generate HTML and returns it.
 	 * @return string HTML for form.
 	 */
-	function render()
+	function render($validation = true)
 	{
 		
 		$form_template = Response::getTemplate('forms:form.phtml') ;
@@ -76,7 +76,12 @@ class Form extends FermiObject
 		$form_template->bind('name', $this->name) ;
 		$form_template->bind('action', $this->action) ;
 		$form_template->bind('method', $this->method) ;
-		$form_template->bind('validation', (object)$this->validation) ;
+		
+		if($validation)
+		{
+			$form_template->bind('validation', (object)$this->validation) ;
+		}
+		
 		
 		$element_array = array() ;
 		

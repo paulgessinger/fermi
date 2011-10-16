@@ -1,32 +1,53 @@
-$(document).ready(function()
-{
-	$('body').prepend('<div id="debug" class=""'
-	+'style="'
-	+ 'font-family:myriad pro, arial;font-size:12px;color:#000000;z-index:200000;"'
-	+'></div>');
+<style type="text/css">
+
+#debug {
+	background-color:white;
+	position:fixed;
+	bottom:0;
+	right:0;
+	padding:10px;
+	border-top:1px solid #565656;
+	border-left:1px solid #565656 ;
+	opacity:0.9 ;
+	padding-right:20px;
+	padding-left:20px;
+	font-family:myriad pro, arial;
+	font-size:12px;
+	color:#000000;
+	z-index:200000;
+}
+
+.debug_button {
+	float:left;
+	margin-right:20px;
+	cursor:pointer;
+}
+
+.debug_button img {
+	display:block;
+	margin-top:-1px;
+	margin-right:5px;
+	float:left;
+}
+
+.query_row {
+	padding:20px 0px 30px 0px;
 	
+	border-bottom:1px solid lightgray;
 	
-	$('#debug').css({
-	backgroundColor: 'white',
-	position: 'fixed',
-	bottom: 0,
-	right: 0,
-	padding: 10,
-	borderTop: '1px solid #565656',
-	borderLeft: '1px solid #565656',
-	opacity: 0.9,
-	paddingRight: 20,
-	paddingLeft: 20
-	}) ;
+	font-size:12px;
+}
+
+</style>
+
+<div id="debug" class="" style="">
     
+<div class="debug_button" id="debug_route">route info</div>
     
-    /**
-     * DEBUG ROUTE
-     */
-    
-	$('#debug').append('<div id="debug_route" style="float:left;margin-right:20px;cursor:pointer;">route info</div>');
-    
-    $('#debug').append('<div id="debug_route_dialog" style="" title="Route information"><?php
+<div id="debug_route_dialog" style="" title="Route information">
+
+
+<?php
     
 		$req = Core::get('Request')->vars['get'] ;
 		echo '<div style="font-size:40px;width:100%;text-align:center;padding-top:20px;padding-bottom:20px;"><span style="color:#666;">'.Request::get('agent').'</span>/<span style="color:#999;">'.Request::get('controller').'</span>/<span style="color:#CCC;">'.Request::get('action').'</span></div>' ;
@@ -36,33 +57,86 @@ $(document).ready(function()
 			echo $param.': '.$value.'<br/>' ;
 		}
 	
-	?></div>') ;
-    
-     $("#debug_route_dialog").dialog({autoOpen: false, width: 500, height: 300});
-    
-    $('#debug_route').click(function() {
-    	$("#debug_route_dialog").dialog('open');
-    }) ;
-    
-    
-    
-	
-	$('#debug').append('<div id="debug_runtime" style="float:left;margin-right:20px;cursor:pointer;"><img style="display:block;margin-top:-1px;margin-right:5px;float:left;"'
-	+ 'src="<?=SYSURI?>core/icons/runtime.png"/><?=$tpl->runtime?> ms</div>');
-	
-	$('#debug').append('<div id="debug_memory" style="float:left;"><img style="display:block;margin-top:-1px;margin-right:5px;float:left;"'
-	+ 'src="<?=SYSURI?>core/icons/memory.png"/><?=$tpl->memory?> mb</div>');
-	
-	
-	
-    
-    
-   
-    
-    
-    
-    
-	
-	$('#debug').append('<br style="clear:both;"/>');
+?>
 
-});
+</div>
+  
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#debug_route_dialog").dialog({autoOpen: false, width: 500, height: 300});
+
+	    $('#debug_route').click(function() {
+	    	$("#debug_route_dialog").dialog('open');
+	    }) ;	
+	
+	
+		$("#debug_queries_dialog").dialog({autoOpen: false, width: 500, height: 600});
+
+	    $('#debug_queries').click(function() {
+	    	$("#debug_queries_dialog").dialog('open');
+	    }) ;
+	
+	}) ;
+</script>
+
+
+    <div id="debug_queries" class="debug_button">
+		<img src="<?=SYSURI?>core/icons/runtime.png"/>
+		<?php
+		
+			$count = count($tpl->queries) ;
+			
+			echo $count ;
+		
+			if($count === 1)
+			{
+				echo ' query' ;
+			}
+			else
+			{
+				echo ' queries' ;
+			}
+		
+		?>
+	</div>
+	
+	<div id="debug_queries_dialog" style="" title="Query information">
+
+	<?php
+	
+		foreach($tpl->queries as $query)
+		{
+			?>
+			
+			<div class="query_row">
+				<span style="float:left;"><strong><?=$query[0]?></strong></span>
+				<span style="float:right;">
+					
+				VALUES: (<?=implode($query[1], ', ')?>)
+				
+				</span>
+			</div>
+			
+			
+			
+			<?php
+		}
+	
+	?>
+
+	</div>
+	
+    
+    
+	<div id="debug_runtime" class="debug_button">
+		<img src="<?=SYSURI?>core/icons/runtime.png"/><?=$tpl->runtime?> ms
+	</div>
+	
+	<div id="debug_memory" class="debug_button">
+		<img src="<?=SYSURI?>core/icons/memory.png"/><?=$tpl->memory?> mb
+	</div>
+	
+	<br style="clear:both;"/>
+	
+</div>

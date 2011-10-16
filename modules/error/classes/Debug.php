@@ -1,14 +1,20 @@
 <?php
-class Debug
+class Debug extends FermiObject
 {
-	static $_autoInstance = true ;
+	var $queries = array() ;	
 	
+		
 	function __construct()
 	{
 		if(Registry::conf('misc:debug') === 'true')
 		{
-			Core::addListener('onRender', array($this, 'debugInit')) ;
+			Core::addListener('onAfterRender', array($this, 'debugInit')) ;
 		}
+	}
+	
+	function _addQuery($sql, $values) 
+	{
+		$this->queries[] = array($sql, $values) ;
 	}
 	
 	function debugInit()
@@ -21,12 +27,13 @@ class Debug
 		
 
 		$tpl = Response::getTemplate('error:debug.phtml') ;
+		$tpl->bind('queries', $this->queries) ;
 		$tpl->bind('runtime', $totaltime) ;
 		$tpl->bind('memory', memory_get_peak_usage(true)/1048576) ;
 		
 		
 		
-		Response::prepend('aux_js', $tpl) ;
+		echo $tpl ;
 		//$tpl->embedPrepend('aux_js') ;
 	}
 }

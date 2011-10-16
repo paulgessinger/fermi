@@ -108,6 +108,44 @@ class Registry
 	}
 	
 	/**
+	 * undocumented function
+	 *
+	 * @param string $module 
+	 * @return void
+	 * @author Paul Gessinger
+	 */
+	public function _getModuleUri($module)
+	{
+		if(($path =$this->getModule($module)) !== false)
+		{
+			return SYSURI.''.$path ;
+		}
+		else
+		{
+			return false ;
+		}
+	}
+	
+	/**
+	 * undocumented function
+	 *
+	 * @param string $module 
+	 * @return void
+	 * @author Paul Gessinger
+	 */
+	public function _getModulePath($module)
+	{
+		if(($path =$this->getModule($module)) !== false)
+		{
+			return SYSPATH.''.$path ;
+		}
+		else
+		{
+			return false ;
+		}
+	}
+	
+	/**
 	 * Perform includes.
 	 *
 	 * @return void

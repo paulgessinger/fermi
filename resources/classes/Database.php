@@ -41,21 +41,30 @@ class Database extends FermiObject
 			
 		if(Registry::conf('misc:debug') == true) 
 		{
-			$mode = 'fluid' ;
+			$mode = true ;
 		}
 		else
 		{
-			$mode = 'frozen' ;
+			$mode = false ;
 		}
 		
-		if($explicit = Registry::conf('db:mode'))
+		if($explicit = Registry::conf('db:frozen'))
 		{
-			$mode = $explicit ;
+			if($explicit === 'true')
+			{
+				$mode = true ;
+			}
+			else
+			{
+				$mode = false ;
+			}
+			
 		}
 		
 		try
 		{
-			$this->redbean = RedBean_Setup::kickstart(
+			
+			/*$this->redbean = RedBean_Setup::kickstart(
 				'mysql:host='.Registry::conf('db:host').';dbname='.Registry::conf('db:name').'', 
 				Registry::conf('db:user'), 
 				Registry::conf('db:pwd'), 
@@ -64,10 +73,33 @@ class Database extends FermiObject
 			$dbo = $this->redbean->getDatabaseAdapter() ;
 			$dbo->exec("SET CHARACTER SET utf8") ; 
 				
+			R::configureFacadeWithToolbox($this->redbean) ;*/
+			
+			$pdo = new FermiRedbeanPDO(
+				'mysql:host='.Registry::conf('db:host').';dbname='.Registry::conf('db:name').'', 
+				Registry::conf('db:user'), 
+				Registry::conf('db:pwd')
+			);
+
+			$adapter = new RedBean_Adapter_DBAdapter( $pdo );
+			$writer = new RedBean_QueryWriter_MySQL( $adapter );
+			$redbean = new RedBean_OODB( $writer );
+			
+			if($mode === true) 
+			{
+				$redbean->freeze(true);
+			}
+			
+			$this->redbean = new RedBean_ToolBox( $redbean, $adapter, $writer );
+			
 			R::configureFacadeWithToolbox($this->redbean) ;
+			
 			R::$writer->setBeanFormatter(new FermiBeanFormatter()) ;
 			RedBean_ModelHelper::setModelFormatter(new FermiModelFormatter());
 			//R::debug( true );
+			
+			
+			
 			
 			Database::$connection = true ;
 			
