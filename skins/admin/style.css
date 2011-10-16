@@ -543,7 +543,7 @@ em.required {
 
 /* STRUCTURE */
 
-ol.structure_base {
+.structure_base_container ul {
 	list-style-type:disc;
 	width:95%;
 	margin:0px auto;
@@ -551,33 +551,6 @@ ol.structure_base {
 	border:1px solid green;
 
 	padding-bottom:10px;
-}
-
-ol.structure_base ol {
-	list-style-type:disc;
-	padding-left:20px;
-	margin-top:10px;
-	margin-bottom:10px;
-	
-	border:1px solid green;
-	min-height:10px;
-	padding-bottom:20px;
-}
-
-li.structure_article {
-	cursor:move;
-}
-
-li.empty {
-	background-color:blue;
-	list-style-type:none;
-	height:5px;
-}
-
-li.structure_placeholder {
-	background-color:red;
-	list-style-type:none;
-	height:2px;
 }
 
 

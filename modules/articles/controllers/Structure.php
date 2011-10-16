@@ -13,11 +13,9 @@ class Structure extends FermiController
 	{
 		$tpl = Response::getTemplate('articles:admin/index.phtml') ;
 		
-		$categories = Core::getModel('articles:ArticleCategory')->getRootCategories() ;
 		$articles = Core::getModel('articles:Article')->getRootArticles() ;
 		
-		$tpl->bind('categories', $categories) ;
-		$tpl->bind('articles', $articles) ;
+		$tpl->bind('root_articles', $articles) ;
 		
 		Response::bind('main', $tpl) ;
 		Response::render() ;

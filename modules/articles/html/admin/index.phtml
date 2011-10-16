@@ -1,86 +1,54 @@
 <?php
 
-$extract = function($category) use (&$extract) {
+$extract = function($article_collection) use (&$extract) {
 	
-	echo '<li class="structure_category"><span class="structure_category_handle">'.$category->name.'</span>' ;
+	echo '<ul class="">' ;
 	
-	$children = $category->getChildren() ;
-	$articles = $category->getArticles() ;
-	
-	if(count($children) !== 0 OR count($articles) !== 0)
+	foreach($article_collection as $article)
 	{
+		echo '<li>' ;
 		
-	
-	echo '<ol>' ;
-	foreach($children as $child)
-	{
+		echo '<a href="#">'.$article->name.'</a>' ; 
 		
-		$extract($child) ;
+		$children = $article->getChildren() ;
 		
+		if(count($children) != 0)
+		{
+			$extract($children) ;
+		}
+		
+		echo '</li>' ;
 	}
 	
-	echo '</li>' ;
 	
 	
-	foreach($articles as $article)
-	{
-		echo '<li class="structure_article"><span>'.$article->name.'</span></li>' ;
-	}
-	echo '</ol>' ;
-	
-	
-	}
+	echo '</ul>' ;
 	
 } ;
 
 ?>
+jQuery("some-selector-to-container-node-here")
 
-<script>
-$(document).ready(function(){
- 
-		$('ol.sortable').nestedSortable({
-			disableNesting: 'structure_article',
-			forcePlaceholderSize: true,
-			handle: 'span',
-			helper:	'clone',
-			items: 'li',
-			maxLevels: 3,
-			opacity: .6,
-			placeholder: 'placeholder',
-			revert: 250,
-			tabSize: 25,
-			tolerance: 'pointer',
-			toleranceElement: '> span'
-		});
-		
-		$('.structure_category_handle').bind('mousedown', function() {
-			
-			//alert('down') ;
-			return false ;
-			
-		}) ;
-		
-}) ;
-</script>
+    .jstree({
+
+        core : { /* core options go here */ },
+
+        plugins : [ "themes", "html_data", "some-other-plugin" ]
+
+    });
+
 <div class="structure_base_container">
 	
-<ol class="structure_base sortable">
+
 
 <?php
 
-foreach($tpl->categories as $category)
-{
-	$extract($category) ;
-}
+	$extract($tpl->root_articles) ;
 
-foreach($tpl->articles as $article)
-{
-	echo '<li class="structure_article"><span>'.$article->name.'</span></li>' ;
-}
 
 
 ?>
 
-</ol>
+
 
 </div>
