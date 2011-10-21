@@ -9,6 +9,5 @@
 interface Agent
 {
 	function dispatch($action) ;
-	function render() ;
 	function notify() ;
 }

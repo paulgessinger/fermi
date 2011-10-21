@@ -8,7 +8,7 @@ $extract = function($article_collection) use (&$extract) {
 	{
 		echo '<li>' ;
 		
-		echo '<a href="#">'.$article->name.'</a>' ; 
+		echo '<a href="" id="article_'.$article->getId().'">'.$article->name.'</a>' ; 
 		
 		$children = $article->getChildren() ;
 		
@@ -27,28 +27,76 @@ $extract = function($article_collection) use (&$extract) {
 } ;
 
 ?>
-jQuery("some-selector-to-container-node-here")
 
-    .jstree({
+<script type="text/javascript">
 
-        core : { /* core options go here */ },
+$(document).ready(function(){
+ 	var tree_transaction_log = {test: 'bla'} ;
 
-        plugins : [ "themes", "html_data", "some-other-plugin" ]
+	$('.structure_tree').jstree({
+		core : { /* core options go here */ },
+		
+		
+		plugins : [ "themes", "html_data", 'crrm', 'dnd', 'json_data', 'cookies'],
+		
+	});
+	
+	$('.structure_tree').bind('move_node.jstree', function(e, data) {
+		
+		var target = data.args[0]['cr'] ;
+		var node_id = data.args[0]['o']['context']['id'].substring(8) ;
+		
+		if(typeof target != 'object')
+		{	
+			var target_id = 'NULL'
+		}
+		else
+		{
+			var target_id = target['context']['id'].substring(8) ;
+		}
+		
+		tree_transaction_log[''+node_id+''] = target_id ;
+		
+		
+	}) ;
+	
+	/*$('#json').click(function() {
+		
+		console.log(JSON.stringify($('.structure_base_container').jstree('get_json'), {}, '	')) ;
+		
+	}) ;*/
+	
+}) ;
 
-    });
+</script>
+
+<div class="structure_wrapper">
 
 <div class="structure_base_container">
 	
 
-
+<div class="structure_tree">
 <?php
 
 	$extract($tpl->root_articles) ;
 
-
-
 ?>
+</div>
+
+<div class="structure_actions">
+	
+	<button><?=I18n::_('save')?></button>
+	
+</div>
+
+</div>
+
+<div class="structure_content">
+	<h1><?=I18n::_('Structure')?>: <?=Request::get('action')?></h1>
+	
+	
+</div>
 
 
-
+<br style="clear:both;" />
 </div>

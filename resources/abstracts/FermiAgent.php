@@ -73,14 +73,6 @@ abstract class FermiAgent extends FermiObject implements Agent
 	function preDispatch() {}
 	
 	/**
-	 * instructs the Controller to prepare its outputs to be sent.
-	 */
-	function render()
-	{
-		$this->controllers[$this->controller]->render() ;
-	}
-	
-	/**
 	 * Is called when Core has decided that this Agent is to get the call. The Agent gets a chance to prepare for dispatch.
 	 */
 	function notify()

@@ -15,6 +15,12 @@ class Structure extends FermiController
 		
 		$articles = Core::getModel('articles:Article')->getRootArticles() ;
 		
+		Admin::addAction(array(
+			'label' => 'admin_action_add',
+			'img' => SYSURI.Response::getSkinPath().'img/add.png',
+			'href' => '#'
+		)) ;
+		
 		$tpl->bind('root_articles', $articles) ;
 		
 		Response::bind('main', $tpl) ;

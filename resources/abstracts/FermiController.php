@@ -31,10 +31,4 @@ abstract class FermiController extends FermiObject implements Controller
 		}
 	}
 	
-	/**
-	 * Prepares content for being sent.
-	 */
-	function render()
-	{	
-	}
 }
