@@ -6,7 +6,7 @@ $extract = function($article_collection) use (&$extract) {
 	
 	foreach($article_collection as $article)
 	{
-		echo '<li>' ;
+		echo '<li id="a'.$article->getId().'">' ;
 		
 		echo '<a href="" id="article_'.$article->getId().'">'.$article->name.'</a>' ; 
 		
@@ -57,6 +57,29 @@ $(document).ready(function(){
 		
 		tree_transaction_log[''+node_id+''] = target_id ;
 		
+		$('#structure_tree_save').removeAttr('disabled');
+		
+	}) ;
+	
+	var timer ;
+	
+	$('#structure_tree_save').click(function() {
+		
+		$('.save_loader').attr('src', '<?=$tpl->skin?>img/loader.gif') ;
+		$('.save_loader').css({opacity:1}) ;
+		
+		$('#structure_tree_save').attr('disabled', 'disabled');
+		
+		clearTimeout(timer) ;
+		
+		timer = setTimeout(function() {
+			
+			$('.save_loader').attr('src', '<?=$tpl->skin?>img/checkmark.png') ;
+			
+			$('.save_loader').stop(true).delay(500).animate({opacity: 0}) ;
+			
+		}, 2000) ;
+		
 		
 	}) ;
 	
@@ -85,7 +108,8 @@ $(document).ready(function(){
 
 <div class="structure_actions">
 	
-	<button><?=I18n::_('save')?></button>
+	<img class="save_loader" src="<?=$tpl->skin?>img/loader.gif" alt="" />
+	<button id="structure_tree_save" disabled="disabled"><?=I18n::_('save')?></button>
 	
 </div>
 

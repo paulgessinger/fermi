@@ -311,6 +311,7 @@ span.sub a:hover {
 	border:1px solid #D2D2D2;
 	border-radius:3px;
 	background-color:#ffffff;
+	position:relative;
 }
 
 #content .structure_base_container a {
@@ -327,6 +328,18 @@ span.sub a:hover {
 
 .structure_content {
 	margin-left:280px;
+}
+
+.structure_actions {
+	position:absolute;
+	top:5px;
+	right:5px;
+
+}
+
+.structure_actions .save_loader {
+	margin-bottom:-4px;
+	opacity:0;
 }
 
 /* ACTIONS */
@@ -380,6 +393,11 @@ button:hover {
 	background-image: -ms-linear-gradient(top,#4d90fe,#357AE8);
 	background-image: -o-linear-gradient(top,#4d90fe,#357AE8);
 	background-image: linear-gradient(top,#4d90fe,#357AE8);
+}
+
+button[disabled="disabled"], input.disabled {
+	opacity:0.5;
+	cursor:default;
 }
 
 #actions a {
